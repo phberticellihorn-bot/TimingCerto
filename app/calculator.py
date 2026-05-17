@@ -4,7 +4,7 @@ Recebe dados do produtor + dados de mercado e retorna recomendação estratégic
 """
 
 from datetime import datetime, timedelta
-from app.scraper import preco_historico_medio, MESES_CHUVA, MESES_NOME
+from app.scraper import preco_historico_medio, _get_meses_chuva, MESES_NOME
 
 
 def mes_nome(mes: int) -> str:
@@ -44,7 +44,7 @@ def calcular(payload: dict, preco_atual: float) -> dict:
     custo_total_cab = custo_dia * dias
     custo_lote = custo_total_cab * animais
 
-    chuva_mask = MESES_CHUVA.get(estado, MESES_CHUVA["MT"])
+    chuva_mask = _get_meses_chuva(estado)
     tem_chuva = chuva_mask[mes_abate - 1]
 
     # Preço estimado no abate = média histórica do estado naquele mês
