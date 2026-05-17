@@ -158,8 +158,11 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
         resp.raise_for_status()
         dados    = resp.json()
         logger.info(f"AgroDoc response para {estado}: {dados}")
-        preco    = float(dados.get("valor") or 0)
-        data_cot = dados.get("data_cotacao", datetime.now().strftime("%Y-%m-%d"))
+        # API sempre retorna referência SP em "boi_gordo_cepea_sp" (ignora param uf)
+        DIFERENCIAL_AGRODOC = {"SP": 0.0, "MT": -3.0, "GO": -14.0}
+        preco_sp = float(dados.get("boi_gordo_cepea_sp") or dados.get("valor") or 0)
+        preco    = round(preco_sp + DIFERENCIAL_AGRODOC.get(estado, 0), 2) if preco_sp else 0
+        data_cot = (dados.get("atualizado") or datetime.now().isoformat())[:10]
 
         if 200 < preco < 600:
             resultado = {
