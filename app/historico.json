@@ -1,0 +1,2352 @@
+{
+  "atualizado": "2026-05-17T11:37:57.157960",
+  "fonte": "Agrolink.com.br — boi gordo 15kg — ESTADUAL",
+  "historico": {
+    "MT": {
+      "2020": [
+        171.23,
+        176.3,
+        178.54,
+        171.48,
+        169.71,
+        175.58,
+        187.34,
+        200.47,
+        221.53,
+        240.25,
+        261.23,
+        242.72
+      ],
+      "2021": [
+        256.99,
+        280.2,
+        289.31,
+        298.15,
+        294.74,
+        297.22,
+        297.27,
+        295.96,
+        284.8,
+        259.82,
+        264.4,
+        291.23
+      ],
+      "2022": [
+        304.63,
+        300.71,
+        297.74,
+        288.57,
+        278.6,
+        270.68,
+        286.39,
+        275.52,
+        260.24,
+        253.07,
+        239.23,
+        246.84
+      ],
+      "2023": [
+        244.42,
+        243.55,
+        239.3,
+        244.61,
+        230.03,
+        204.25,
+        211.68,
+        190.64,
+        174.54,
+        202.37,
+        203.93,
+        206.37
+      ],
+      "2024": [
+        207.77,
+        208.13,
+        207.17,
+        206.74,
+        208.86,
+        203.1,
+        205.95,
+        208.09,
+        218.04,
+        265.24,
+        312.2,
+        299.91
+      ],
+      "2025": [
+        307.53,
+        310.19,
+        295.88,
+        317.02,
+        304.75,
+        307.6,
+        297.42,
+        297.18,
+        297.36,
+        290.93,
+        298.51,
+        296.81
+      ],
+      "2026": [
+        294.98,
+        311.07,
+        332.05,
+        351.74,
+        347.12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "SP": {
+      "2020": [
+        193.76,
+        196.52,
+        197.65,
+        194.87,
+        192.25,
+        201.49,
+        216.42,
+        224.47,
+        241.71,
+        257.94,
+        278.28,
+        258.18
+      ],
+      "2021": [
+        278.79,
+        296.41,
+        301.37,
+        310.02,
+        302.9,
+        310.22,
+        310.72,
+        310.93,
+        301.93,
+        272.89,
+        283.99,
+        312.67
+      ],
+      "2022": [
+        326.04,
+        331.26,
+        333.47,
+        314.28,
+        305.07,
+        297.98,
+        308.11,
+        294.23,
+        283.76,
+        276.11,
+        270.29,
+        277.21
+      ],
+      "2023": [
+        272.44,
+        275.76,
+        273.63,
+        272.98,
+        255.92,
+        240.64,
+        241.31,
+        217.28,
+        201.98,
+        229.71,
+        233.41,
+        239.4
+      ],
+      "2024": [
+        239.9,
+        234.13,
+        227.94,
+        226.96,
+        226.27,
+        217.1,
+        221.37,
+        229.19,
+        245.25,
+        287.27,
+        325.32,
+        317.58
+      ],
+      "2025": [
+        313.77,
+        316.76,
+        309.72,
+        317.92,
+        309.32,
+        308.12,
+        300.82,
+        301.34,
+        305.33,
+        304.04,
+        313.86,
+        316.26
+      ],
+      "2026": [
+        314.65,
+        330.15,
+        344.98,
+        357.84,
+        352.66,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "GO": {
+      "2020": [
+        179.6,
+        184.88,
+        184.62,
+        177.57,
+        177.08,
+        191.76,
+        204.96,
+        216.94,
+        232.38,
+        244.65,
+        267.76,
+        251.6
+      ],
+      "2021": [
+        270.74,
+        285.1,
+        287.2,
+        293.28,
+        286.79,
+        297.03,
+        299.62,
+        298.45,
+        288.35,
+        256.4,
+        269.13,
+        302.08
+      ],
+      "2022": [
+        312.68,
+        309.38,
+        305.45,
+        292.84,
+        277.38,
+        270.94,
+        289.96,
+        280.75,
+        265.99,
+        262.34,
+        256.31,
+        270.93
+      ],
+      "2023": [
+        261.58,
+        247.43,
+        244.88,
+        246.04,
+        225.83,
+        204.62,
+        214.79,
+        203.29,
+        186.33,
+        217.5,
+        221.63,
+        230.28
+      ],
+      "2024": [
+        226.79,
+        215.01,
+        208.23,
+        208.81,
+        205.69,
+        199.07,
+        208.94,
+        219.69,
+        236.36,
+        274.73,
+        318.1,
+        304.92
+      ],
+      "2025": [
+        302.82,
+        294.31,
+        285.98,
+        303.73,
+        288.21,
+        287.88,
+        278.76,
+        283.21,
+        286.5,
+        287.85,
+        305.82,
+        309.05
+      ],
+      "2026": [
+        305.02,
+        311.65,
+        323.11,
+        339.15,
+        331.51,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "medias_mensais": {
+    "MT": {
+      "mensais": [
+        255.36,
+        261.45,
+        262.86,
+        268.33,
+        261.97,
+        243.07,
+        247.67,
+        244.64,
+        242.75,
+        251.95,
+        263.25,
+        263.98
+      ],
+      "media_chuva": 257.37,
+      "media_seca": 253.14
+    },
+    "SP": {
+      "mensais": [
+        277.05,
+        283.0,
+        284.11,
+        284.98,
+        277.77,
+        262.59,
+        266.46,
+        262.91,
+        263.33,
+        271.33,
+        284.19,
+        286.88
+      ],
+      "media_chuva": 278.56,
+      "media_seca": 270.94
+    },
+    "GO": {
+      "mensais": [
+        265.6,
+        263.97,
+        262.78,
+        265.92,
+        256.07,
+        241.88,
+        249.5,
+        250.39,
+        249.32,
+        257.25,
+        273.12,
+        278.14
+      ],
+      "media_chuva": 264.31,
+      "media_seca": 252.75
+    }
+  },
+  "comparativo_chuva_seca": {
+    "MT": [
+      {
+        "ano": 2020,
+        "media_chuva": 213.11,
+        "media_seca": 180.92,
+        "diferenca": -32.19
+      },
+      {
+        "ano": 2021,
+        "media_chuva": 275.25,
+        "media_seca": 296.67,
+        "diferenca": 21.42
+      },
+      {
+        "ano": 2022,
+        "media_chuva": 271.78,
+        "media_seca": 279.95,
+        "diferenca": 8.17
+      },
+      {
+        "ano": 2023,
+        "media_chuva": 216.35,
+        "media_seca": 216.24,
+        "diferenca": -0.11
+      },
+      {
+        "ano": 2024,
+        "media_chuva": 245.49,
+        "media_seca": 206.55,
+        "diferenca": -38.94
+      },
+      {
+        "ano": 2025,
+        "media_chuva": 299.6,
+        "media_seca": 304.79,
+        "diferenca": 5.19
+      },
+      {
+        "ano": 2026,
+        "media_chuva": 312.7,
+        "media_seca": 349.43,
+        "diferenca": 36.73
+      }
+    ],
+    "SP": [
+      {
+        "ano": 2020,
+        "media_chuva": 232.01,
+        "media_seca": 205.9,
+        "diferenca": -26.11
+      },
+      {
+        "ano": 2021,
+        "media_chuva": 292.58,
+        "media_seca": 308.96,
+        "diferenca": 16.38
+      },
+      {
+        "ano": 2022,
+        "media_chuva": 299.73,
+        "media_seca": 303.93,
+        "diferenca": 4.2
+      },
+      {
+        "ano": 2023,
+        "media_chuva": 246.62,
+        "media_seca": 245.63,
+        "diferenca": -0.99
+      },
+      {
+        "ano": 2024,
+        "media_chuva": 268.2,
+        "media_seca": 224.18,
+        "diferenca": -44.02
+      },
+      {
+        "ano": 2025,
+        "media_chuva": 311.39,
+        "media_seca": 307.5,
+        "diferenca": -3.89
+      },
+      {
+        "ano": 2026,
+        "media_chuva": 329.93,
+        "media_seca": 355.25,
+        "diferenca": 25.32
+      }
+    ],
+    "GO": [
+      {
+        "ano": 2020,
+        "media_chuva": 220.78,
+        "media_seca": 193.66,
+        "diferenca": -27.12
+      },
+      {
+        "ano": 2021,
+        "media_chuva": 279.86,
+        "media_seca": 295.03,
+        "diferenca": 15.17
+      },
+      {
+        "ano": 2022,
+        "media_chuva": 283.3,
+        "media_seca": 282.37,
+        "diferenca": -0.93
+      },
+      {
+        "ano": 2023,
+        "media_chuva": 229.95,
+        "media_seca": 218.91,
+        "diferenca": -11.04
+      },
+      {
+        "ano": 2024,
+        "media_chuva": 254.88,
+        "media_seca": 208.44,
+        "diferenca": -46.44
+      },
+      {
+        "ano": 2025,
+        "media_chuva": 296.05,
+        "media_seca": 288.36,
+        "diferenca": -7.69
+      },
+      {
+        "ano": 2026,
+        "media_chuva": 313.26,
+        "media_seca": 335.33,
+        "diferenca": 22.07
+      }
+    ]
+  },
+  "series": {
+    "MT": [
+      {
+        "ano": 2020,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2020",
+        "preco": 171.23,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2020",
+        "preco": 176.3,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2020",
+        "preco": 178.54,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2020",
+        "preco": 171.48,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2020",
+        "preco": 169.71,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2020",
+        "preco": 175.58,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2020",
+        "preco": 187.34,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2020",
+        "preco": 200.47,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2020",
+        "preco": 221.53,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2020",
+        "preco": 240.25,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2020",
+        "preco": 261.23,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2020",
+        "preco": 242.72,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2021",
+        "preco": 256.99,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2021",
+        "preco": 280.2,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2021",
+        "preco": 289.31,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2021",
+        "preco": 298.15,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2021",
+        "preco": 294.74,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2021",
+        "preco": 297.22,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2021",
+        "preco": 297.27,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2021",
+        "preco": 295.96,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2021",
+        "preco": 284.8,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2021",
+        "preco": 259.82,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2021",
+        "preco": 264.4,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2021",
+        "preco": 291.23,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2022",
+        "preco": 304.63,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2022",
+        "preco": 300.71,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2022",
+        "preco": 297.74,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2022",
+        "preco": 288.57,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2022",
+        "preco": 278.6,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2022",
+        "preco": 270.68,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2022",
+        "preco": 286.39,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2022",
+        "preco": 275.52,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2022",
+        "preco": 260.24,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2022",
+        "preco": 253.07,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2022",
+        "preco": 239.23,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2022",
+        "preco": 246.84,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2023",
+        "preco": 244.42,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2023",
+        "preco": 243.55,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2023",
+        "preco": 239.3,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2023",
+        "preco": 244.61,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2023",
+        "preco": 230.03,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2023",
+        "preco": 204.25,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2023",
+        "preco": 211.68,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2023",
+        "preco": 190.64,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2023",
+        "preco": 174.54,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2023",
+        "preco": 202.37,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2023",
+        "preco": 203.93,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2023",
+        "preco": 206.37,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2024",
+        "preco": 207.77,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2024",
+        "preco": 208.13,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2024",
+        "preco": 207.17,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2024",
+        "preco": 206.74,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2024",
+        "preco": 208.86,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2024",
+        "preco": 203.1,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2024",
+        "preco": 205.95,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2024",
+        "preco": 208.09,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2024",
+        "preco": 218.04,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2024",
+        "preco": 265.24,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2024",
+        "preco": 312.2,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2024",
+        "preco": 299.91,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2025",
+        "preco": 307.53,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2025",
+        "preco": 310.19,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2025",
+        "preco": 295.88,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2025",
+        "preco": 317.02,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2025",
+        "preco": 304.75,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2025",
+        "preco": 307.6,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2025",
+        "preco": 297.42,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2025",
+        "preco": 297.18,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2025",
+        "preco": 297.36,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2025",
+        "preco": 290.93,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2025",
+        "preco": 298.51,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2025",
+        "preco": 296.81,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2026",
+        "preco": 294.98,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2026",
+        "preco": 311.07,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2026",
+        "preco": 332.05,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2026",
+        "preco": 351.74,
+        "chuva": false
+      },
+      {
+        "ano": 2026,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2026",
+        "preco": 347.12,
+        "chuva": false
+      }
+    ],
+    "SP": [
+      {
+        "ano": 2020,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2020",
+        "preco": 193.76,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2020",
+        "preco": 196.52,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2020",
+        "preco": 197.65,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2020",
+        "preco": 194.87,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2020",
+        "preco": 192.25,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2020",
+        "preco": 201.49,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2020",
+        "preco": 216.42,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2020",
+        "preco": 224.47,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2020",
+        "preco": 241.71,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2020",
+        "preco": 257.94,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2020",
+        "preco": 278.28,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2020",
+        "preco": 258.18,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2021",
+        "preco": 278.79,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2021",
+        "preco": 296.41,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2021",
+        "preco": 301.37,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2021",
+        "preco": 310.02,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2021",
+        "preco": 302.9,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2021",
+        "preco": 310.22,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2021",
+        "preco": 310.72,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2021",
+        "preco": 310.93,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2021",
+        "preco": 301.93,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2021",
+        "preco": 272.89,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2021",
+        "preco": 283.99,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2021",
+        "preco": 312.67,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2022",
+        "preco": 326.04,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2022",
+        "preco": 331.26,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2022",
+        "preco": 333.47,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2022",
+        "preco": 314.28,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2022",
+        "preco": 305.07,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2022",
+        "preco": 297.98,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2022",
+        "preco": 308.11,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2022",
+        "preco": 294.23,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2022",
+        "preco": 283.76,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2022",
+        "preco": 276.11,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2022",
+        "preco": 270.29,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2022",
+        "preco": 277.21,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2023",
+        "preco": 272.44,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2023",
+        "preco": 275.76,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2023",
+        "preco": 273.63,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2023",
+        "preco": 272.98,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2023",
+        "preco": 255.92,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2023",
+        "preco": 240.64,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2023",
+        "preco": 241.31,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2023",
+        "preco": 217.28,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2023",
+        "preco": 201.98,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2023",
+        "preco": 229.71,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2023",
+        "preco": 233.41,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2023",
+        "preco": 239.4,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2024",
+        "preco": 239.9,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2024",
+        "preco": 234.13,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2024",
+        "preco": 227.94,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2024",
+        "preco": 226.96,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2024",
+        "preco": 226.27,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2024",
+        "preco": 217.1,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2024",
+        "preco": 221.37,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2024",
+        "preco": 229.19,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2024",
+        "preco": 245.25,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2024",
+        "preco": 287.27,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2024",
+        "preco": 325.32,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2024",
+        "preco": 317.58,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2025",
+        "preco": 313.77,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2025",
+        "preco": 316.76,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2025",
+        "preco": 309.72,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2025",
+        "preco": 317.92,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2025",
+        "preco": 309.32,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2025",
+        "preco": 308.12,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2025",
+        "preco": 300.82,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2025",
+        "preco": 301.34,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2025",
+        "preco": 305.33,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2025",
+        "preco": 304.04,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2025",
+        "preco": 313.86,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2025",
+        "preco": 316.26,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2026",
+        "preco": 314.65,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2026",
+        "preco": 330.15,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2026",
+        "preco": 344.98,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2026",
+        "preco": 357.84,
+        "chuva": false
+      },
+      {
+        "ano": 2026,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2026",
+        "preco": 352.66,
+        "chuva": false
+      }
+    ],
+    "GO": [
+      {
+        "ano": 2020,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2020",
+        "preco": 179.6,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2020",
+        "preco": 184.88,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2020",
+        "preco": 184.62,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2020",
+        "preco": 177.57,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2020",
+        "preco": 177.08,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2020",
+        "preco": 191.76,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2020",
+        "preco": 204.96,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2020",
+        "preco": 216.94,
+        "chuva": false
+      },
+      {
+        "ano": 2020,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2020",
+        "preco": 232.38,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2020",
+        "preco": 244.65,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2020",
+        "preco": 267.76,
+        "chuva": true
+      },
+      {
+        "ano": 2020,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2020",
+        "preco": 251.6,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2021",
+        "preco": 270.74,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2021",
+        "preco": 285.1,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2021",
+        "preco": 287.2,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2021",
+        "preco": 293.28,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2021",
+        "preco": 286.79,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2021",
+        "preco": 297.03,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2021",
+        "preco": 299.62,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2021",
+        "preco": 298.45,
+        "chuva": false
+      },
+      {
+        "ano": 2021,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2021",
+        "preco": 288.35,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2021",
+        "preco": 256.4,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2021",
+        "preco": 269.13,
+        "chuva": true
+      },
+      {
+        "ano": 2021,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2021",
+        "preco": 302.08,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2022",
+        "preco": 312.68,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2022",
+        "preco": 309.38,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2022",
+        "preco": 305.45,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2022",
+        "preco": 292.84,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2022",
+        "preco": 277.38,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2022",
+        "preco": 270.94,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2022",
+        "preco": 289.96,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2022",
+        "preco": 280.75,
+        "chuva": false
+      },
+      {
+        "ano": 2022,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2022",
+        "preco": 265.99,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2022",
+        "preco": 262.34,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2022",
+        "preco": 256.31,
+        "chuva": true
+      },
+      {
+        "ano": 2022,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2022",
+        "preco": 270.93,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2023",
+        "preco": 261.58,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2023",
+        "preco": 247.43,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2023",
+        "preco": 244.88,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2023",
+        "preco": 246.04,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2023",
+        "preco": 225.83,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2023",
+        "preco": 204.62,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2023",
+        "preco": 214.79,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2023",
+        "preco": 203.29,
+        "chuva": false
+      },
+      {
+        "ano": 2023,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2023",
+        "preco": 186.33,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2023",
+        "preco": 217.5,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2023",
+        "preco": 221.63,
+        "chuva": true
+      },
+      {
+        "ano": 2023,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2023",
+        "preco": 230.28,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2024",
+        "preco": 226.79,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2024",
+        "preco": 215.01,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2024",
+        "preco": 208.23,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2024",
+        "preco": 208.81,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2024",
+        "preco": 205.69,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2024",
+        "preco": 199.07,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2024",
+        "preco": 208.94,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2024",
+        "preco": 219.69,
+        "chuva": false
+      },
+      {
+        "ano": 2024,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2024",
+        "preco": 236.36,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2024",
+        "preco": 274.73,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2024",
+        "preco": 318.1,
+        "chuva": true
+      },
+      {
+        "ano": 2024,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2024",
+        "preco": 304.92,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2025",
+        "preco": 302.82,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2025",
+        "preco": 294.31,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2025",
+        "preco": 285.98,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2025",
+        "preco": 303.73,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2025",
+        "preco": 288.21,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 6,
+        "mes_nome": "Jun",
+        "periodo": "Jun/2025",
+        "preco": 287.88,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 7,
+        "mes_nome": "Jul",
+        "periodo": "Jul/2025",
+        "preco": 278.76,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 8,
+        "mes_nome": "Ago",
+        "periodo": "Ago/2025",
+        "preco": 283.21,
+        "chuva": false
+      },
+      {
+        "ano": 2025,
+        "mes": 9,
+        "mes_nome": "Set",
+        "periodo": "Set/2025",
+        "preco": 286.5,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 10,
+        "mes_nome": "Out",
+        "periodo": "Out/2025",
+        "preco": 287.85,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 11,
+        "mes_nome": "Nov",
+        "periodo": "Nov/2025",
+        "preco": 305.82,
+        "chuva": true
+      },
+      {
+        "ano": 2025,
+        "mes": 12,
+        "mes_nome": "Dez",
+        "periodo": "Dez/2025",
+        "preco": 309.05,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 1,
+        "mes_nome": "Jan",
+        "periodo": "Jan/2026",
+        "preco": 305.02,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 2,
+        "mes_nome": "Fev",
+        "periodo": "Fev/2026",
+        "preco": 311.65,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 3,
+        "mes_nome": "Mar",
+        "periodo": "Mar/2026",
+        "preco": 323.11,
+        "chuva": true
+      },
+      {
+        "ano": 2026,
+        "mes": 4,
+        "mes_nome": "Abr",
+        "periodo": "Abr/2026",
+        "preco": 339.15,
+        "chuva": false
+      },
+      {
+        "ano": 2026,
+        "mes": 5,
+        "mes_nome": "Mai",
+        "periodo": "Mai/2026",
+        "preco": 331.51,
+        "chuva": false
+      }
+    ]
+  }
+}
