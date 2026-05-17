@@ -1,0 +1,5 @@
+# Dependências para rodar o atualizar_historico.py localmente
+# Execute: pip install -r requirements_scraper.txt
+
+selenium==4.21.0
+webdriver-manager==4.0.1
