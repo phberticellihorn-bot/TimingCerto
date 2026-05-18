@@ -528,23 +528,46 @@ function renderResultado(d) {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
     const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
     const b3 = mesNum ? futuroParaMes(mesNum, 2026) : null;
-    const b3Html = b3 ? `
-      <div class="tl-b3" style="display:flex;align-items:center;gap:6px;margin-top:3px">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);background:var(--bg3);border:1px solid var(--green4);border-radius:4px;padding:1px 6px">B3</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--amber);font-weight:600">R$ ${b3.preco_arroba.toFixed(0)}/arr</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}%</span>
-      </div>` : '';
-    const abateLabelExtra = b3 && t.is_abate
-      ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--amber);margin-left:6px">△ R$ ${(b3.preco_arroba - t.preco).toFixed(0)}/arr vs histórico</span>`
+
+    const diffVsHist = b3 ? (b3.preco_arroba - t.preco) : 0;
+    const diffColor = diffVsHist >= 0 ? 'var(--green)' : 'var(--red)';
+    const diffSinal = diffVsHist >= 0 ? '+' : '';
+
+    // Preço principal: B3 se disponível, histórico se não
+    const precoPrincipalHtml = b3
+      ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">/arroba</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--bg3);border:1px solid var(--green4);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
+         </div>
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
+           hist. CEPEA: R$ ${t.preco}/arr
+           <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)} vs hist.</span>
+         </div>`
+      : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--green2);font-weight:700">R$ ${t.preco}</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">/arroba</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--bg2);border:1px solid var(--green5);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">sem contrato B3</span>
+         </div>`;
+
+    const sazonalidadeHtml = `<div style="font-size:11px;color:var(--text3);margin-top:3px">${t.chuva ? '🌧 Período de chuvas — oferta tende a ser maior' : '☀ Período seco — preço tende a ser mais firme'}</div>`;
+
+    const abateBadge = t.is_abate
+      ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--green4);color:var(--bg);border-radius:4px;padding:2px 8px;font-weight:700">← ABATE PREVISTO</span>`
       : '';
+
     tlHtml += `
-      <div class="tl-item">
-        <div class="tl-dot ${dotClass}"></div>
-        <div class="tl-meta">
-          <div class="tl-date" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">${t.mes.toUpperCase()} 2026 ${t.is_abate ? '<span style="color:var(--green)">← ABATE PREVISTO</span>' : ''}${abateLabelExtra}</div>
-          <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">hist. CEPEA</span></div>
-          ${b3Html}
-          <div class="tl-desc">${t.chuva ? 'Período de chuvas — preço sazonal baixo' : 'Período seco — preço firme'}</div>
+      <div class="tl-item" style="${t.is_abate ? 'background:var(--bg2);border:1px solid var(--green4);border-radius:8px;padding:10px 12px;margin-bottom:10px' : ''}">
+        <div class="tl-dot ${dotClass}" style="${t.is_abate ? 'margin-top:6px' : ''}"></div>
+        <div class="tl-meta" style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
+            ${abateBadge}
+          </div>
+          ${precoPrincipalHtml}
+          ${sazonalidadeHtml}
         </div>
       </div>`;
   });
