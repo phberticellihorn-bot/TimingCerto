@@ -1,0 +1,36 @@
+name: Atualizar Histórico de Preços
+
+on:
+  schedule:
+    - cron: '0 8 1 * *'
+  workflow_dispatch:
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Instalar dependências
+        run: pip install selenium webdriver-manager
+
+      - name: Rodar scraper
+        run: python atualizar_historico.py
+
+      - name: Salvar historico.json no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/historico.json
+          git diff --staged --quiet || git commit -m "Atualização automática histórico $(date +'%m/%Y')"
+          git push
