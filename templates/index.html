@@ -1,1350 +1,787 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Calculadora estratégica de timing de venda pecuária com preço atual sincronizado ao cálculo, estimativa de abate, sazonalidade e fallback manual." />
-  <title>calculadora-timing-pecuaria-corrigida</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timing Certo — Consultoria Pecuária</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1a0f;--bg2:#0a150c;--bg3:#1a3d1e;
+  --green:#a8e6b0;--green2:#7ab882;--green3:#4a7a52;--green4:#2d6e35;--green5:#1e3a22;
+  --blue:#80b8e6;--amber:#e6a840;--red:#f08080;
+  --text:#e8f0e9;--text2:#7ab882;--text3:#4a7a52;
+}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=boska@500,700&display=swap" rel="stylesheet">
+/* NAV */
+nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:20px;font-weight:800;color:var(--green)}
+.logo span{color:var(--text2);font-weight:400;font-size:13px;margin-left:12px;font-family:'IBM Plex Mono',monospace}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{background:transparent;border:none;color:var(--text3);font-family:'Syne',sans-serif;font-size:13px;padding:8px 18px;border-radius:6px;cursor:pointer;transition:.2s}
+.nav-tab:hover{color:var(--text2);background:var(--bg3)}
+.nav-tab.active{color:var(--green);background:var(--bg3);font-weight:600}
 
-  <style>
-    :root, [data-theme="light"] {
-      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
-      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+/* PAGES */
+.page{display:none;padding:32px 40px;max-width:1200px;margin:0 auto}
+.page.active{display:block}
 
-      --space-1: 0.25rem;
-      --space-2: 0.5rem;
-      --space-3: 0.75rem;
-      --space-4: 1rem;
-      --space-5: 1.25rem;
-      --space-6: 1.5rem;
-      --space-8: 2rem;
-      --space-10: 2.5rem;
-      --space-12: 3rem;
-      --space-16: 4rem;
+/* PRICE STRIP */
+.price-strip{background:var(--bg3);border:1px solid var(--green4);border-radius:10px;padding:16px 24px;display:flex;gap:32px;align-items:center;margin-bottom:28px;flex-wrap:wrap}
+.ps-item .ps-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em}
+.ps-item .ps-value{font-size:20px;font-weight:700;color:var(--green);margin-top:2px}
+.ps-item .ps-sub{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+.ps-divider{width:1px;height:40px;background:var(--green5)}
+.ps-fonte{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto}
 
-      --color-bg: #f7f6f2;
-      --color-surface: #f9f8f5;
-      --color-surface-2: #fbfbf9;
-      --color-surface-offset: #f0ede7;
-      --color-surface-dynamic: #e6e4df;
-      --color-border: #d4d1ca;
-      --color-divider: #dcd9d5;
-      --color-text: #28251d;
-      --color-text-muted: #62615d;
-      --color-text-faint: #8e8c87;
-      --color-text-inverse: #f9f8f4;
-      --color-primary: #01696f;
-      --color-primary-hover: #0c4e54;
-      --color-primary-highlight: #dcebea;
-      --color-success: #437a22;
-      --color-success-highlight: #dfead5;
-      --color-warning: #964219;
-      --color-warning-highlight: #efe0d4;
-      --color-error: #a13544;
-      --color-error-highlight: #f1dde0;
+/* SECTION */
+.section-title{font-size:14px;font-weight:700;color:var(--green);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--green5)}
+.mono{font-family:'IBM Plex Mono',monospace}
 
-      --radius-sm: 0.375rem;
-      --radius-md: 0.625rem;
-      --radius-lg: 0.875rem;
-      --radius-xl: 1.25rem;
-      --radius-full: 999px;
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 
-      --shadow-sm: 0 1px 2px oklch(0.2 0.01 80 / 0.06);
-      --shadow-md: 0 8px 28px oklch(0.2 0.01 80 / 0.1);
-      --shadow-lg: 0 18px 52px oklch(0.2 0.01 80 / 0.14);
-      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+/* CARD */
+.card{background:var(--bg3);border:1px solid var(--green4);border-radius:10px;padding:20px}
+.card.dark{background:var(--bg2);border-color:var(--green5)}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;margin-bottom:6px}
+.card-value{font-size:24px;font-weight:700;color:var(--green)}
+.card-sub{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+.card.danger{background:#3d1a1a;border-color:#8b3a3a}
+.card.danger .card-value{color:var(--red)}
+.card.warn{background:#3d2e0a;border-color:#8b6e1a}
+.card.warn .card-value{color:var(--amber)}
+.card.success{background:#1a3d2e;border-color:#2d8e5a}
+.card.success .card-value{color:#80e6b0}
 
-      --font-display: 'Boska', Georgia, serif;
-      --font-body: 'Satoshi', system-ui, sans-serif;
-      --content-wide: 1180px;
+/* FORM */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.form-group input,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--green4);border-radius:6px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--green)}
+.form-group select option{background:var(--bg3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-info{background:var(--bg2);border:1px solid var(--green5);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;font-family:'IBM Plex Mono',monospace;margin-bottom:16px}
+
+/* BTN */
+.btn{border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;padding:13px 24px;cursor:pointer;transition:.2s}
+.btn-primary{background:var(--green);color:var(--bg);width:100%}
+.btn-primary:hover{background:#c5edd0}
+.btn-secondary{background:transparent;border:1px solid var(--green4);color:var(--text2);padding:8px 16px;font-size:12px}
+.btn-secondary.active{background:var(--bg3);color:var(--green);border-color:var(--green)}
+
+/* COMPARATIVO TABLE */
+.comp-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.comp-table th{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--green5)}
+.comp-table td{padding:10px 12px;border-bottom:1px solid var(--green5);color:var(--text2)}
+.comp-table td.win{color:var(--green);font-weight:600}
+.comp-table td.lose{color:var(--red)}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--green4);margin-top:3px;flex-shrink:0}
+.tl-dot.active{background:var(--green)}
+.tl-dot.warn{background:var(--amber)}
+.tl-dot.rain{background:var(--blue)}
+.tl-meta .tl-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)}
+.tl-meta .tl-price{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);margin-top:2px;font-weight:500}
+.tl-meta .tl-desc{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* RECOMMENDATION */
+.rec-box{background:var(--bg);border:1px solid var(--green);border-radius:10px;padding:18px 20px;margin-top:4px}
+.rec-box .rec-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px}
+.rec-box .rec-text{font-size:12px;color:var(--text2);line-height:1.8}
+
+/* CHART wrapper */
+.chart-wrap{background:var(--bg2);border:1px solid var(--green5);border-radius:10px;padding:20px;margin-bottom:20px}
+.chart-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+
+/* STATE BADGES */
+.estado-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--green5);color:var(--text3)}
+.estado-badge.active{background:var(--bg3);border-color:var(--green4);color:var(--green)}
+
+/* LOADING */
+.loading{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:20px 0;text-align:center}
+
+/* CLIMA */
+.clima-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.clima-bar .cb-data{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);width:70px}
+.clima-bar .cb-track{flex:1;background:var(--green5);border-radius:4px;height:8px;overflow:hidden}
+.clima-bar .cb-fill{height:100%;border-radius:4px;background:var(--blue);transition:width .3s}
+.clima-bar .cb-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue);width:50px;text-align:right}
+
+/* FONTE */
+.fonte-note{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);margin-top:16px;line-height:1.8;text-align:right}
+
+@media(max-width:700px){
+  nav{padding:14px 20px;flex-direction:column;gap:12px}
+  .page{padding:20px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .price-strip{gap:16px}
+}
+   .b3-strip {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(120, 200, 140, 0.14);
+      background: rgba(8, 18, 10, 0.45);
     }
-
-    [data-theme="dark"] {
-      --color-bg: #171614;
-      --color-surface: #1c1b19;
-      --color-surface-2: #23211f;
-      --color-surface-offset: #262422;
-      --color-surface-dynamic: #2f2d2a;
-      --color-border: #393836;
-      --color-divider: #2a2927;
-      --color-text: #d6d3ce;
-      --color-text-muted: #aaa7a2;
-      --color-text-faint: #7b7872;
-      --color-text-inverse: #1d1c1a;
-      --color-primary: #4f98a3;
-      --color-primary-hover: #67aeb7;
-      --color-primary-highlight: #26383b;
-      --color-success: #79b357;
-      --color-success-highlight: #283325;
-      --color-warning: #d18958;
-      --color-warning-highlight: #3f3027;
-      --color-error: #dd6974;
-      --color-error-highlight: #412a2f;
-      --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.18);
-      --shadow-md: 0 8px 28px oklch(0 0 0 / 0.28);
-      --shadow-lg: 0 18px 52px oklch(0 0 0 / 0.4);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme]) {
-        --color-bg: #171614;
-      }
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-      text-size-adjust: none;
-      scroll-behavior: smooth;
-    }
-    body {
-      min-height: 100dvh;
-      font-family: var(--font-body);
-      font-size: var(--text-base);
-      line-height: 1.55;
-      color: var(--color-text);
-      background:
-        radial-gradient(circle at top left, color-mix(in oklab, var(--color-primary) 5%, transparent), transparent 35%),
-        var(--color-bg);
-    }
-    button, input, select { font: inherit; color: inherit; }
-    button { cursor: pointer; border: none; background: none; }
-    input, select {
-      width: 100%;
-      min-height: 48px;
-      border-radius: var(--radius-md);
-      border: 1px solid color-mix(in oklab, var(--color-text) 12%, transparent);
-      background: var(--color-surface-2);
-      padding: 0 var(--space-4);
-      outline: none;
-    }
-    input:focus, select:focus {
-      border-color: color-mix(in oklab, var(--color-primary) 55%, white 0%);
-      box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 14%, transparent);
-    }
-    ::selection {
-      background: color-mix(in oklab, var(--color-primary) 25%, white 0%);
-      color: var(--color-text);
-    }
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .page {
-      max-width: var(--content-wide);
-      margin: 0 auto;
-      padding: var(--space-6) var(--space-4) var(--space-10);
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--space-4);
-      margin-bottom: var(--space-6);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      color: var(--color-primary);
-      flex: 0 0 auto;
-    }
-
-    .brand-copy small {
-      display: block;
-      color: var(--color-text-muted);
-      font-size: var(--text-xs);
+    .b3-strip .mini-label {
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 2px;
+      letter-spacing: .12em;
+      opacity: .7;
+      margin-bottom: 6px;
     }
-
-    .brand-copy strong {
-      display: block;
-      font-size: var(--text-lg);
-      font-family: var(--font-display);
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .b3-strip .row {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:baseline;
+      flex-wrap:wrap;
     }
-
-    .theme-toggle {
-      width: 46px;
-      height: 46px;
-      border-radius: var(--radius-full);
-      border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-      background: var(--color-surface);
-      display: grid;
-      place-items: center;
-      box-shadow: var(--shadow-sm);
+    .b3-strip .period {
+      font-size: 12px;
+      opacity: .85;
     }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.25fr 0.95fr;
-      gap: var(--space-4);
-      margin-bottom: var(--space-4);
-    }
-
-    .hero-panel,
-    .market-panel,
-    .panel,
-    .result-card,
-    .callout,
-    .timeline-item,
-    .footer-note {
-      background: var(--color-surface);
-      border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .hero-panel {
-      border-radius: var(--radius-xl);
-      padding: var(--space-8);
-      min-height: 260px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .eyebrow {
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--color-text-muted);
-      margin-bottom: var(--space-3);
-    }
-
-    h1 {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      line-height: 1.02;
-      letter-spacing: -0.03em;
-      margin-bottom: var(--space-4);
-      max-width: 14ch;
-    }
-
-    .hero-panel p {
-      max-width: 58ch;
-      color: var(--color-text-muted);
-    }
-
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
-      margin-top: var(--space-5);
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
-      padding: 0 var(--space-3);
-      border-radius: var(--radius-full);
-      background: var(--color-primary-highlight);
-      color: var(--color-primary);
-      font-size: var(--text-xs);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .market-panel {
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-      justify-content: space-between;
-      background: linear-gradient(180deg, var(--color-surface), color-mix(in oklab, var(--color-primary) 4%, var(--color-surface)));
-    }
-
-    .market-label {
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-text-muted);
-    }
-
-    .market-price-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: var(--space-4);
-      flex-wrap: wrap;
-    }
-
-    .market-price {
-      font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
-      line-height: 0.95;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .market-sub {
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
-    }
-
-    .b3-strip {
-      background: color-mix(in oklab, var(--color-primary) 5%, var(--color-surface-2));
-    }
-
-    .b3-row {
-      align-items: center;
-    }
-
-    .b3-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      min-height: 26px;
-      padding: 0.15rem 0.55rem;
-      border-radius: var(--radius-full);
-      font-size: var(--text-xs);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-      background: color-mix(in oklab, var(--color-bg) 45%, var(--color-surface));
-    }
-
-    .b3-pill.up {
-      color: var(--color-success);
-      background: color-mix(in oklab, var(--color-success) 12%, var(--color-surface));
-    }
-
-    .b3-pill.down {
-      color: var(--color-error);
-      background: color-mix(in oklab, var(--color-error) 10%, var(--color-surface));
-    }
-
-    .timeline-prices {
-      display: grid;
-      gap: 0.35rem;
-    }
-
-    .timeline-price--historic {
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.02em;
-    }
-
-    .timeline-price--b3 {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      flex-wrap: wrap;
-      font-size: var(--text-sm);
-      color: var(--color-text);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .timeline-price--b3 strong {
+    .b3-strip .price {
+      font-size: 22px;
       font-weight: 800;
+      line-height:1;
     }
-
-    .market-status {
-      display: grid;
-      gap: var(--space-2);
-      padding: var(--space-4);
-      border-radius: var(--radius-lg);
-      background: color-mix(in oklab, var(--color-bg) 50%, var(--color-surface));
-      border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent);
+    .b3-strip .delta {
+      font-size: 12px;
+      opacity: .8;
     }
-
-    .status-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-3);
-      font-size: var(--text-sm);
+    .timeline-b3 {
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: .92;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
     }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      font-size: var(--text-xs);
-      font-weight: 700;
+    .timeline-b3 .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(120,200,140,.18);
+      font-size: 11px;
+      letter-spacing: .04em;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
     }
+    .timeline-b3 .up { color: #8ef0a7; }
+    .timeline-b3 .down { color: #ff9aa6; }
 
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--color-success);
-      box-shadow: 0 0 0 5px color-mix(in oklab, var(--color-success) 16%, transparent);
-      flex: 0 0 auto;
-    }
-
-    .dot.warn {
-      background: var(--color-warning);
-      box-shadow: 0 0 0 5px color-mix(in oklab, var(--color-warning) 14%, transparent);
-    }
-
-    .dot.error {
-      background: var(--color-error);
-      box-shadow: 0 0 0 5px color-mix(in oklab, var(--color-error) 14%, transparent);
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(320px, 420px) 1fr;
-      gap: var(--space-4);
-      align-items: start;
-    }
-
-    .panel {
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-    }
-
-    .panel h2 {
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-2);
-      letter-spacing: -0.02em;
-    }
-
-    .panel-intro {
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
-      margin-bottom: var(--space-5);
-    }
-
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-4);
-    }
-
-    .field {
-      margin-bottom: var(--space-4);
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: var(--space-2);
-      font-size: var(--text-sm);
-      font-weight: 700;
-    }
-
-    .field-hint {
-      display: block;
-      margin-top: var(--space-2);
-      color: var(--color-text-muted);
-      font-size: var(--text-xs);
-    }
-
-    .price-input-wrap {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: var(--space-3);
-      align-items: stretch;
-    }
-
-    .btn,
-    .btn-secondary,
-    .btn-ghost {
-      min-height: 48px;
-      padding: 0 var(--space-4);
-      border-radius: var(--radius-md);
-      font-size: var(--text-sm);
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-2);
-      text-decoration: none;
-      transition: transform var(--transition-interactive), box-shadow var(--transition-interactive), background var(--transition-interactive), border-color var(--transition-interactive), color var(--transition-interactive);
-    }
-
-    .btn:hover,
-    .btn-secondary:hover,
-    .btn-ghost:hover,
-    .theme-toggle:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn {
-      background: var(--color-primary);
-      color: var(--color-text-inverse);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn:hover { background: var(--color-primary-hover); }
-
-    .btn-secondary {
-      border: 1px solid color-mix(in oklab, var(--color-text) 12%, transparent);
-      background: var(--color-surface-2);
-      color: var(--color-text);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--color-text-muted);
-      border: 1px dashed color-mix(in oklab, var(--color-text) 16%, transparent);
-    }
-
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-3);
-      margin-top: var(--space-5);
-    }
-
-    .source-note,
-    .footer-note {
-      margin-top: var(--space-5);
-      padding: var(--space-4);
-      border-radius: var(--radius-lg);
-      font-size: var(--text-xs);
-      color: var(--color-text-muted);
-      line-height: 1.7;
-      background: color-mix(in oklab, var(--color-bg) 50%, var(--color-surface));
-    }
-
-    .results {
-      display: grid;
-      gap: var(--space-4);
-    }
-
-    .results-top {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-4);
-    }
-
-    .result-card {
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-      min-height: 146px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: var(--color-surface-2);
-    }
-
-    .result-card.warning {
-      background: color-mix(in oklab, var(--color-warning-highlight) 58%, var(--color-surface-2));
-    }
-
-    .result-card.success {
-      background: color-mix(in oklab, var(--color-success-highlight) 58%, var(--color-surface-2));
-    }
-
-    .result-card.error {
-      background: color-mix(in oklab, var(--color-error-highlight) 50%, var(--color-surface-2));
-    }
-
-    .rc-label {
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--color-text-muted);
-      margin-bottom: var(--space-2);
-    }
-
-    .rc-value {
-      font-size: clamp(1.4rem, 1.1rem + 1vw, 2.2rem);
-      line-height: 1;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      font-variant-numeric: tabular-nums;
-      margin-bottom: var(--space-2);
-    }
-
-    .rc-sub {
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
-    }
-
-    .callout {
-      border-radius: var(--radius-xl);
-      padding: var(--space-5);
-      display: grid;
-      gap: var(--space-3);
-      background: linear-gradient(180deg, color-mix(in oklab, var(--color-primary) 4%, var(--color-surface)), var(--color-surface));
-    }
-
-    .callout h3 {
-      font-size: var(--text-lg);
-      letter-spacing: -0.02em;
-    }
-
-    .callout p {
-      color: var(--color-text);
-      max-width: 68ch;
-    }
-
-    .timeline {
-      display: grid;
-      gap: var(--space-3);
-    }
-
-    .timeline-title {
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-1);
-    }
-
-    .timeline-item {
-      border-radius: var(--radius-lg);
-      padding: var(--space-4);
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: var(--space-4);
-      align-items: center;
-      background: var(--color-surface-2);
-    }
-
-    .timeline-item.active {
-      border-color: color-mix(in oklab, var(--color-primary) 30%, transparent);
-      background: color-mix(in oklab, var(--color-primary) 6%, var(--color-surface-2));
-    }
-
-    .timeline-item.best {
-      background: color-mix(in oklab, var(--color-success) 8%, var(--color-surface-2));
-    }
-
-    .timeline-month {
-      min-width: 70px;
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--color-text-muted);
-    }
-
-    .timeline-price {
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.02em;
-    }
-
-    .timeline-note {
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
-    }
-
-    .empty-state {
-      border-radius: var(--radius-xl);
-      padding: var(--space-10);
-      min-height: 420px;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      background: linear-gradient(180deg, var(--color-surface), color-mix(in oklab, var(--color-primary) 3%, var(--color-surface)));
-      border: 1px dashed color-mix(in oklab, var(--color-text) 14%, transparent);
-    }
-
-    .empty-box {
-      max-width: 36ch;
-      display: grid;
-      gap: var(--space-3);
-      justify-items: center;
-    }
-
-    .empty-icon {
-      width: 56px;
-      height: 56px;
-      color: var(--color-primary);
-    }
-
-    .empty-state p { color: var(--color-text-muted); }
-
-    .inline-status {
-      font-size: var(--text-xs);
-      margin-top: var(--space-2);
-      color: var(--color-text-muted);
-      min-height: 1.4em;
-    }
-
-    .inline-status.success { color: var(--color-success); }
-    .inline-status.warning { color: var(--color-warning); }
-    .inline-status.error { color: var(--color-error); }
-
-    .footer-note {
-      margin-top: var(--space-4);
-    }
-
-    @media (max-width: 960px) {
-      .hero,
-      .layout,
-      .results-top,
-      .field-grid { grid-template-columns: 1fr; }
-      .hero-panel,
-      .market-panel,
-      .panel { padding: var(--space-5); }
-      .timeline-item {
-        grid-template-columns: auto 1fr;
-      }
-      .timeline-price {
-        grid-column: 2;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page { padding-inline: var(--space-3); }
-      .topbar { align-items: flex-start; }
-      .market-price-row,
-      .price-input-wrap { grid-template-columns: 1fr; display: grid; }
-      .empty-state { min-height: 300px; padding: var(--space-6); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  </style>
+</style>
 </head>
 <body>
-  <a href="#conteudo" class="sr-only">Pular para o conteúdo</a>
 
-  <main class="page" id="conteudo">
-    <header class="topbar">
-      <div class="brand" aria-label="Timing Certo">
-        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" fill="none">
-          <path d="M10 42C18 30 27 22 38 18C43 16 48 16 54 18" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-          <path d="M14 49C23 38 34 31 48 28" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" opacity="0.7"/>
-          <path d="M18 54H52" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" opacity="0.45"/>
-          <circle cx="23" cy="23" r="4" fill="currentColor"/>
-        </svg>
-        <div class="brand-copy">
-          <small>Consultoria estratégica pecuária</small>
-          <strong>Timing Certo</strong>
+<nav>
+  <div>
+    <div class="logo">Timing Certo <span>CONSULTORIA PECUÁRIA</span></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('calculadora')">Calculadora</button>
+    <button class="nav-tab" onclick="showPage('historico')">Histórico 5 anos</button>
+    <button class="nav-tab" onclick="showPage('clima')">Clima</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ CALCULADORA ═══ -->
+<div id="page-calculadora" class="page active">
+
+  <div class="price-strip" id="price-strip">
+    <div class="ps-item">
+      <div class="ps-label">BOI GORDO HOJE</div>
+      <div class="ps-value" id="ps-preco">carregando...</div>
+      <div class="ps-sub" id="ps-atualizado">—</div>
+    </div>
+    <div class="ps-divider"></div>
+    <div class="ps-item">
+      <div class="ps-label" id="ps-hist-label">MÉDIA HISTÓRICA MAI (MT)</div>
+      <div class="ps-value" id="ps-hist">R$ 304</div>
+      <div class="ps-sub">CEPEA 2020–2026</div>
+    </div>
+    <div class="ps-divider"></div>
+    <div class="ps-item">
+      <div class="ps-label">PERÍODO ATUAL</div>
+      <div class="ps-value" id="ps-periodo">—</div>
+      <div class="ps-sub" id="ps-chuva-label">—</div>
+    </div>
+    <div class="ps-fonte" id="ps-fonte">—</div>
+  </div>
+
+  <div class="grid-2" style="gap:24px">
+    <!-- FORM -->
+    <div>
+      <div class="section-title">Dados do confinamento</div>
+
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="estado" onchange="calcular()">
+          <option value="MT">Mato Grosso (MT)</option>
+          <option value="SP">São Paulo (SP)</option>
+          <option value="GO">Goiás (GO)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Modalidade</label>
+        <select id="modalidade" onchange="aplicarModalidade()">
+          <option value="confinamento">Confinamento (ciclo 10–12 meses)</option>
+          <option value="semi">Semiconfinamento (ciclo 20–24 meses)</option>
+        </select>
+      </div>
+      <div class="modal-info" id="modal-info">
+        <strong style="color:var(--green)">Confinamento:</strong> Alimentação 100% no cocho. Ciclo curto, maior custo/dia, abate concentrado ago–set. Alta exposição à sazonalidade.
+      </div>
+
+      <div class="form-group">
+        <label>Número de animais</label>
+        <input type="number" id="animais" value="100" min="1" oninput="calcular()">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Peso atual médio (kg)</label>
+          <input type="number" id="peso_atual" value="420" min="100" oninput="calcular()">
+        </div>
+        <div class="form-group">
+          <label>Peso de abate (kg)</label>
+          <input type="number" id="peso_abate" value="520" min="100" oninput="calcular()">
         </div>
       </div>
 
-      <button class="theme-toggle" data-theme-toggle aria-label="Alternar tema">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3A7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-    </header>
-
-    <section class="hero" aria-label="Visão geral do cálculo">
-      <article class="hero-panel">
-        <div>
-          <div class="eyebrow">Planejamento de venda para confinamento e semiconfinamento</div>
-          <h1>Decida com o mesmo preço que aparece na tela.</h1>
-          <p>Esta versão corrige a falha estrutural do protótipo original: o valor exibido para a arroba agora é a mesma fonte de verdade usada no cálculo, com atualização simulada segura, fallback manual e carimbo de última atualização.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>GPD — ganho/dia (kg)</label>
+          <input type="number" id="gpd" value="1.4" step="0.1" min="0.3" oninput="calcular()">
         </div>
-        <div class="hero-meta">
-          <span class="chip">Preço sincronizado</span>
-          <span class="chip">Fallback manual</span>
-          <span class="chip">Leitura estratégica</span>
+        <div class="form-group">
+          <label>Custo/dia por cabeça (R$)</label>
+          <input type="number" id="custo_dia" value="28" min="1" oninput="calcular()">
         </div>
-      </article>
+      </div>
 
-      <aside class="market-panel" aria-label="Preço de mercado da arroba">
-        <div>
-          <div class="market-label">Boi gordo hoje</div>
-          <div class="market-price-row">
-            <div>
-              <div class="market-price" id="preco-hoje">R$ 312,00</div>
-              <div class="market-sub">por arroba · valor usado no cálculo</div>
-            </div>
-            <span class="chip" id="fonte-chip">Manual</span>
-          </div>
-        </div>
+      <div class="form-group">
+        <label>Mês de entrada no sistema</label>
+        <select id="mes_entrada" onchange="calcular()">
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5" selected>Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+        </select>
+      </div>
 
-        <div class="market-status b3-strip">
-          <div class="status-line">
-            <span class="status-badge"><span class="dot" id="b3-dot"></span><span>Próximo futuro B3</span></span>
-            <strong id="b3-proximo-periodo">Carregando...</strong>
-          </div>
-          <div class="market-price-row b3-row">
-            <div class="market-sub" id="b3-proximo-preco">—</div>
-            <div class="market-sub" id="b3-proximo-variacao">—</div>
-          </div>
-          <div class="market-sub" id="b3-strip-detail">Contrato mais próximo disponível para referência de trava.</div>
-        </div>
-
-        <div class="market-status">
-          <div class="status-line">
-            <span class="status-badge"><span class="dot" id="status-dot"></span><span id="status-text">Pronto para calcular</span></span>
-            <strong id="ultima-atualizacao">Nunca atualizado</strong>
-          </div>
-          <div class="market-sub" id="status-detail">Você pode informar o preço manualmente ou usar a atualização simulada para testar a experiência.</div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="layout">
-      <section class="panel" aria-labelledby="titulo-formulario">
-        <h2 id="titulo-formulario">Dados do seu confinamento</h2>
-        <p class="panel-intro">Primeiro, defina o preço atual. Depois, informe os parâmetros do lote. A análise vai usar exatamente esse valor para medir ganho por esperar, risco de queda e melhor ponto do ciclo.</p>
-
-        <div class="field">
-          <label for="preco-atual">Preço atual da arroba usado no cálculo</label>
-          <div class="price-input-wrap">
-            <input type="number" id="preco-atual" value="312" min="1" step="0.01" inputmode="decimal" aria-describedby="preco-hint preco-status" />
-            <button class="btn-secondary" type="button" id="btn-atualizar">Atualizar preço</button>
-          </div>
-          <span class="field-hint" id="preco-hint">Use o preço da sua praça ou clique em atualizar para simular uma leitura externa segura.</span>
-          <div class="inline-status" id="preco-status" aria-live="polite"></div>
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="num-animais">Número de animais no lote</label>
-            <input type="number" id="num-animais" value="100" min="1" />
-          </div>
-          <div class="field">
-            <label for="custo-dia">Custo diário por cabeça (R$)</label>
-            <input type="number" id="custo-dia" value="28" min="1" step="0.01" />
-          </div>
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="peso-atual">Peso atual médio (kg)</label>
-            <input type="number" id="peso-atual" value="420" min="100" />
-          </div>
-          <div class="field">
-            <label for="peso-abate">Peso de abate desejado (kg)</label>
-            <input type="number" id="peso-abate" value="520" min="100" />
-          </div>
-        </div>
-
-        <div class="field-grid">
-          <div class="field">
-            <label for="gpd">Ganho de peso diário (kg/dia)</label>
-            <input type="number" id="gpd" value="1.4" step="0.1" min="0.1" />
-          </div>
-          <div class="field">
-            <label for="modalidade">Modalidade atual</label>
-            <select id="modalidade">
-              <option value="confinamento">Confinamento</option>
-              <option value="semi">Semiconfinamento</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="mes-entrada">Mês atual de entrada no confinamento</label>
-          <select id="mes-entrada">
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5" selected>Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-          </select>
-        </div>
-
-        <div class="actions">
-          <button class="btn" type="button" id="btn-calcular">Calcular timing ideal</button>
-          <button class="btn-ghost" type="button" id="btn-reset">Restaurar parâmetros base</button>
-        </div>
-
-        <div class="source-note">
-          Preço atual: variável única usada em toda a lógica. Curva futura: projeção sazonal para estudo. Integração automática real com CEPEA/B3 exigiria backend ou fonte externa confiável; por isso, esta versão foi desenhada em arquitetura híbrida, com atualização simulada e ajuste manual controlado.
-        </div>
-      </section>
-
-      <section class="panel" aria-labelledby="titulo-analise">
-        <h2 id="titulo-analise">Análise estratégica</h2>
-        <p class="panel-intro">A leitura abaixo distingue fato presente de hipótese futura. Esse é o ponto-chave: preço de hoje é dado operacional; preço de abate é cenário estimado.</p>
-
-        <div id="resultado" class="empty-state" aria-live="polite">
-          <div class="empty-box">
-            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M3 17l4-4 3 3 7-7 4 4"></path>
-              <path d="M14 9h7v7"></path>
-            </svg>
-            <h3>O cálculo ainda não foi executado.</h3>
-            <p>Defina o preço da arroba, revise os parâmetros do lote e clique em calcular. A recomendação vai considerar rentabilidade, sazonalidade e risco operacional.</p>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <div class="footer-note">
-      Protótipo refinado para decisão assistida. Não substitui validação comercial, hedge, classificação de praça, prêmio/deságio regional ou custos não informados pelo usuário.
+      <div class="fonte-note">
+        Preço atual: CEPEA/Esalq (atualização automática 6h)<br>
+        Histórico: CEPEA 2020–2025 · Clima: Open-Meteo · Futuro: B3<br>
+        Protótipo v0.3 · MT, SP e GO
+      </div>
     </div>
-  </main>
 
-  <script>
-    const PRECO_HISTORICO = {
-      1: { jan: 307, fev: 304, mar: 299, abr: 295, mai: 292, jun: 289 },
-      2: { fev: 309, mar: 303, abr: 297, mai: 293, jun: 289, jul: 284 },
-      3: { mar: 314, abr: 307, mai: 295, jun: 285, jul: 270, ago: 265 },
-      4: { abr: 318, mai: 312, jun: 295, jul: 280, ago: 270, set: 260 },
-      5: { mai: 320, jun: 312, jul: 295, ago: 278, set: 262, out: 245 },
-      6: { jun: 319, jul: 312, ago: 290, set: 272, out: 255, nov: 242 },
-      7: { jul: 317, ago: 303, set: 287, out: 270, nov: 255, dez: 248 },
-      8: { ago: 315, set: 300, out: 284, nov: 268, dez: 254, jan: 258 },
-      9: { set: 326, out: 309, nov: 290, dez: 277, jan: 269, fev: 266 },
-      10: { out: 331, nov: 316, dez: 298, jan: 288, fev: 281, mar: 276 },
-      11: { nov: 334, dez: 320, jan: 304, fev: 294, mar: 286, abr: 281 },
-      12: { dez: 328, jan: 316, fev: 305, mar: 296, abr: 289, mai: 284 }
-    };
+    <!-- RESULTADO -->
+    <div id="resultado">
+      <div class="loading">Calculando...</div>
+    </div>
+  </div>
+</div>
 
-    const MESES_NOME = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    const CHUVA_RISCO = { 1: true, 2: true, 3: false, 4: false, 5: false, 6: false, 7: false, 8: false, 9: true, 10: true, 11: true, 12: true };
+<!-- ═══════════════════════════════════════════════ HISTÓRICO ═════ -->
+<div id="page-historico" class="page">
+  <div class="section-title">Histórico de preços — 2020 a 2025</div>
 
-    const el = {
-      precoAtual: document.getElementById('preco-atual'),
-      precoHoje: document.getElementById('preco-hoje'),
-      fonteChip: document.getElementById('fonte-chip'),
-      statusText: document.getElementById('status-text'),
-      b3Dot: document.getElementById('b3-dot'),
-      b3ProximoPeriodo: document.getElementById('b3-proximo-periodo'),
-      b3ProximoPreco: document.getElementById('b3-proximo-preco'),
-      b3ProximoVariacao: document.getElementById('b3-proximo-variacao'),
-      b3StripDetail: document.getElementById('b3-strip-detail'),
-      statusDot: document.getElementById('status-dot'),
-      statusDetail: document.getElementById('status-detail'),
-      ultimaAtualizacao: document.getElementById('ultima-atualizacao'),
-      precoStatus: document.getElementById('preco-status'),
-      resultado: document.getElementById('resultado'),
-      btnAtualizar: document.getElementById('btn-atualizar'),
-      btnCalcular: document.getElementById('btn-calcular'),
-      btnReset: document.getElementById('btn-reset'),
-      numAnimais: document.getElementById('num-animais'),
-      pesoAtual: document.getElementById('peso-atual'),
-      pesoAbate: document.getElementById('peso-abate'),
-      gpd: document.getElementById('gpd'),
-      custoDia: document.getElementById('custo-dia'),
-      modalidade: document.getElementById('modalidade'),
-      mesEntrada: document.getElementById('mes-entrada'),
-      themeToggle: document.querySelector('[data-theme-toggle]')
-    };
+  <div class="chart-controls">
+    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'IBM Plex Mono',monospace">ESTADO:</span>
+    <span class="estado-badge active" onclick="selecionarEstado('MT',this)">MT</span>
+    <span class="estado-badge" onclick="selecionarEstado('SP',this)">SP</span>
+    <span class="estado-badge" onclick="selecionarEstado('GO',this)">GO</span>
+    <span class="estado-badge" onclick="selecionarEstado('TODOS',this)">TODOS</span>
+  </div>
 
-    let fontePreco = 'manual';
-    let ultimaAtualizacaoISO = null;
-    let futurosB3 = [];
-    let futurosB3Meta = null;
+  <div class="chart-wrap">
+    <canvas id="chart-historico" height="90"></canvas>
+  </div>
 
-    function formatCurrency(value) {
-      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  <div class="section-title">Chuva vs. Seca — impacto no preço</div>
+  <div class="chart-wrap">
+    <canvas id="chart-chuva-seca" height="80"></canvas>
+  </div>
+
+  <div id="cards-comparativo" class="grid-3" style="margin-top:20px"></div>
+
+  <div class="fonte-note">Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CLIMA ══════════ -->
+<div id="page-clima" class="page">
+  <div class="section-title">Previsão climática — próximos 16 dias</div>
+
+  <div class="chart-controls" style="margin-bottom:20px">
+    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'IBM Plex Mono',monospace">ESTADO:</span>
+    <span class="estado-badge active" onclick="selecionarClima('MT',this)">MT</span>
+    <span class="estado-badge" onclick="selecionarClima('SP',this)">SP</span>
+    <span class="estado-badge" onclick="selecionarClima('GO',this)">GO</span>
+  </div>
+
+  <div id="clima-content"><div class="loading">Carregando previsão climática...</div></div>
+  <div class="fonte-note">Fonte: Open-Meteo API · Atualizado automaticamente · Gratuito e sem autenticação</div>
+</div>
+
+<script>
+const API = '';  // mesmo host
+let precoAtual = 294;
+let chartHistorico = null;
+let chartChuva = null;
+let estadoAtual = 'MT';
+let estadoClima = 'MT';
+
+const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const COR_ESTADOS = { MT:'#a8e6b0', SP:'#80b8e6', GO:'#e6c840' };
+const CHUVA_MASK = [true,true,true,false,false,false,false,false,true,true,true,true];
+
+// ── Init ──────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  await carregarPrecoAtual();
+  calcular();
+  carregarHistorico('MT');
+  carregarClima('MT');
+
+  const mes = new Date().getMonth();
+  document.getElementById('ps-periodo').textContent = MESES[mes] + '/' + new Date().getFullYear();
+  document.getElementById('ps-chuva-label').textContent = CHUVA_MASK[mes] ? '🌧 Período de chuvas' : '☀ Período seco';
+});
+
+// ── Preço atual ───────────────────────────────────────────────────────────
+// Histórico embutido por estado e mês (espelho do scraper.py)
+const HIST = {
+  SP: {
+    2020:[171,175,168,162,170,183,198,210,205,208,215,220],
+    2021:[228,235,242,248,255,258,262,268,258,250,245,248],
+    2022:[298,305,312,308,295,285,278,272,265,260,255,262],
+    2023:[248,242,238,235,230,228,232,238,242,248,252,258],
+    2024:[225,228,243,258,268,278,288,300,292,302,335,352],
+    2025:[310,318,320,315,308,312,316,318,312,318,322,325],
+    2026:[330,340,348,355,350,0,0,0,0,0,0,0],
+  },
+  MT: {
+    2020:[168,172,165,158,166,180,195,207,202,205,212,218],
+    2021:[225,232,238,245,252,255,258,265,255,247,242,245],
+    2022:[294,301,308,304,291,281,274,268,261,256,251,258],
+    2023:[244,238,234,231,226,224,228,234,238,244,248,254],
+    2024:[221,224,239,254,264,274,284,296,288,298,331,348],
+    2025:[306,314,316,311,304,308,312,314,308,314,318,321],
+    2026:[326,336,344,351,346,0,0,0,0,0,0,0],
+  },
+  GO: {
+    2020:[169,173,166,160,168,181,196,208,203,206,213,219],
+    2021:[226,233,240,246,253,256,260,266,256,248,243,246],
+    2022:[296,303,310,306,293,283,276,270,263,258,253,260],
+    2023:[246,240,236,233,228,226,230,236,240,246,250,256],
+    2024:[223,226,241,256,266,276,286,298,290,300,333,350],
+    2025:[308,316,318,313,306,310,314,316,310,316,320,323],
+    2026:[328,338,346,353,348,0,0,0,0,0,0,0],
+  },
+};
+
+const COORDS_FRONT = {
+  MT:{lat:-15.601,lon:-56.097,nome:'Mato Grosso'},
+  SP:{lat:-22.908,lon:-47.063,nome:'São Paulo'},
+  GO:{lat:-16.686,lon:-49.264,nome:'Goiás'},
+};
+
+function precoHistMes(estado, mes) {
+  const anos = Object.keys(HIST[estado]).map(Number).sort((a,b)=>b-a);
+  for (const ano of anos) {
+    const v = HIST[estado][ano][mes-1];
+    if (v > 0) return v;
+  }
+  return 350;
+}
+
+function atualizarHistStrip() {
+  const estado = document.getElementById('estado').value;
+  const mes = new Date().getMonth() + 1;
+  const mesNome = MESES[mes-1];
+  const val = precoHistMes(estado, mes);
+  document.getElementById('ps-hist').textContent = 'R$ ' + val;
+  document.getElementById('ps-hist-label').textContent = `MÉDIA HISTÓRICA ${mesNome} (${estado})`;
+}
+
+async function carregarPrecoAtual(estado) {
+  estado = estado || document.getElementById('estado')?.value || 'SP';
+  try {
+    const r = await fetch(API + '/api/preco/atual?estado=' + estado);
+    const j = await r.json();
+    if (j.ok) {
+      precoAtual = j.data.preco;
+      document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual.toFixed(0);
+      document.getElementById('ps-atualizado').textContent = 'por arroba · ' + estado;
+      const dataCot = j.data.data_cotacao ? j.data.data_cotacao : '';
+      document.getElementById('ps-fonte').textContent = j.data.fonte + (dataCot ? ' · ' + dataCot : '');
     }
+  } catch(e) {
+    document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual;
+    document.getElementById('ps-fonte').textContent = 'histórico CEPEA (fallback)';
+  }
+  atualizarHistStrip();
+}
 
-    function formatCompactBRL(value) {
-      return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-        notation: 'compact',
-        maximumFractionDigits: 1
-      }).format(value);
-    }
+// ── Calculadora ───────────────────────────────────────────────────────────
+function aplicarModalidade() {
+  const mod = document.getElementById('modalidade').value;
+  const info = document.getElementById('modal-info');
+  if (mod === 'semi') {
+    document.getElementById('gpd').value = 0.9;
+    document.getElementById('custo_dia').value = 11;
+    info.innerHTML = '<strong style="color:var(--blue)">Semiconfinamento:</strong> Pasto + suplementação. Ciclo 20–24 meses, menor custo/dia (~R$8–14), mais flexibilidade de timing.';
+  } else {
+    document.getElementById('gpd').value = 1.4;
+    document.getElementById('custo_dia').value = 28;
+    info.innerHTML = '<strong style="color:var(--green)">Confinamento:</strong> Alimentação 100% no cocho. Ciclo curto, maior custo/dia, abate concentrado ago–set. Alta exposição à sazonalidade.';
+  }
+  calcular();
+}
 
-    function formatDateTime(date) {
-      return new Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }).format(date);
-    }
+async function calcular() {
+  // Atualiza média histórica no topo conforme estado selecionado
+  atualizarHistStrip();
+  const payload = {
+    modalidade: document.getElementById('modalidade').value,
+    animais: parseInt(document.getElementById('animais').value) || 100,
+    peso_atual: parseFloat(document.getElementById('peso_atual').value) || 420,
+    peso_abate: parseFloat(document.getElementById('peso_abate').value) || 520,
+    gpd: parseFloat(document.getElementById('gpd').value) || 1.4,
+    custo_dia: parseFloat(document.getElementById('custo_dia').value) || 28,
+    mes_entrada: parseInt(document.getElementById('mes_entrada').value) || 5,
+    estado: document.getElementById('estado').value,
+  };
 
+  try {
+    const r = await fetch(API + '/api/calcular', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const j = await r.json();
+    if (j.ok) renderResultado(j.data);
+  } catch(e) {
+    document.getElementById('resultado').innerHTML = '<div class="loading">Erro ao calcular. Verifique a conexão.</div>';
+  }
+}
 
+function fmt(n) { return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); }
 
-    function formatPct(value) {
-      if (!Number.isFinite(value)) return '—';
-      return `${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
-    }
+function renderResultado(d) {
+  const c = d.ciclo, f = d.financeiro, cp = d.comparativo;
+  const lucroClass = f.lucro_lote >= 0 ? 'success' : 'danger';
+  const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
+  const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
 
-    function chaveContrato(mes, ano) {
-      return `${ano}-${String(mes).padStart(2, '0')}`;
-    }
-
-    function mapFuturosB3() {
-      const mapa = new Map();
-      futurosB3.forEach(item => {
-        mapa.set(chaveContrato(item.mes, item.ano), item);
-      });
-      return mapa;
-    }
-
-    function classeVariacao(valor) {
-      if (!Number.isFinite(valor)) return '';
-      if (valor > 0) return 'up';
-      if (valor < 0) return 'down';
-      return '';
-    }
-
-    function contratoMaisProximo() {
-      if (!futurosB3.length) return null;
-      return futurosB3[0];
-    }
-
-    function atualizarB3Strip() {
-      const contrato = contratoMaisProximo();
-      if (!contrato) {
-        el.b3ProximoPeriodo.textContent = 'Sem contrato';
-        el.b3ProximoPreco.textContent = 'B3 indisponível';
-        el.b3ProximoVariacao.textContent = '—';
-        el.b3StripDetail.textContent = 'Não foi possível carregar os contratos futuros da B3.';
-        el.b3Dot.className = 'dot error';
-        return;
-      }
-
-      el.b3Dot.className = 'dot';
-      el.b3ProximoPeriodo.textContent = contrato.periodo;
-      el.b3ProximoPreco.textContent = `${formatCurrency(contrato.preco_arroba)}/arroba`;
-      el.b3ProximoVariacao.innerHTML = `<span class="b3-pill ${classeVariacao(contrato.variacao_pct)}">${formatPct(contrato.variacao_pct)}</span>`;
-      const atualizado = futurosB3Meta?.atualizado ? formatDateTime(new Date(futurosB3Meta.atualizado)) : 'sem horário';
-      el.b3StripDetail.textContent = `Fonte: ${futurosB3Meta?.fonte || 'B3'} · atualizado em ${atualizado}.`;
-    }
-
-    async function carregarFuturosB3() {
-      try {
-        const resp = await fetch('/api/futuro/b3');
-        const json = await resp.json();
-        if (!json.ok) throw new Error(json.erro || 'Falha ao carregar futuros B3');
-        futurosB3Meta = json.data || {};
-        futurosB3 = Array.isArray(json.data?.contratos) ? json.data.contratos : [];
-        atualizarB3Strip();
-      } catch (error) {
-        futurosB3 = [];
-        futurosB3Meta = null;
-        atualizarB3Strip();
-      }
-    }
-
-    function getPrecoAtual() {
-      const preco = parseFloat(el.precoAtual.value);
-      return Number.isFinite(preco) && preco > 0 ? preco : null;
-    }
-
-    function updateMarketDisplay() {
-      const preco = getPrecoAtual();
-      if (!preco) {
-        el.precoHoje.textContent = '—';
-        return;
-      }
-      el.precoHoje.textContent = formatCurrency(preco);
-      el.fonteChip.textContent = fontePreco === 'auto' ? 'Atualizado' : 'Manual';
-    }
-
-    function setStatus(kind, text, detail) {
-      el.statusText.textContent = text;
-      el.statusDetail.textContent = detail;
-      el.statusDot.className = 'dot';
-      if (kind === 'warning') el.statusDot.classList.add('warn');
-      if (kind === 'error') el.statusDot.classList.add('error');
-    }
-
-    function setInlineStatus(message, kind = '') {
-      el.precoStatus.textContent = message;
-      el.precoStatus.className = 'inline-status';
-      if (kind) el.precoStatus.classList.add(kind);
-    }
-
-    function registrarAtualizacao(tipo) {
-      fontePreco = tipo;
-      ultimaAtualizacaoISO = new Date();
-      el.ultimaAtualizacao.textContent = formatDateTime(ultimaAtualizacaoISO);
-      updateMarketDisplay();
-    }
-
-    function simularPrecoExterno() {
-      return new Promise((resolve) => {
-        const base = getPrecoAtual() || 312;
-        const variacao = (Math.random() * 10) - 5;
-        const ajuste = base + variacao;
-        const arredondado = Math.max(1, Number(ajuste.toFixed(2)));
-        setTimeout(() => resolve(arredondado), 850);
-      });
-    }
-
-    function validarCampos() {
-      const animais = parseInt(el.numAnimais.value, 10);
-      const pesoAtual = parseFloat(el.pesoAtual.value);
-      const pesoAbate = parseFloat(el.pesoAbate.value);
-      const gpd = parseFloat(el.gpd.value);
-      const custoDia = parseFloat(el.custoDia.value);
-      const preco = getPrecoAtual();
-
-      if (!preco) return 'Informe um preço atual válido para a arroba.';
-      if (!Number.isFinite(animais) || animais < 1) return 'Número de animais deve ser maior que zero.';
-      if (!Number.isFinite(pesoAtual) || pesoAtual <= 0) return 'Peso atual inválido.';
-      if (!Number.isFinite(pesoAbate) || pesoAbate <= pesoAtual) return 'Peso de abate deve ser maior que o peso atual.';
-      if (!Number.isFinite(gpd) || gpd <= 0) return 'O ganho de peso diário deve ser maior que zero.';
-      if (!Number.isFinite(custoDia) || custoDia < 0) return 'Custo diário inválido.';
-      return null;
-    }
-
-    function calcular() {
-      const erro = validarCampos();
-      if (erro) {
-        setInlineStatus(erro, 'error');
-        setStatus('error', 'Há inconsistências nos dados', 'Revise os campos destacados conceitualmente: sem premissa válida, toda recomendação fica contaminada.');
-        el.resultado.innerHTML = `
-          <div class="callout" role="alert">
-            <h3>Não foi possível calcular.</h3>
-            <p>${erro}</p>
-          </div>
-        `;
-        return;
-      }
-
-      setInlineStatus('');
-
-      const animais = parseInt(el.numAnimais.value, 10);
-      const pesoAtual = parseFloat(el.pesoAtual.value);
-      const pesoAbate = parseFloat(el.pesoAbate.value);
-      const gpd = parseFloat(el.gpd.value);
-      const custoDia = parseFloat(el.custoDia.value);
-      const mesEntrada = parseInt(el.mesEntrada.value, 10);
-      const modalidade = el.modalidade.value;
-      const precoAgora = getPrecoAtual();
-
-      const diasRestantes = Math.ceil((pesoAbate - pesoAtual) / gpd);
-      const mesAbate = ((mesEntrada - 1 + Math.floor(diasRestantes / 30)) % 12) + 1;
-      const arrobasAbate = pesoAbate / 15;
-      const arrobasAgora = pesoAtual / 15;
-      const custoTotalCabeca = custoDia * diasRestantes;
-      const custoTotalLote = custoTotalCabeca * animais;
-
-      const precosRef = PRECO_HISTORICO[mesEntrada] || PRECO_HISTORICO[5];
-      const mesesTimeline = Object.keys(precosRef);
-      const precosTimeline = Object.values(precosRef);
-      const indiceAbate = Math.min(Math.floor(diasRestantes / 30), precosTimeline.length - 1);
-      const precoAbateBase = precosTimeline[indiceAbate] || precoAgora;
-
-      const ajusteModalidade = modalidade === 'semi' ? -6 : 0;
-      const precoAbate = Math.max(1, precoAbateBase + ajusteModalidade);
-      const receitaAbateCabeca = arrobasAbate * precoAbate;
-      const receitaAbateLote = receitaAbateCabeca * animais;
-
-      const receitaAgoraCabeca = arrobasAgora * precoAgora;
-      const receitaAgoraLote = receitaAgoraCabeca * animais;
-
-      const diferencaArroba = precoAgora - precoAbate;
-      const diferencaTotal = diferencaArroba * arrobasAbate * animais;
-      const melhorPreco = Math.max(...precosTimeline) + ajusteModalidade;
-      const ganhoSeMelhor = Math.max(0, (melhorPreco - precoAbate) * arrobasAbate * animais);
-      const nomeMesAbate = MESES_NOME[mesAbate - 1];
-      const temChuva = CHUVA_RISCO[mesAbate];
-
-      let diagnostico = '';
-      if (diferencaTotal > 0 && temChuva) {
-        diagnostico = `Seu cenário combina duas pressões: o ciclo termina em ${nomeMesAbate} e o preço projetado fica abaixo do valor de hoje. Isso aumenta a chance de você carregar custo adicional para vender pior.`;
-      } else if (diferencaTotal > 0) {
-        diagnostico = `Mesmo sem pressão climática relevante, esperar neste desenho parece reduzir captura de preço. O confinamento segue tecnicamente possível, mas financeiramente menos eficiente.`;
-      } else if (ganhoSeMelhor > 0) {
-        diagnostico = `Esperar pode fazer sentido, mas apenas se você monitorar janela de saída. O risco aqui não é produzir; é perder timing por inércia.`;
-      } else {
-        diagnostico = `O cenário está relativamente equilibrado. A decisão depende menos do preço nominal e mais da disciplina para acompanhar custo, desempenho e mercado futuro.`;
-      }
-
-      let recomendacao = '';
-      if (diferencaTotal > 0 && temChuva) {
-        recomendacao = `Considere antecipar a venda, revisar peso-alvo ou estruturar proteção comercial. O raciocínio é simples: quando preço projetado cai e custo diário continua correndo, esperar deixa de ser estratégia e vira esperança.`;
-        setStatus('warning', 'Cenário de cautela', 'Preço projetado inferior ao atual com risco operacional na janela de saída.');
-      } else if (diferencaTotal > 0) {
-        recomendacao = `Acompanhe o mercado e reavalie semanalmente. Você ainda pode manter o plano, mas só se houver ganho zootécnico suficiente para compensar a perda de preço.`;
-        setStatus('warning', 'Esperar exige disciplina', 'Há erosão potencial de preço, embora sem o mesmo peso climático do cenário mais crítico.');
-      } else {
-        recomendacao = `O ciclo pode continuar, mas com gatilho claro de decisão: se o mercado oferecer prêmio acima da projeção ou se o custo diário subir, trave o preço ou realize a venda.`;
-        setStatus('success', 'Cenário operacional aceitável', 'Esperar não destrói valor neste desenho, desde que o monitoramento continue ativo.');
-      }
-
-      const anoBase = 2026;
-      const futurosMap = mapFuturosB3();
-      const timelineHTML = mesesTimeline.map((mes, i) => {
-        const preco = precosTimeline[i] + ajusteModalidade;
-        const isAbate = i === indiceAbate;
-        const isBest = preco === melhorPreco;
-        const classe = `${isAbate ? 'active' : ''} ${isBest && !isAbate ? 'best' : ''}`.trim();
-        const mesNum = ((mesEntrada - 1 + i) % 12) + 1;
-        const ano = anoBase + Math.floor((mesEntrada - 1 + i) / 12);
-        const contratoB3 = futurosMap.get(chaveContrato(mesNum, ano));
-        const deltaB3 = contratoB3 ? contratoB3.preco_arroba - preco : null;
-        const notaBase = isAbate
-          ? `Ponto estimado de abate${temChuva ? ' com risco operacional de chuva' : ' em janela mais estável'}`
-          : isBest
-            ? 'Melhor preço da curva projetada'
-            : 'Trecho intermediário da sazonalidade';
-        const nota = contratoB3
-          ? `${notaBase}. B3 ${deltaB3 >= 0 ? 'acima' : 'abaixo'} do histórico em ${formatCurrency(Math.abs(deltaB3))}/arroba.`
-          : notaBase;
-        return `
-          <div class="timeline-item ${classe}">
-            <div class="timeline-month">${mes.toUpperCase()} ${ano}</div>
-            <div>
-              <div class="timeline-prices">
-                <div class="timeline-price--historic">Histórico: ${formatCurrency(preco)}/arroba ${isAbate ? '← abate' : isBest ? '← melhor ponto' : ''}</div>
-                ${contratoB3 ? `<div class="timeline-price--b3"><span class="b3-pill ${classeVariacao(contratoB3.variacao_pct)}">B3 ${contratoB3.periodo}</span><strong>${formatCurrency(contratoB3.preco_arroba)}/arroba</strong><span>${formatPct(contratoB3.variacao_pct)}</span><span>Δ ${deltaB3 >= 0 ? '+' : '-'}${formatCurrency(Math.abs(deltaB3))}</span></div>` : `<div class="timeline-price--b3"><span class="b3-pill">B3 indisponível</span><span>Sem contrato para este mês.</span></div>`}
-              </div>
-              <div class="timeline-note">${nota}</div>
-            </div>
-            <div class="status-badge">${isAbate ? '<span class="dot warn"></span><span>janela crítica</span>' : isBest ? '<span class="dot"></span><span>oportunidade</span>' : '<span class="dot" style="opacity:.55"></span><span>monitorar</span>'}</div>
-          </div>
-        `;
-      }).join('');
-
-      el.resultado.innerHTML = `
-        <div class="results">
-          <div class="results-top">
-            <article class="result-card">
-              <div>
-                <div class="rc-label">Dias até o peso de abate</div>
-                <div class="rc-value">${diasRestantes}</div>
-              </div>
-              <div class="rc-sub">Saída estimada em ${nomeMesAbate}/2026 · ${modalidade === 'semi' ? 'semiconfinamento' : 'confinamento'}</div>
-            </article>
-
-            <article class="result-card ${temChuva ? 'warning' : 'success'}">
-              <div>
-                <div class="rc-label">Preço estimado no abate</div>
-                <div class="rc-value">${formatCurrency(precoAbate)}</div>
-              </div>
-              <div class="rc-sub">${temChuva ? 'Janela com chuva e maior ruído operacional' : 'Janela relativamente mais previsível'}</div>
-            </article>
-          </div>
-
-          <div class="results-top">
-            <article class="result-card">
-              <div>
-                <div class="rc-label">Receita estimada do lote no abate</div>
-                <div class="rc-value">${formatCompactBRL(receitaAbateLote)}</div>
-              </div>
-              <div class="rc-sub">${animais} animais · ${arrobasAbate.toFixed(1)} arr/cabeça · custo total ${formatCompactBRL(custoTotalLote)}</div>
-            </article>
-
-            <article class="result-card ${diferencaTotal > 0 ? 'error' : 'success'}">
-              <div>
-                <div class="rc-label">${diferencaTotal > 0 ? 'Perda potencial por esperar' : 'Ganho potencial por esperar'}</div>
-                <div class="rc-value">${formatCompactBRL(Math.abs(diferencaTotal))}</div>
-              </div>
-              <div class="rc-sub">Comparação entre vender hoje a ${formatCurrency(precoAgora)} e vender no ponto projetado</div>
-            </article>
-          </div>
-
-          ${ganhoSeMelhor > 0 ? `
-            <article class="callout">
-              <h3>Janela de oportunidade identificada</h3>
-              <p>Se você capturar o melhor ponto estimado da curva em vez do ponto provável de abate, o lote pode ganhar cerca de ${formatCompactBRL(ganhoSeMelhor)} adicionais. Em outras palavras: produzir bem não basta; o ganho real aparece quando produção e timing andam juntos.</p>
-            </article>
-          ` : ''}
-
-          <article class="callout">
-            <h3>Leitura estratégica</h3>
-            <p>${diagnostico}</p>
-            <p>${recomendacao}</p>
-            <p>Receita imediata de venda hoje: ${formatCompactBRL(receitaAgoraLote)}. Receita estimada no abate: ${formatCompactBRL(receitaAbateLote)}. A diferença de percepção mais comum nesse tipo de ferramenta é confundir peso maior com negócio melhor; o dado mostra que isso só é verdade quando a arroba futura compensa o custo e o risco do tempo.</p>
-          </article>
-
-          <section class="timeline" aria-label="Linha do tempo de preços projetados">
-            <h3 class="timeline-title">Evolução projetada do ciclo</h3>
-            ${timelineHTML}
-          </section>
+  let tlHtml = '';
+  d.timeline.forEach(t => {
+    const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
+    tlHtml += `
+      <div class="tl-item">
+        <div class="tl-dot ${dotClass}"></div>
+        <div class="tl-meta">
+          <div class="tl-date">${t.mes.toUpperCase()} 2026 ${t.is_abate ? '← ABATE PREVISTO' : ''}</div>
+          <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'}</div>
+          <div class="tl-desc">${t.chuva ? 'Período de chuvas — preço sazonal baixo' : 'Período seco — preço firme'}</div>
         </div>
-      `;
+      </div>`;
+  });
+
+  document.getElementById('resultado').innerHTML = `
+    <div class="section-title">Análise estratégica</div>
+    <div class="grid-2" style="margin-bottom:14px">
+      <div class="card ${c.tem_chuva ? 'danger' : 'success'}">
+        <div class="card-label">ABATE PREVISTO</div>
+        <div class="card-value">${c.mes_abate}/2026</div>
+        <div class="card-sub">${c.dias} dias · ${c.meses} meses · ${c.tem_chuva ? '⚠ período de chuvas' : '✅ período seco'}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">PREÇO ESTIMADO NO ABATE</div>
+        <div class="card-value">R$ ${f.preco_abate}/arr</div>
+        <div class="card-sub">Média histórica CEPEA ${d.estado} · ${c.mes_abate}</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:14px">
+      <div class="card">
+        <div class="card-label">RECEITA BRUTA DO LOTE</div>
+        <div class="card-value">${fmt(f.receita_lote)}</div>
+        <div class="card-sub">${d.animais} animais · ${f.arrobas_cab} arr/cab</div>
+      </div>
+      <div class="card ${lucroClass}">
+        <div class="card-label">LUCRO LÍQUIDO ESTIMADO</div>
+        <div class="card-value">${fmt(f.lucro_lote)}</div>
+        <div class="card-sub">Custo acumulado: ${fmt(f.custo_lote)}</div>
+      </div>
+    </div>
+
+    <div class="card ${diffClass}" style="margin-bottom:14px">
+      <div class="card-label">${f.diff_total > 0 ? 'PERDA SE AGUARDAR (vs. vender hoje)' : 'GANHO SE AGUARDAR (vs. vender hoje)'}</div>
+      <div class="card-value">${fmt(Math.abs(f.diff_total))}</div>
+      <div class="card-sub">R$ ${Math.abs(f.diff_arroba).toFixed(0)}/arr de diferença · hoje R$ ${f.preco_atual} vs abate R$ ${f.preco_abate}</div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px">Confinamento vs. semiconfinamento</div>
+    <div class="card dark" style="margin-bottom:14px">
+      <table class="comp-table">
+        <thead><tr><th>Indicador</th><th>Confinamento</th><th>Semiconfinamento</th></tr></thead>
+        <tbody>
+          <tr><td>Dias até abate</td>
+            <td class="${confWin?'win':''}">${cp.confinamento.dias}d</td>
+            <td class="${!confWin?'win':''}">${cp.semiconfinamento.dias}d</td></tr>
+          <tr><td>Mês de abate</td>
+            <td>${cp.confinamento.mes_abate} ${cp.confinamento.chuva?'🌧':'☀'}</td>
+            <td>${cp.semiconfinamento.mes_abate} ${cp.semiconfinamento.chuva?'🌧':'☀'}</td></tr>
+          <tr><td>Preço estimado</td>
+            <td class="${cp.confinamento.preco>=cp.semiconfinamento.preco?'win':'lose'}">R$ ${cp.confinamento.preco}/arr</td>
+            <td class="${cp.semiconfinamento.preco>cp.confinamento.preco?'win':'lose'}">R$ ${cp.semiconfinamento.preco}/arr</td></tr>
+          <tr><td>Custo total lote</td>
+            <td class="${cp.confinamento.custo_lote<=cp.semiconfinamento.custo_lote?'win':'lose'}">${fmt(cp.confinamento.custo_lote)}</td>
+            <td class="${cp.semiconfinamento.custo_lote<cp.confinamento.custo_lote?'win':'lose'}">${fmt(cp.semiconfinamento.custo_lote)}</td></tr>
+          <tr><td><strong>Lucro líquido lote</strong></td>
+            <td class="${cp.confinamento.lucro_lote>=cp.semiconfinamento.lucro_lote?'win':'lose'}"><strong>${fmt(cp.confinamento.lucro_lote)}</strong></td>
+            <td class="${cp.semiconfinamento.lucro_lote>cp.confinamento.lucro_lote?'win':'lose'}"><strong>${fmt(cp.semiconfinamento.lucro_lote)}</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rec-box" style="margin-bottom:20px">
+      <div class="rec-title">📋 Recomendação estratégica</div>
+      <div class="rec-text">${d.recomendacao}</div>
+    </div>
+
+    <div class="section-title">Evolução de preços — próximos meses</div>
+    <div class="card dark">${tlHtml}</div>
+  `;
+}
+
+// ── Histórico ─────────────────────────────────────────────────────────────
+async function carregarHistorico(estado) {
+  try {
+    if (estado === 'TODOS') {
+      const [rMT, rSP, rGO] = await Promise.all([
+        fetch(API + '/api/historico/MT').then(r=>r.json()),
+        fetch(API + '/api/historico/SP').then(r=>r.json()),
+        fetch(API + '/api/historico/GO').then(r=>r.json()),
+      ]);
+      renderGraficoTodos(rMT.data, rSP.data, rGO.data);
+      const [cMT] = await Promise.all([fetch(API + '/api/chuva/MT').then(r=>r.json())]);
+      renderChuvaSeca(cMT.data, 'MT');
+    } else {
+      const [rH, rC] = await Promise.all([
+        fetch(API + `/api/historico/${estado}`).then(r=>r.json()),
+        fetch(API + `/api/chuva/${estado}`).then(r=>r.json()),
+      ]);
+      renderGraficoHistorico(rH.data, estado);
+      renderChuvaSeca(rC.data, estado);
+      renderCardsComparativo(rC.data, estado);
     }
+  } catch(e) { console.error(e); }
+}
 
-    async function atualizarPreco() {
-      setInlineStatus('Atualizando preço...', 'warning');
-      setStatus('warning', 'Buscando referência de preço', 'Nesta demonstração, a atualização é simulada para manter o HTML estável sem depender de backend externo.');
-      el.btnAtualizar.disabled = true;
-      el.btnAtualizar.textContent = 'Atualizando...';
+function renderGraficoHistorico(dados, estado) {
+  const labels = dados.map(d => d.periodo);
+  const precos = dados.map(d => d.preco);
+  const bgColors = dados.map(d => d.chuva ? 'rgba(128,184,230,0.5)' : 'rgba(168,230,176,0.5)');
+  const borderColors = dados.map(d => d.chuva ? '#80b8e6' : '#a8e6b0');
 
-      try {
-        const novoPreco = await simularPrecoExterno();
-        el.precoAtual.value = novoPreco.toFixed(2);
-        registrarAtualizacao('auto');
-        setInlineStatus(`Preço atualizado para ${formatCurrency(novoPreco)}.`, 'success');
-        setStatus('success', 'Preço sincronizado', 'O valor exibido no cabeçalho e o valor usado no cálculo agora são exatamente o mesmo.');
-      } catch (error) {
-        setInlineStatus('Falha ao atualizar. Use o valor manual.', 'error');
-        setStatus('error', 'Falha na atualização', 'Quando a fonte externa falha, o fallback manual preserva a continuidade da decisão.');
-      } finally {
-        el.btnAtualizar.disabled = false;
-        el.btnAtualizar.textContent = 'Atualizar preço';
+  if (chartHistorico) chartHistorico.destroy();
+  const ctx = document.getElementById('chart-historico').getContext('2d');
+  chartHistorico = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: `Preço boi gordo ${estado} (R$/arroba)`,
+        data: precos,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `R$ ${ctx.raw}/arr`,
+            afterLabel: ctx => dados[ctx.dataIndex].chuva ? '🌧 Período de chuvas' : '☀ Período seco',
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#4a7a52', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: '#1e3a22' } },
+        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
       }
     }
+  });
+}
 
-    function resetar() {
-      el.precoAtual.value = '312';
-      el.numAnimais.value = '100';
-      el.pesoAtual.value = '420';
-      el.pesoAbate.value = '520';
-      el.gpd.value = '1.4';
-      el.custoDia.value = '28';
-      el.modalidade.value = 'confinamento';
-      el.mesEntrada.value = '5';
-      fontePreco = 'manual';
-      updateMarketDisplay();
-      el.ultimaAtualizacao.textContent = 'Restaurado agora';
-      setInlineStatus('Parâmetros restaurados para a base do protótipo.', 'success');
-      setStatus('success', 'Base restaurada', 'Os parâmetros voltaram ao cenário padrão para facilitar nova simulação.');
-    }
-
-    function handleManualPriceInput() {
-      fontePreco = 'manual';
-      updateMarketDisplay();
-      if (getPrecoAtual()) {
-        registrarAtualizacao('manual');
-        setInlineStatus(`Preço manual definido em ${formatCurrency(getPrecoAtual())}.`, 'success');
-        setStatus('success', 'Preço manual ativo', 'Você está usando um valor controlado manualmente como referência operacional.');
-      } else {
-        setInlineStatus('Digite um preço válido maior que zero.', 'error');
+function renderGraficoTodos(mt, sp, go) {
+  const labels = mt.map(d => d.periodo);
+  if (chartHistorico) chartHistorico.destroy();
+  const ctx = document.getElementById('chart-historico').getContext('2d');
+  chartHistorico = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'MT', data: mt.map(d=>d.preco), borderColor: COR_ESTADOS.MT, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+        { label: 'SP', data: sp.map(d=>d.preco), borderColor: COR_ESTADOS.SP, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+        { label: 'GO', data: go.map(d=>d.preco), borderColor: COR_ESTADOS.GO, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#4a7a52', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: '#1e3a22' } },
+        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
       }
     }
+  });
+}
 
-    (function initThemeToggle() {
-      const root = document.documentElement;
-      let currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      root.setAttribute('data-theme', currentTheme);
-      el.themeToggle.addEventListener('click', () => {
-        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', currentTheme);
-        el.themeToggle.innerHTML = currentTheme === 'dark'
-          ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>'
-          : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3A7 7 0 0 0 21 12.79z"></path></svg>';
-      });
-    })();
+function renderChuvaSeca(dados, estado) {
+  const labels = dados.map(d => d.ano.toString());
+  if (chartChuva) chartChuva.destroy();
+  const ctx = document.getElementById('chart-chuva-seca').getContext('2d');
+  chartChuva = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '🌧 Média chuva (R$/arr)', data: dados.map(d=>d.media_chuva), backgroundColor: 'rgba(128,184,230,0.7)', borderColor: '#80b8e6', borderWidth: 1 },
+        { label: '☀ Média seca (R$/arr)',  data: dados.map(d=>d.media_seca),  backgroundColor: 'rgba(168,230,176,0.7)', borderColor: '#a8e6b0', borderWidth: 1 },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } },
+        tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr` } }
+      },
+      scales: {
+        x: { ticks: { color: '#4a7a52', font: { family: 'IBM Plex Mono' } }, grid: { color: '#1e3a22' } },
+        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+      }
+    }
+  });
+}
 
-    el.btnAtualizar.addEventListener('click', atualizarPreco);
-    el.btnCalcular.addEventListener('click', calcular);
-    el.btnReset.addEventListener('click', resetar);
-    el.precoAtual.addEventListener('change', handleManualPriceInput);
-    el.precoAtual.addEventListener('input', updateMarketDisplay);
+function renderCardsComparativo(dados, estado) {
+  const totalDiff = dados.reduce((s,d) => s + d.diferenca, 0);
+  const mediaDiff = (totalDiff / dados.length).toFixed(1);
+  const maxDiff = Math.max(...dados.map(d=>d.diferenca));
+  const anoMaxDiff = dados.find(d=>d.diferenca === maxDiff)?.ano;
 
-    registrarAtualizacao('manual');
-    setStatus('success', 'Pronto para calcular', 'Defina o preço atual e rode a análise. O sistema agora evita divergência entre interface e motor de cálculo.');
-    setInlineStatus('Preço inicial carregado com sucesso.', 'success');
-    carregarFuturosB3();
-  </script>
+  document.getElementById('cards-comparativo').innerHTML = `
+    <div class="card">
+      <div class="card-label">DIFERENÇA MÉDIA SECA VS CHUVA</div>
+      <div class="card-value">R$ ${mediaDiff}/arr</div>
+      <div class="card-sub">Média 2020–2025 · ${estado}</div>
+    </div>
+    <div class="card warn">
+      <div class="card-label">MAIOR DIFERENÇA REGISTRADA</div>
+      <div class="card-value">R$ ${maxDiff}/arr</div>
+      <div class="card-sub">Em ${anoMaxDiff} · ${estado}</div>
+    </div>
+    <div class="card danger">
+      <div class="card-label">IMPACTO LOTE 100 CABEÇAS (17 arr)</div>
+      <div class="card-value">${fmt(parseFloat(mediaDiff) * 17 * 100)}</div>
+      <div class="card-sub">Perda média por vender na chuva vs seca</div>
+    </div>
+  `;
+}
+
+function selecionarEstado(estado, el) {
+  document.querySelectorAll('#page-historico .estado-badge').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  estadoAtual = estado;
+  carregarHistorico(estado);
+}
+
+// ── Clima ─────────────────────────────────────────────────────────────────
+async function carregarClima(estado) {
+  document.getElementById('clima-content').innerHTML = '<div class="loading">Carregando previsão climática...</div>';
+  const coords = COORDS_FRONT[estado] || COORDS_FRONT.MT;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=precipitation_sum,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=16`;
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    const datas = d.daily?.time || [];
+    const chuva = d.daily?.precipitation_sum || [];
+    const prob = d.daily?.precipitation_probability_max || [];
+    const previsao = datas.map((data,i) => ({
+      data, chuva_mm: chuva[i]||0, probabilidade_pct: prob[i]||0
+    }));
+    renderClima({ estado, coords, previsao, fonte: 'Open-Meteo', atualizado: new Date().toISOString() });
+  } catch(e) {
+    document.getElementById('clima-content').innerHTML = '<div class="loading">Erro ao carregar Open-Meteo. Verifique sua conexão.</div>';
+  }
+}
+
+function renderClima(dados) {
+  const maxChuva = Math.max(...dados.previsao.map(d=>d.chuva_mm), 1);
+  let barras = dados.previsao.slice(0,16).map(d => {
+    const pct = Math.round((d.chuva_mm / maxChuva) * 100);
+    const cor = d.probabilidade_pct > 60 ? '#80b8e6' : d.probabilidade_pct > 30 ? '#e6a840' : '#a8e6b0';
+    return `
+      <div class="clima-bar">
+        <div class="cb-data">${d.data.slice(5)}</div>
+        <div class="cb-track"><div class="cb-fill" style="width:${pct}%;background:${cor}"></div></div>
+        <div class="cb-val">${d.chuva_mm.toFixed(1)}mm · ${d.probabilidade_pct}%</div>
+      </div>`;
+  }).join('');
+
+  const diasChuva = dados.previsao.filter(d=>d.probabilidade_pct>50).length;
+  const totalMM = dados.previsao.reduce((s,d)=>s+d.chuva_mm, 0).toFixed(1);
+
+  document.getElementById('clima-content').innerHTML = `
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card ${diasChuva > 8 ? 'danger' : diasChuva > 4 ? 'warn' : 'success'}">
+        <div class="card-label">DIAS COM CHUVA (16 dias)</div>
+        <div class="card-value">${diasChuva} dias</div>
+        <div class="card-sub">${diasChuva > 8 ? '⚠ Alta umidade — risco operacional elevado' : diasChuva > 4 ? 'Atenção — período úmido' : '✅ Condições favoráveis ao confinamento'}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">CHUVA ACUMULADA PREVISTA</div>
+        <div class="card-value">${totalMM} mm</div>
+        <div class="card-sub">Próximos 16 dias · ${dados.coords?.nome || dados.estado}</div>
+      </div>
+    </div>
+    <div class="card dark">${barras}</div>
+    <div class="fonte-note">Fonte: ${dados.fonte} · Atualizado: ${new Date(dados.atualizado).toLocaleString('pt-BR')}</div>
+  `;
+}
+
+function selecionarClima(estado, el) {
+  document.querySelectorAll('#page-clima .estado-badge').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  estadoClima = estado;
+  carregarClima(estado);
+}
+
+// ── Pages ─────────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+
+  if (id === 'historico') carregarHistorico(estadoAtual);
+  if (id === 'clima') carregarClima(estadoClima);
+}
+</script>
 </body>
 </html>
