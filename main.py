@@ -23,6 +23,7 @@ from app.scraper import (
     comparativo_chuva_seca,
     comparativo_estados,
     buscar_clima,
+    carregar_futuros_b3,
 )
 from app.calculator import calcular
 
@@ -124,6 +125,19 @@ def api_clima(estado):
 
 
 
+# ── API: Preço Futuro B3 ─────────────────────────────────────────────────────
+
+@app.route("/api/futuro/b3")
+def api_futuro_b3():
+    try:
+        dados = carregar_futuros_b3()
+        return jsonify({"ok": True, "data": dados})
+    except FileNotFoundError as e:
+        return jsonify({"ok": False, "erro": str(e)}), 404
+    except Exception as e:
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
 # ── API: Calcular ────────────────────────────────────────────────────────────
 
 @app.route("/api/calcular", methods=["POST"])
@@ -165,6 +179,13 @@ def api_status():
                 "automatico": True,
                 "fonte":      "Open-Meteo API",
                 "status":     "✅ automático (Open-Meteo · a cada 3h)",
+            },
+            "futuro_b3": {
+                "automatico": False,
+                "fonte":      "Notícias Agrícolas · B3 Pregão Regular",
+                "status":     "✅ disponível" if os.path.exists(
+                    os.path.join(os.path.dirname(__file__), "app", "futuros_b3.json")
+                ) else "❌ não gerado — execute: python buscar_futuro_b3.py",
             },
         }
     })
