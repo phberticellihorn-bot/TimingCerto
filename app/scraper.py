@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 cache_preco  = TTLCache(maxsize=20, ttl=21600)
 cache_clima  = TTLCache(maxsize=10, ttl=10800)
-cache_futuro = TTLCache(maxsize=5,  ttl=3600)
 
 HEADERS = {
     "User-Agent": (
@@ -234,73 +233,6 @@ def _fallback_media_historica(estado: str) -> dict:
     }
 
 
-
-# ---------------------------------------------------------------------------
-# PREÇO FUTURO B3 — brapi.dev (BBOI11 · gratuita · sem autenticação)
-# BBOI11 = BB ETF Índice Futuro de Boi Gordo B3
-# Endpoint: https://brapi.dev/api/quote/BBOI11
-# ---------------------------------------------------------------------------
-
-
-def buscar_preco_futuro_b3() -> dict:
-    """
-    Busca cotação do BBOI11 (ETF índice futuro boi gordo B3) via brapi.dev.
-    Gratuito, sem autenticação, atualizado em tempo real durante pregão.
-    Retorna preço da cota + variação do dia.
-    """
-    cache_key = "bboi11_futuro"
-    if cache_key in cache_futuro:
-        return cache_futuro[cache_key]
-
-    try:
-        url  = "https://brapi.dev/api/quote/BBOI11"
-        resp = requests.get(url, headers=HEADERS, timeout=10)
-        resp.raise_for_status()
-        dados   = resp.json()
-        results = dados.get("results", [])
-
-        if not results:
-            raise ValueError("Sem dados no retorno da brapi.dev")
-
-        quote        = results[0]
-        preco_cota   = float(quote.get("regularMarketPrice", 0))
-        variacao_pct = float(quote.get("regularMarketChangePercent", 0))
-        variacao_abs = float(quote.get("regularMarketChange", 0))
-        nome         = quote.get("longName", "BB ETF Índice Futuro Boi Gordo B3")
-        data_cot     = quote.get("regularMarketTime", datetime.now().isoformat())
-
-        if preco_cota <= 0:
-            raise ValueError(f"Preço inválido: {preco_cota}")
-
-        resultado = {
-            "ticker":       "BBOI11",
-            "nome":         nome,
-            "preco_cota":   round(preco_cota, 2),
-            "variacao_pct": round(variacao_pct, 2),
-            "variacao_abs": round(variacao_abs, 2),
-            "fonte":        "brapi.dev · B3",
-            "atualizado":   datetime.now().isoformat(),
-            "data_cotacao": str(data_cot)[:10],
-            "automatico":   True,
-            "nota":         (
-                "BBOI11 é o ETF que replica o índice futuro de boi gordo B3. "
-                "Reflete a expectativa de mercado para o preço futuro do boi gordo. "
-                "Não é diretamente o preço do contrato futuro (R$/arroba)."
-            ),
-        }
-        cache_futuro[cache_key] = resultado
-        return resultado
-
-    except Exception as e:
-        logger.warning(f"brapi.dev BBOI11 falhou: {e}")
-        return {
-            "ticker":     "BBOI11",
-            "preco_cota": None,
-            "fonte":      "indisponível",
-            "atualizado": datetime.now().isoformat(),
-            "automatico": False,
-            "erro":       str(e),
-        }
 
 def scrape_cepea_atual(estado: str = "SP") -> dict:
     estado    = estado.upper()
