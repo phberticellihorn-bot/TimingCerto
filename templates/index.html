@@ -294,6 +294,8 @@ let futurosB3 = [];  // contratos futuros B3
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const COR_ESTADOS = { MT:'#a8e6b0', SP:'#80b8e6', GO:'#e6c840' };
 const CHUVA_MASK = [true,true,true,false,false,false,false,false,false,true,true,true];
+//                  Jan  Fev  Mar  Abr  Mai  Jun  Jul  Ago  Set  Out  Nov  Dez
+// MT/GO/SP: chuva Out–Mar · seca Abr–Set (INMET)
 
 // ── Init ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
@@ -398,9 +400,9 @@ const HIST = {
 };
 
 const COORDS_FRONT = {
-  MT:{lat:-15.601,lon:-56.097,nome:'Mato Grosso'},
-  SP:{lat:-22.908,lon:-47.063,nome:'São Paulo'},
-  GO:{lat:-16.686,lon:-49.264,nome:'Goiás'},
+  MT:{lat:-15.601,lon:-56.097,nome:'Mato Grosso',cidade:'Cuiabá, MT'},
+  SP:{lat:-21.177,lon:-47.810,nome:'São Paulo',cidade:'Ribeirão Preto, SP'},
+  GO:{lat:-16.686,lon:-49.264,nome:'Goiás',cidade:'Goiânia, GO'},
 };
 
 function precoHistMes(estado, mes) {
@@ -767,6 +769,28 @@ function renderClima(dados) {
   const totalMM = dados.previsao.reduce((s,d)=>s+d.chuva_mm, 0).toFixed(1);
 
   document.getElementById('clima-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="background:var(--bg3);border:1px solid var(--green4);border-radius:6px;padding:6px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">
+        📍 Referência: <strong style="color:var(--green)">${dados.coords?.cidade || dados.estado}</strong>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">
+        Dados representativos da região — não da propriedade
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#80b8e6"></span> Prob. chuva &gt;60%
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#e6a840"></span> Prob. chuva 30–60%
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
+        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#a8e6b0"></span> Prob. chuva &lt;30%
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-left:4px">
+        · Barra = volume em mm · % = probabilidade de ocorrência
+      </div>
+    </div>
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card ${diasChuva > 8 ? 'danger' : diasChuva > 4 ? 'warn' : 'success'}">
         <div class="card-label">DIAS COM CHUVA (16 dias)</div>
@@ -776,11 +800,11 @@ function renderClima(dados) {
       <div class="card">
         <div class="card-label">CHUVA ACUMULADA PREVISTA</div>
         <div class="card-value">${totalMM} mm</div>
-        <div class="card-sub">Próximos 16 dias · ${dados.coords?.nome || dados.estado}</div>
+        <div class="card-sub">Próximos 16 dias · ${dados.coords?.cidade || dados.estado}</div>
       </div>
     </div>
     <div class="card dark">${barras}</div>
-    <div class="fonte-note">Fonte: ${dados.fonte} · Atualizado: ${new Date(dados.atualizado).toLocaleString('pt-BR')}</div>
+    <div class="fonte-note">Fonte: ${dados.fonte} · Referência: ${dados.coords?.cidade || dados.estado} · Atualizado: ${new Date(dados.atualizado).toLocaleString('pt-BR')}</div>
   `;
 }
 
