@@ -23,6 +23,7 @@ from app.scraper import (
     comparativo_chuva_seca,
     comparativo_estados,
     buscar_clima,
+    buscar_preco_futuro_b3,
 )
 from app.calculator import calcular
 
@@ -123,6 +124,17 @@ def api_clima(estado):
         return jsonify({"ok": False, "erro": str(e)}), 500
 
 
+
+# ── API: Preço Futuro B3 ─────────────────────────────────────────────────────
+
+@app.route("/api/futuro/b3")
+def api_futuro_b3():
+    try:
+        dados = buscar_preco_futuro_b3()
+        return jsonify({"ok": True, "data": dados})
+    except Exception as e:
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
 # ── API: Calcular ────────────────────────────────────────────────────────────
 
 @app.route("/api/calcular", methods=["POST"])
@@ -164,6 +176,11 @@ def api_status():
                 "automatico": True,
                 "fonte":      "Open-Meteo API",
                 "status":     "✅ automático (Open-Meteo · a cada 3h)",
+            },
+            "futuro_b3": {
+                "automatico": True,
+                "fonte":      "brapi.dev · BBOI11",
+                "status":     "✅ automático (brapi.dev · tempo real)",
             },
         }
     })
