@@ -161,7 +161,7 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
       <div class="ps-value" id="ps-periodo">—</div>
       <div class="ps-sub" id="ps-chuva-label">—</div>
     </div>
-    <div class="ps-divider"></div>
+        <div class="ps-divider"></div>
     <div class="ps-item" id="ps-futuro-wrap" style="display:none">
       <div class="ps-label" id="ps-futuro-label">FUTURO B3</div>
       <div class="ps-value" id="ps-futuro" style="color:var(--amber)">—</div>
@@ -475,7 +475,7 @@ function renderResultado(d) {
   const lucroClass = f.lucro_lote >= 0 ? 'success' : 'danger';
   const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
   const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
-  const anoAtual = new Date().getFullYear();
+ const anoAtual = new Date().getFullYear();
 
   // Preço futuro B3 para o mês de abate
   const futuroAbate = futuroParaMes(c.mes_abate_num, anoAtual);
@@ -490,7 +490,7 @@ function renderResultado(d) {
     : `<div style="margin-top:6px;font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace">sem contrato B3 disponível para este mês</div>`;
 
   let tlHtml = '';
-  const anoAtual = new Date().getFullYear();
+    const anoAtual = new Date().getFullYear();
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
     const futuro = futuroParaMes(t.mes_num, anoAtual);
@@ -520,7 +520,7 @@ function renderResultado(d) {
           <div class="tl-date">${t.mes.toUpperCase()} ${anoAtual} ${t.is_abate ? '← ABATE PREVISTO' : ''}</div>
           <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'} ${b3Tag}</div>
           <div class="tl-desc">${t.chuva ? 'Período de chuvas — preço sazonal baixo' : 'Período seco — preço firme'}</div>
-          ${diffHtml}
+                    ${diffHtml}
         </div>
       </div>`;
   });
@@ -589,7 +589,7 @@ function renderResultado(d) {
     </div>
 
     <div class="section-title">Evolução de preços — próximos meses</div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:12px;display:flex;gap:16px;align-items:center">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:12px;display:flex;gap:16px;align-items:center">
       <span>Preço histórico CEPEA (média)</span>
       <span style="display:inline-flex;align-items:center;gap:5px">
         <span style="display:inline-block;width:28px;height:1px;border-top:1.5px dashed var(--amber)"></span>
