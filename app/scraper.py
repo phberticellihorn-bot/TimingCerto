@@ -241,7 +241,36 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
     if cache_key in cache_preco:
         return cache_preco[cache_key]
 
-    # --- Fonte 1: AgroDoc AI API ---
+    # --- Fonte 0: Scot Consultoria (preço real por estado, atualizado diariamente) ---
+    try:
+        cotacoes_scot = carregar_cotacoes_scot()
+        preco_scot = cotacoes_scot.get(estado)
+        if preco_scot and 200 < preco_scot < 600:
+            # Verifica se o JSON não está desatualizado (mais de 2 dias)
+            caminho = os.path.join(os.path.dirname(__file__), "cotacoes_scot.json")
+            with open(caminho, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+            atualizado = meta.get("atualizado", "")
+            data_arquivo = datetime.fromisoformat(atualizado[:19]) if atualizado else None
+            dias_defasagem = (datetime.now() - data_arquivo).days if data_arquivo else 99
+            if dias_defasagem <= 2:
+                resultado = {
+                    "preco":        preco_scot,
+                    "fonte":        "Scot Consultoria · Boi China a Prazo",
+                    "estado":       estado,
+                    "atualizado":   atualizado,
+                    "data_cotacao": atualizado[:10],
+                    "automatico":   True,
+                }
+                cache_preco[cache_key] = resultado
+                logger.info(f"Scot Consultoria: {estado} = R${preco_scot}")
+                return resultado
+            else:
+                logger.warning(f"cotacoes_scot.json desatualizado ({dias_defasagem} dias) — usando fallback")
+    except Exception as e:
+        logger.warning(f"Scot Consultoria falhou para {estado}: {e}")
+
+    # --- Fonte 1: AgroDoc AI API (fallback — SP base + diferencial fixo) ---
     try:
         resp = requests.get(
             "https://agrodocai.com.br/api/v1/cotacao",
@@ -484,6 +513,32 @@ def carregar_futuros_b3() -> dict:
     }
     cache_futuro[cache_key] = resultado
     return resultado
+
+
+def carregar_cotacoes_scot() -> dict:
+    """
+    Lê app/cotacoes_scot.json gerado pelo buscar_cotacoes_scot.py.
+    Retorna dict com metadados + cotacoes por estado.
+    TTL cache de 4h — o arquivo atualiza 1x/dia via GitHub Action.
+    """
+    cache_key = "cotacoes_scot"
+    if cache_key in cache_preco:
+        return cache_preco[cache_key]
+
+    caminho = os.path.join(os.path.dirname(__file__), "cotacoes_scot.json")
+    if not os.path.exists(caminho):
+        return {}
+
+    try:
+        with open(caminho, "r", encoding="utf-8") as f:
+            dados = json.load(f)
+        cotacoes = dados.get("cotacoes", {})
+        if cotacoes:
+            cache_preco[cache_key] = cotacoes
+        return cotacoes
+    except Exception as e:
+        logger.warning(f"Erro ao ler cotacoes_scot.json: {e}")
+        return {}
 
 
 def preco_historico_medio(estado: str, mes: int) -> float:
