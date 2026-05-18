@@ -118,16 +118,6 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
 /* FONTE */
 .fonte-note{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);margin-top:16px;line-height:1.8;text-align:right}
 
-/* B3 BADGE */
-.b3-badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;background:#1a2e3d;border:1px solid #2d5a7a;color:#80b8e6;letter-spacing:.04em;vertical-align:middle;margin-left:4px}
-.b3-badge.green{background:#1a3d2e;border-color:#2d8e5a;color:#80e6b0}
-.b3-price{color:#80b8e6;font-family:'IBM Plex Mono',monospace}
-.hist-price{color:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;text-decoration:line-through;margin-right:4px}
-.variacao-neg{color:var(--red);font-size:10px;font-family:'IBM Plex Mono',monospace}
-.variacao-pos{color:#80e6b0;font-size:10px;font-family:'IBM Plex Mono',monospace}
-.tl-b3-row{display:flex;align-items:center;gap:6px;margin-top:3px}
-.ps-b3-mini{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#80b8e6;margin-top:2px}
-
 @media(max-width:700px){
   nav{padding:14px 20px;flex-direction:column;gap:12px}
   .page{padding:20px}
@@ -170,12 +160,6 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
       <div class="ps-label">PERÍODO ATUAL</div>
       <div class="ps-value" id="ps-periodo">—</div>
       <div class="ps-sub" id="ps-chuva-label">—</div>
-    </div>
-    <div class="ps-divider"></div>
-    <div class="ps-item" id="ps-b3-wrap" style="display:none">
-      <div class="ps-label">FUTURO B3 MÊS SEGUINTE</div>
-      <div class="ps-value b3-price" id="ps-b3-preco">—</div>
-      <div class="ps-sub" id="ps-b3-periodo">—</div>
     </div>
     <div class="ps-fonte" id="ps-fonte">—</div>
   </div>
@@ -305,9 +289,7 @@ let chartHistorico = null;
 let chartChuva = null;
 let estadoAtual = 'MT';
 let estadoClima = 'MT';
-let futurosB3 = [];  // contratos futuros carregados do backend
-
-const FUTUROS_B3_EMBED = {"atualizado":"2026-05-18T13:37:06.501353","fonte":"Notícias Agrícolas · B3 Pregão Regular","contratos":[{"mes":5,"ano":2026,"periodo":"Maio/2026","preco_arroba":336.55,"variacao_pct":-0.72},{"mes":6,"ano":2026,"periodo":"Junho/2026","preco_arroba":335.75,"variacao_pct":-1.25},{"mes":7,"ano":2026,"periodo":"Julho/2026","preco_arroba":338.0,"variacao_pct":-0.66},{"mes":8,"ano":2026,"periodo":"Agosto/2026","preco_arroba":338.0,"variacao_pct":-0.72},{"mes":9,"ano":2026,"periodo":"Setembro/2026","preco_arroba":342.7,"variacao_pct":-0.25},{"mes":10,"ano":2026,"periodo":"Outubro/2026","preco_arroba":350.2,"variacao_pct":-0.28},{"mes":11,"ano":2026,"periodo":"Novembro/2026","preco_arroba":351.0,"variacao_pct":-0.5}]};
+let futurosB3 = [];  // contratos futuros B3
 
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const COR_ESTADOS = { MT:'#a8e6b0', SP:'#80b8e6', GO:'#e6c840' };
@@ -324,35 +306,63 @@ window.addEventListener('DOMContentLoaded', async () => {
   const mes = new Date().getMonth();
   document.getElementById('ps-periodo').textContent = MESES[mes] + '/' + new Date().getFullYear();
   document.getElementById('ps-chuva-label').textContent = CHUVA_MASK[mes] ? '🌧 Período de chuvas' : '☀ Período seco';
-
-  // B3 próximo mês no strip
-  const proximoMes = mes + 2; // +1 pois mes é 0-indexed, +1 para próximo
-  const futProximo = getFuturoB3(proximoMes <= 12 ? proximoMes : proximoMes - 12);
-  if (futProximo) {
-    document.getElementById('ps-b3-wrap').style.display = '';
-    document.getElementById('ps-b3-preco').textContent = 'R$ ' + futProximo.preco_arroba.toFixed(2);
-    const varSinal = futProximo.variacao_pct >= 0 ? '+' : '';
-    document.getElementById('ps-b3-periodo').textContent = futProximo.periodo + ' · ' + varSinal + futProximo.variacao_pct + '%';
-  }
 });
 
-// ── Futuros B3 ────────────────────────────────────────────────────────────
 async function carregarFuturosB3() {
   try {
-    const r = await fetch(API + '/api/futuros');
+    const r = await fetch('futuros_b3.json');
     const j = await r.json();
-    if (j.ok && j.data && j.data.contratos) {
-      futurosB3 = j.data.contratos;
-      return;
-    }
-  } catch(e) { /* fallback abaixo */ }
-  // Fallback: usa JSON embutido no HTML
-  futurosB3 = FUTUROS_B3_EMBED.contratos || [];
+    futurosB3 = j.contratos || [];
+  } catch(e) {
+    // fallback: dados embutidos do arquivo json fornecido
+    futurosB3 = [
+      {mes:5,ano:2026,periodo:'Maio/2026',preco_arroba:336.55,variacao_pct:-0.72},
+      {mes:6,ano:2026,periodo:'Junho/2026',preco_arroba:335.75,variacao_pct:-1.25},
+      {mes:7,ano:2026,periodo:'Julho/2026',preco_arroba:338.0,variacao_pct:-0.66},
+      {mes:8,ano:2026,periodo:'Agosto/2026',preco_arroba:338.0,variacao_pct:-0.72},
+      {mes:9,ano:2026,periodo:'Setembro/2026',preco_arroba:342.7,variacao_pct:-0.25},
+      {mes:10,ano:2026,periodo:'Outubro/2026',preco_arroba:350.2,variacao_pct:-0.28},
+      {mes:11,ano:2026,periodo:'Novembro/2026',preco_arroba:351.0,variacao_pct:-0.5},
+    ];
+  }
+  renderB3Strip();
 }
 
-// Helper: encontra contrato B3 por mês
-function getFuturoB3(mes) {
-  return futurosB3.find(c => c.mes === mes && c.ano === 2026) || null;
+function futuroParaMes(mes, ano) {
+  return futurosB3.find(f => f.mes === mes && f.ano === ano) || null;
+}
+
+function proximoFuturo() {
+  const agora = new Date();
+  const mesAtual = agora.getMonth() + 1;
+  const anoAtual = agora.getFullYear();
+  return futurosB3.find(f => f.ano > anoAtual || (f.ano === anoAtual && f.mes >= mesAtual)) || futurosB3[0] || null;
+}
+
+function renderB3Strip() {
+  const strip = document.getElementById('price-strip');
+  const f = proximoFuturo();
+  if (!f) return;
+  const varClass = f.variacao_pct >= 0 ? 'color:var(--green)' : 'color:var(--red)';
+  const varSinal = f.variacao_pct >= 0 ? '+' : '';
+  // Remove item B3 anterior se existir
+  const existing = document.getElementById('ps-b3-item');
+  if (existing) existing.remove();
+  const divider = document.createElement('div');
+  divider.className = 'ps-divider';
+  divider.id = 'ps-b3-divider';
+  const item = document.createElement('div');
+  item.className = 'ps-item';
+  item.id = 'ps-b3-item';
+  item.innerHTML = `
+    <div class="ps-label">FUTURO B3 — ${f.periodo.toUpperCase()}</div>
+    <div class="ps-value" style="${varClass}">R$ ${f.preco_arroba.toFixed(0)}</div>
+    <div class="ps-sub" style="${varClass}">${varSinal}${f.variacao_pct.toFixed(2)}% · B3 pregão</div>
+  `;
+  // Insere antes do ps-fonte (último filho)
+  const fonte = document.getElementById('ps-fonte');
+  strip.insertBefore(divider, fonte);
+  strip.insertBefore(item, fonte);
 }
 
 // ── Preço atual ───────────────────────────────────────────────────────────
@@ -458,7 +468,6 @@ async function calcular() {
     custo_dia: parseFloat(document.getElementById('custo_dia').value) || 28,
     mes_entrada: parseInt(document.getElementById('mes_entrada').value) || 5,
     estado: document.getElementById('estado').value,
-    futuros_b3: futurosB3,
   };
 
   try {
@@ -481,12 +490,26 @@ function renderResultado(d) {
   let tlHtml = '';
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
+    // Mapear nome do mês para número
+    const MESES_NUM = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
+    const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
+    const b3 = mesNum ? futuroParaMes(mesNum, 2026) : null;
+    const b3Html = b3 ? `
+      <div class="tl-b3" style="display:flex;align-items:center;gap:6px;margin-top:3px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);background:var(--bg3);border:1px solid var(--green4);border-radius:4px;padding:1px 6px">B3</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--amber);font-weight:600">R$ ${b3.preco_arroba.toFixed(0)}/arr</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}%</span>
+      </div>` : '';
+    const abateLabelExtra = b3 && t.is_abate
+      ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--amber);margin-left:6px">△ R$ ${(b3.preco_arroba - t.preco).toFixed(0)}/arr vs histórico</span>`
+      : '';
     tlHtml += `
       <div class="tl-item">
         <div class="tl-dot ${dotClass}"></div>
         <div class="tl-meta">
-          <div class="tl-date">${t.mes.toUpperCase()} 2026 ${t.is_abate ? '← ABATE PREVISTO' : ''}</div>
-          <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'}</div>
+          <div class="tl-date" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">${t.mes.toUpperCase()} 2026 ${t.is_abate ? '<span style="color:var(--green)">← ABATE PREVISTO</span>' : ''}${abateLabelExtra}</div>
+          <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">hist. CEPEA</span></div>
+          ${b3Html}
           <div class="tl-desc">${t.chuva ? 'Período de chuvas — preço sazonal baixo' : 'Período seco — preço firme'}</div>
         </div>
       </div>`;
