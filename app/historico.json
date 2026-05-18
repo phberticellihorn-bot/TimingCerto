@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-05-17T11:37:57.157960",
+  "atualizado": "2026-05-18T01:07:40.409009",
   "fonte": "Agrolink.com.br — boi gordo 15kg — ESTADUAL",
   "historico": {
     "MT": {
@@ -312,7 +312,7 @@
         268.33,
         261.97,
         243.07,
-        247.67,
+        247.68,
         244.64,
         242.75,
         251.95,
@@ -351,7 +351,7 @@
         249.5,
         250.39,
         249.32,
-        257.25,
+        257.24,
         273.12,
         278.14
       ],
@@ -365,7 +365,7 @@
         "ano": 2020,
         "media_chuva": 213.11,
         "media_seca": 180.92,
-        "diferenca": -32.19
+        "diferenca": -32.2
       },
       {
         "ano": 2021,
@@ -389,7 +389,7 @@
         "ano": 2024,
         "media_chuva": 245.49,
         "media_seca": 206.55,
-        "diferenca": -38.94
+        "diferenca": -38.95
       },
       {
         "ano": 2025,
@@ -459,19 +459,19 @@
         "ano": 2021,
         "media_chuva": 279.86,
         "media_seca": 295.03,
-        "diferenca": 15.17
+        "diferenca": 15.18
       },
       {
         "ano": 2022,
         "media_chuva": 283.3,
         "media_seca": 282.37,
-        "diferenca": -0.93
+        "diferenca": -0.92
       },
       {
         "ano": 2023,
         "media_chuva": 229.95,
         "media_seca": 218.91,
-        "diferenca": -11.04
+        "diferenca": -11.03
       },
       {
         "ano": 2024,
