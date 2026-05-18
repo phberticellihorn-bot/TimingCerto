@@ -161,12 +161,6 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
       <div class="ps-value" id="ps-periodo">—</div>
       <div class="ps-sub" id="ps-chuva-label">—</div>
     </div>
-        <div class="ps-divider"></div>
-    <div class="ps-item" id="ps-futuro-wrap" style="display:none">
-      <div class="ps-label" id="ps-futuro-label">FUTURO B3</div>
-      <div class="ps-value" id="ps-futuro" style="color:var(--amber)">—</div>
-      <div class="ps-sub" id="ps-futuro-sub">—</div>
-    </div>
     <div class="ps-fonte" id="ps-fonte">—</div>
   </div>
 
@@ -295,7 +289,6 @@ let chartHistorico = null;
 let chartChuva = null;
 let estadoAtual = 'MT';
 let estadoClima = 'MT';
-let futurosB3 = [];  // contratos futuros carregados da API
 
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const COR_ESTADOS = { MT:'#a8e6b0', SP:'#80b8e6', GO:'#e6c840' };
@@ -303,7 +296,7 @@ const CHUVA_MASK = [true,true,true,false,false,false,false,false,true,true,true,
 
 // ── Init ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
-  await Promise.all([carregarPrecoAtual(), carregarFuturosB3()]);
+  await carregarPrecoAtual();
   calcular();
   carregarHistorico('MT');
   carregarClima('MT');
@@ -312,47 +305,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('ps-periodo').textContent = MESES[mes] + '/' + new Date().getFullYear();
   document.getElementById('ps-chuva-label').textContent = CHUVA_MASK[mes] ? '🌧 Período de chuvas' : '☀ Período seco';
 });
-
-// ── Futuros B3 ────────────────────────────────────────────────────────────
-async function carregarFuturosB3() {
-  try {
-    const r = await fetch(API + '/api/futuro/b3');
-    const j = await r.json();
-    if (j.ok && j.data?.contratos?.length) {
-      futurosB3 = j.data.contratos;
-      atualizarFuturoStrip();
-    }
-  } catch(e) {
-    // silencioso — futuros são dados complementares
-  }
-}
-
-function futuroParaMes(mes, ano) {
-  return futurosB3.find(f => f.mes === mes && f.ano === ano) || null;
-}
-
-function atualizarFuturoStrip() {
-  // Mostra o próximo contrato futuro na price-strip (mês mais próximo disponível)
-  const hoje = new Date();
-  const proximo = futurosB3.find(f =>
-    f.ano > hoje.getFullYear() ||
-    (f.ano === hoje.getFullYear() && f.mes >= hoje.getMonth() + 1)
-  );
-  if (!proximo) return;
-  const el = document.getElementById('ps-futuro');
-  const elLabel = document.getElementById('ps-futuro-label');
-  const elSub = document.getElementById('ps-futuro-sub');
-  if (el) {
-    document.getElementById('ps-futuro-wrap').style.display = '';
-    el.textContent = 'R$ ' + proximo.preco_arroba.toFixed(0);
-    if (elLabel) elLabel.textContent = 'FUTURO B3 · ' + proximo.periodo.toUpperCase();
-    if (elSub) {
-      const sinal = proximo.variacao_pct > 0 ? '+' : '';
-      elSub.textContent = sinal + proximo.variacao_pct?.toFixed(2) + '% hoje · B3 Pregão Regular';
-      elSub.style.color = proximo.variacao_pct >= 0 ? 'var(--green2)' : 'var(--red)';
-    }
-  }
-}
 
 // ── Preço atual ───────────────────────────────────────────────────────────
 // Histórico embutido por estado e mês (espelho do scraper.py)
@@ -475,52 +427,17 @@ function renderResultado(d) {
   const lucroClass = f.lucro_lote >= 0 ? 'success' : 'danger';
   const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
   const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
- const anoAtual = new Date().getFullYear();
-
-  // Preço futuro B3 para o mês de abate
-  const futuroAbate = futuroParaMes(c.mes_abate_num, anoAtual);
-  const futuroAbateHtml = futuroAbate
-    ? `<div style="margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:11px">
-        <span style="background:#2a2200;border:1px solid var(--amber);border-radius:4px;
-          padding:2px 8px;color:var(--amber)">
-          B3 R$ ${futuroAbate.preco_arroba.toFixed(2)}/arr
-        </span>
-        <span style="color:var(--text3);font-size:10px;margin-left:6px">Pregão Regular</span>
-       </div>`
-    : `<div style="margin-top:6px;font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace">sem contrato B3 disponível para este mês</div>`;
 
   let tlHtml = '';
-    const anoAtual = new Date().getFullYear();
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
-    const futuro = futuroParaMes(t.mes_num, anoAtual);
-    const sinalVar = futuro?.variacao_pct > 0 ? '+' : '';
-    const corVar = futuro?.variacao_pct >= 0 ? 'var(--green2)' : 'var(--red)';
-    const b3Tag = futuro
-      ? `<span style="
-            display:inline-block;margin-left:8px;
-            background:#2a2200;border:1px solid var(--amber);
-            border-radius:4px;padding:1px 7px;
-            font-family:'IBM Plex Mono',monospace;font-size:10px;
-            color:var(--amber);vertical-align:middle">
-            B3 R$${futuro.preco_arroba.toFixed(0)}
-            <span style="color:${corVar}">${sinalVar}${futuro.variacao_pct?.toFixed(1)}%</span>
-          </span>`
-      : '';
-    const diffHtml = futuro
-      ? `<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:3px">
-            Δ hist vs B3: <span style="color:${futuro.preco_arroba >= t.preco ? 'var(--green)' : 'var(--red)'}">
-            ${futuro.preco_arroba >= t.preco ? '+' : ''}R$${(futuro.preco_arroba - t.preco).toFixed(0)}/arr</span>
-         </div>`
-      : '';
     tlHtml += `
       <div class="tl-item">
         <div class="tl-dot ${dotClass}"></div>
         <div class="tl-meta">
-          <div class="tl-date">${t.mes.toUpperCase()} ${anoAtual} ${t.is_abate ? '← ABATE PREVISTO' : ''}</div>
-          <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'} ${b3Tag}</div>
+          <div class="tl-date">${t.mes.toUpperCase()} 2026 ${t.is_abate ? '← ABATE PREVISTO' : ''}</div>
+          <div class="tl-price">R$ ${t.preco}/arroba ${t.chuva ? '🌧' : '☀'}</div>
           <div class="tl-desc">${t.chuva ? 'Período de chuvas — preço sazonal baixo' : 'Período seco — preço firme'}</div>
-                    ${diffHtml}
         </div>
       </div>`;
   });
@@ -589,14 +506,6 @@ function renderResultado(d) {
     </div>
 
     <div class="section-title">Evolução de preços — próximos meses</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:12px;display:flex;gap:16px;align-items:center">
-      <span>Preço histórico CEPEA (média)</span>
-      <span style="display:inline-flex;align-items:center;gap:5px">
-        <span style="display:inline-block;width:28px;height:1px;border-top:1.5px dashed var(--amber)"></span>
-        <span style="background:#2a2200;border:1px solid var(--amber);border-radius:3px;padding:1px 6px;color:var(--amber)">B3</span>
-        Pregão Regular B3 (quando disponível)
-      </span>
-    </div>
     <div class="card dark">${tlHtml}</div>
   `;
 }
