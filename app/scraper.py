@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 cache_preco  = TTLCache(maxsize=20, ttl=21600)
 cache_clima  = TTLCache(maxsize=10, ttl=10800)
+cache_futuro = TTLCache(maxsize=5,  ttl=3600)
 
 HEADERS = {
     "User-Agent": (
@@ -450,6 +451,38 @@ def comparativo_estados(ano: int = None) -> dict:
             "media_seca":  round(sum(ps)/len(ps), 2) if ps else 0,
             "mensal":      precos_ano,
         }
+    return resultado
+
+
+def carregar_futuros_b3() -> dict:
+    """
+    Lê app/futuros_b3.json gerado pelo buscar_futuro_b3.py.
+    Retorna dict com metadados + lista de contratos futuros.
+    TTL cache de 1h — o arquivo só muda quando o GitHub Action roda.
+    """
+    cache_key = "futuros_b3"
+    if cache_key in cache_futuro:
+        return cache_futuro[cache_key]
+
+    caminho = os.path.join(os.path.dirname(__file__), "futuros_b3.json")
+    if not os.path.exists(caminho):
+        raise FileNotFoundError(
+            "futuros_b3.json não encontrado. "
+            "Execute: python buscar_futuro_b3.py"
+        )
+    with open(caminho, "r", encoding="utf-8") as f:
+        dados = json.load(f)
+
+    contratos = dados.get("contratos", [])
+    if not contratos:
+        raise ValueError("futuros_b3.json está vazio ou mal formatado.")
+
+    resultado = {
+        "atualizado": dados.get("atualizado"),
+        "fonte":      dados.get("fonte", "Notícias Agrícolas · B3 Pregão Regular"),
+        "contratos":  contratos,
+    }
+    cache_futuro[cache_key] = resultado
     return resultado
 
 
