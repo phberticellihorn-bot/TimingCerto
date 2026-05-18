@@ -489,11 +489,43 @@ function renderResultado(d) {
   const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
   const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
 
+  // ── Sobrepor preço B3 quando disponível ──────────────────────────────────
+  const MESES_NUM = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
+  const mesAbateNum = MESES_NUM[c.mes_abate?.toLowerCase().slice(0,3)] || 0;
+  const b3Abate = mesAbateNum ? futuroParaMes(mesAbateNum, 2026) : null;
+
+  // Preço efetivo = B3 se disponível, senão histórico
+  const precoEfetivo = b3Abate ? b3Abate.preco_arroba : f.preco_abate;
+  const fontePreco = b3Abate ? `Futuro B3 · ${b3Abate.periodo}` : `Média histórica CEPEA ${d.estado} · ${c.mes_abate}`;
+  const precoCardClass = b3Abate ? 'warn' : '';
+
+  // Recalcular financeiro com preço efetivo
+  const arrobasCab = f.arrobas_cab;
+  const animais = d.animais;
+  const receitaEfetiva = precoEfetivo * arrobasCab * animais;
+  const lucroEfetivo = receitaEfetiva - f.custo_lote;
+  const diffEfetivo = f.preco_atual - precoEfetivo;  // positivo = hoje melhor
+  const diffTotalEfetivo = diffEfetivo * arrobasCab * animais;
+
+  const lucroClassEfetivo = lucroEfetivo >= 0 ? 'success' : 'danger';
+  const diffClassEfetivo = diffTotalEfetivo > 5000 ? 'danger' : diffTotalEfetivo < -5000 ? 'success' : 'warn';
+
+  // Tabela comparativo com B3 quando disponível
+  const mesConfNum = MESES_NUM[cp.confinamento.mes_abate?.toLowerCase().slice(0,3)] || 0;
+  const meSemiNum  = MESES_NUM[cp.semiconfinamento.mes_abate?.toLowerCase().slice(0,3)] || 0;
+  const b3Conf = mesConfNum ? futuroParaMes(mesConfNum, 2026) : null;
+  const b3Semi = meSemiNum  ? futuroParaMes(meSemiNum, 2026)  : null;
+  const precoConf = b3Conf ? b3Conf.preco_arroba : cp.confinamento.preco;
+  const precoSemi = b3Semi ? b3Semi.preco_arroba : cp.semiconfinamento.preco;
+  const lblConf = b3Conf ? `<span style="font-size:9px;color:var(--amber)">B3</span>` : `<span style="font-size:9px;color:var(--text3)">hist</span>`;
+  const lblSemi = b3Semi ? `<span style="font-size:9px;color:var(--amber)">B3</span>` : `<span style="font-size:9px;color:var(--text3)">hist</span>`;
+  const lucroConfEfetivo = (precoConf * arrobasCab * animais) - cp.confinamento.custo_lote;
+  const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
+  const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
+
   let tlHtml = '';
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
-    // Mapear nome do mês para número
-    const MESES_NUM = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
     const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
     const b3 = mesNum ? futuroParaMes(mesNum, 2026) : null;
     const b3Html = b3 ? `
@@ -525,30 +557,30 @@ function renderResultado(d) {
         <div class="card-value">${c.mes_abate}/2026</div>
         <div class="card-sub">${c.dias} dias · ${c.meses} meses · ${c.tem_chuva ? '⚠ período de chuvas' : '✅ período seco'}</div>
       </div>
-      <div class="card">
-        <div class="card-label">PREÇO ESTIMADO NO ABATE</div>
-        <div class="card-value">R$ ${f.preco_abate}/arr</div>
-        <div class="card-sub">Média histórica CEPEA ${d.estado} · ${c.mes_abate}</div>
+      <div class="card ${precoCardClass}">
+        <div class="card-label">PREÇO REFERÊNCIA NO ABATE</div>
+        <div class="card-value" style="${b3Abate?'color:var(--amber)':''}">R$ ${precoEfetivo.toFixed(0)}/arr</div>
+        <div class="card-sub">${fontePreco}${b3Abate ? `<br><span style="color:var(--text3)">Hist. CEPEA: R$ ${f.preco_abate}/arr</span>` : ''}</div>
       </div>
     </div>
 
     <div class="grid-2" style="margin-bottom:14px">
       <div class="card">
         <div class="card-label">RECEITA BRUTA DO LOTE</div>
-        <div class="card-value">${fmt(f.receita_lote)}</div>
-        <div class="card-sub">${d.animais} animais · ${f.arrobas_cab} arr/cab</div>
+        <div class="card-value">${fmt(receitaEfetiva)}</div>
+        <div class="card-sub">${d.animais} animais · ${arrobasCab} arr/cab · ${b3Abate ? 'preço B3' : 'preço histórico'}</div>
       </div>
-      <div class="card ${lucroClass}">
+      <div class="card ${lucroClassEfetivo}">
         <div class="card-label">LUCRO LÍQUIDO ESTIMADO</div>
-        <div class="card-value">${fmt(f.lucro_lote)}</div>
+        <div class="card-value">${fmt(lucroEfetivo)}</div>
         <div class="card-sub">Custo acumulado: ${fmt(f.custo_lote)}</div>
       </div>
     </div>
 
-    <div class="card ${diffClass}" style="margin-bottom:14px">
-      <div class="card-label">${f.diff_total > 0 ? 'PERDA SE AGUARDAR (vs. vender hoje)' : 'GANHO SE AGUARDAR (vs. vender hoje)'}</div>
-      <div class="card-value">${fmt(Math.abs(f.diff_total))}</div>
-      <div class="card-sub">R$ ${Math.abs(f.diff_arroba).toFixed(0)}/arr de diferença · hoje R$ ${f.preco_atual} vs abate R$ ${f.preco_abate}</div>
+    <div class="card ${diffClassEfetivo}" style="margin-bottom:14px">
+      <div class="card-label">${diffTotalEfetivo > 0 ? 'PERDA SE AGUARDAR (vs. vender hoje)' : 'GANHO SE AGUARDAR (vs. vender hoje)'}</div>
+      <div class="card-value">${fmt(Math.abs(diffTotalEfetivo))}</div>
+      <div class="card-sub">R$ ${Math.abs(diffEfetivo).toFixed(0)}/arr de diferença · hoje R$ ${f.preco_atual} vs abate R$ ${precoEfetivo.toFixed(0)} ${b3Abate ? '(B3)' : '(hist.)'}</div>
     </div>
 
     <div class="section-title" style="margin-top:20px">Confinamento vs. semiconfinamento</div>
@@ -557,20 +589,20 @@ function renderResultado(d) {
         <thead><tr><th>Indicador</th><th>Confinamento</th><th>Semiconfinamento</th></tr></thead>
         <tbody>
           <tr><td>Dias até abate</td>
-            <td class="${confWin?'win':''}">${cp.confinamento.dias}d</td>
-            <td class="${!confWin?'win':''}">${cp.semiconfinamento.dias}d</td></tr>
+            <td class="${confWinEfetivo?'win':''}">${cp.confinamento.dias}d</td>
+            <td class="${!confWinEfetivo?'win':''}">${cp.semiconfinamento.dias}d</td></tr>
           <tr><td>Mês de abate</td>
             <td>${cp.confinamento.mes_abate} ${cp.confinamento.chuva?'🌧':'☀'}</td>
             <td>${cp.semiconfinamento.mes_abate} ${cp.semiconfinamento.chuva?'🌧':'☀'}</td></tr>
-          <tr><td>Preço estimado</td>
-            <td class="${cp.confinamento.preco>=cp.semiconfinamento.preco?'win':'lose'}">R$ ${cp.confinamento.preco}/arr</td>
-            <td class="${cp.semiconfinamento.preco>cp.confinamento.preco?'win':'lose'}">R$ ${cp.semiconfinamento.preco}/arr</td></tr>
+          <tr><td>Preço referência</td>
+            <td class="${precoConf>=precoSemi?'win':'lose'}">R$ ${precoConf.toFixed(0)}/arr ${lblConf}</td>
+            <td class="${precoSemi>precoConf?'win':'lose'}">R$ ${precoSemi.toFixed(0)}/arr ${lblSemi}</td></tr>
           <tr><td>Custo total lote</td>
             <td class="${cp.confinamento.custo_lote<=cp.semiconfinamento.custo_lote?'win':'lose'}">${fmt(cp.confinamento.custo_lote)}</td>
             <td class="${cp.semiconfinamento.custo_lote<cp.confinamento.custo_lote?'win':'lose'}">${fmt(cp.semiconfinamento.custo_lote)}</td></tr>
           <tr><td><strong>Lucro líquido lote</strong></td>
-            <td class="${cp.confinamento.lucro_lote>=cp.semiconfinamento.lucro_lote?'win':'lose'}"><strong>${fmt(cp.confinamento.lucro_lote)}</strong></td>
-            <td class="${cp.semiconfinamento.lucro_lote>cp.confinamento.lucro_lote?'win':'lose'}"><strong>${fmt(cp.semiconfinamento.lucro_lote)}</strong></td></tr>
+            <td class="${confWinEfetivo?'win':'lose'}"><strong>${fmt(lucroConfEfetivo)}</strong></td>
+            <td class="${!confWinEfetivo?'win':'lose'}"><strong>${fmt(lucroSemiEfetivo)}</strong></td></tr>
         </tbody>
       </table>
     </div>
