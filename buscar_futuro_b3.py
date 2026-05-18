@@ -96,8 +96,10 @@ def buscar_futuros_b3() -> list:
 
         # Estrutura da tabela:
         # <td>Outubro/2026</td> | <td>350,20</td> | <td>-0,28</td>
-        linhas = driver.find_elements(By.CSS_SELECTOR, "table tbody tr")
-        logger.info(f"{len(linhas)} linhas encontradas")
+        # Pega apenas o primeiro tbody (fechamento mais recente)
+        primeiro_tbody = driver.find_element(By.CSS_SELECTOR, "table tbody")
+        linhas = primeiro_tbody.find_elements(By.TAG_NAME, "tr")
+        logger.info(f"{len(linhas)} linhas encontradas (primeira tabela)")
 
         for linha in linhas:
             cols = linha.find_elements(By.TAG_NAME, "td")
