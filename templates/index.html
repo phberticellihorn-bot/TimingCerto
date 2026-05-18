@@ -504,7 +504,7 @@ function renderResultado(d) {
   const animais = d.animais;
   const receitaEfetiva = precoEfetivo * arrobasCab * animais;
   const lucroEfetivo = receitaEfetiva - f.custo_lote;
-  const diffEfetivo = f.preco_atual - precoEfetivo;  // positivo = hoje melhor
+  const diffEfetivo = precoAtual - precoEfetivo;  // positivo = hoje melhor — usa precoAtual global (por estado)
   const diffTotalEfetivo = diffEfetivo * arrobasCab * animais;
 
   const lucroClassEfetivo = lucroEfetivo >= 0 ? 'success' : 'danger';
@@ -603,7 +603,7 @@ function renderResultado(d) {
     <div class="card ${diffClassEfetivo}" style="margin-bottom:14px">
       <div class="card-label">${diffTotalEfetivo > 0 ? 'PERDA SE AGUARDAR (vs. vender hoje)' : 'GANHO SE AGUARDAR (vs. vender hoje)'}</div>
       <div class="card-value">${fmt(Math.abs(diffTotalEfetivo))}</div>
-      <div class="card-sub">R$ ${Math.abs(diffEfetivo).toFixed(0)}/arr de diferença · hoje R$ ${f.preco_atual} vs abate R$ ${precoEfetivo.toFixed(0)} ${b3Abate ? '(B3)' : '(hist.)'}</div>
+      <div class="card-sub">R$ ${Math.abs(diffEfetivo).toFixed(0)}/arr de diferença · hoje R$ ${precoAtual} vs abate R$ ${precoEfetivo.toFixed(0)} ${b3Abate ? '(B3)' : '(hist.)'}</div>
     </div>
 
     <div class="section-title" style="margin-top:20px">Confinamento vs. semiconfinamento</div>
