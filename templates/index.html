@@ -6,132 +6,143 @@
 <title>Timing Certo — Consultoria Pecuária</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0d1a0f;--bg2:#0a150c;--bg3:#1a3d1e;
-  --green:#a8e6b0;--green2:#7ab882;--green3:#4a7a52;--green4:#2d6e35;--green5:#1e3a22;
-  --blue:#80b8e6;--amber:#e6a840;--red:#f08080;
-  --text:#e8f0e9;--text2:#7ab882;--text3:#4a7a52;
+  --bg:#F5F7F2;--bg2:#EDF0E8;--bg3:#E4EBE0;
+  --green:#3D6B35;--green2:#5A8A50;--green3:#7AAD70;--green4:#C4DDB8;--green5:#E4EBE0;
+  --blue:#3B7EC8;--amber:#C47A1A;--red:#C0392B;
+  --text:#1A2E18;--text2:#4A6A46;--text3:#8AAA85;
+  --white:#ffffff;--border:#E4EBE0;
 }
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
 
 /* NAV */
-nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:20px;font-weight:800;color:var(--green)}
-.logo span{color:var(--text2);font-weight:400;font-size:13px;margin-left:12px;font-family:'IBM Plex Mono',monospace}
-.nav-tabs{display:flex;gap:4px}
-.nav-tab{background:transparent;border:none;color:var(--text3);font-family:'Syne',sans-serif;font-size:13px;padding:8px 18px;border-radius:6px;cursor:pointer;transition:.2s}
-.nav-tab:hover{color:var(--text2);background:var(--bg3)}
-.nav-tab.active{color:var(--green);background:var(--bg3);font-weight:600}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:12px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:36px;height:36px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;position:relative}
+.logo-mark::after{content:'';position:absolute;inset:3px;border:1.5px solid rgba(255,255,255,.25);border-radius:5px}
+.logo-name{font-size:16px;font-weight:600;color:var(--text);line-height:1.1}
+.logo-sub{font-size:10px;color:var(--text3);font-weight:400}
+.nav-tabs{display:flex;gap:6px}
+.nav-tab{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--text3);background:transparent;border:1.5px solid transparent;padding:7px 18px;border-radius:8px;cursor:pointer;transition:.2s}
+.nav-tab:hover{color:var(--green);background:var(--bg)}
+.nav-tab.active{color:var(--green);background:#EDF4EA;border-color:var(--green4)}
 
 /* PAGES */
-.page{display:none;padding:32px 40px;max-width:1200px;margin:0 auto}
+.page{display:none;padding:28px 36px;max-width:1200px;margin:0 auto}
 .page.active{display:block}
 
 /* PRICE STRIP */
-.price-strip{background:var(--bg3);border:1px solid var(--green4);border-radius:10px;padding:16px 24px;display:flex;gap:32px;align-items:center;margin-bottom:28px;flex-wrap:wrap}
-.ps-item .ps-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em}
-.ps-item .ps-value{font-size:20px;font-weight:700;color:var(--green);margin-top:2px}
-.ps-item .ps-sub{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
-.ps-divider{width:1px;height:40px;background:var(--green5)}
-.ps-fonte{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto}
+.price-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.ps-item{background:var(--white);padding:14px 20px}
+.ps-item .ps-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.ps-item .ps-value{font-size:22px;font-weight:600;color:var(--text);margin-top:3px;letter-spacing:-.02em}
+.ps-item .ps-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.ps-divider{display:none}
+.ps-fonte{background:var(--bg);padding:14px 20px;font-size:10px;color:var(--text3);display:flex;align-items:center}
 
 /* SECTION */
-.section-title{font-size:14px;font-weight:700;color:var(--green);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.section-title::after{content:'';flex:1;height:1px;background:var(--green5)}
-.mono{font-family:'IBM Plex Mono',monospace}
+.section-title{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green2);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.mono{font-family:'Outfit',monospace}
 
 /* GRID */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 
 /* CARD */
-.card{background:var(--bg3);border:1px solid var(--green4);border-radius:10px;padding:20px}
-.card.dark{background:var(--bg2);border-color:var(--green5)}
-.card-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;margin-bottom:6px}
-.card-value{font-size:24px;font-weight:700;color:var(--green)}
-.card-sub{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
-.card.danger{background:#3d1a1a;border-color:#8b3a3a}
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card.dark{background:var(--bg2);border-color:var(--border)}
+.card-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.card-value{font-size:26px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+.card-sub{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.5}
+.card.danger{background:#FEF2F2;border-color:#FECACA}
 .card.danger .card-value{color:var(--red)}
-.card.warn{background:#3d2e0a;border-color:#8b6e1a}
+.card.danger .card-label{color:#E57373}
+.card.warn{background:#FFFBEB;border-color:#FDE68A}
 .card.warn .card-value{color:var(--amber)}
-.card.success{background:#1a3d2e;border-color:#2d8e5a}
-.card.success .card-value{color:#80e6b0}
+.card.warn .card-label{color:#D4A017}
+.card.success{background:#F0FDF4;border-color:var(--green4)}
+.card.success .card-value{color:var(--green)}
+.card.success .card-label{color:var(--green2)}
 
 /* FORM */
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
-.form-group input,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--green4);border-radius:6px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s}
-.form-group input:focus,.form-group select:focus{border-color:var(--green)}
-.form-group select option{background:var(--bg3)}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.form-group input,.form-group select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--green);background:var(--white)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal-info{background:var(--bg2);border:1px solid var(--green5);border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;font-family:'IBM Plex Mono',monospace;margin-bottom:16px}
+.modal-info{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px}
 
 /* BTN */
-.btn{border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;padding:13px 24px;cursor:pointer;transition:.2s}
-.btn-primary{background:var(--green);color:var(--bg);width:100%}
-.btn-primary:hover{background:#c5edd0}
-.btn-secondary{background:transparent;border:1px solid var(--green4);color:var(--text2);padding:8px 16px;font-size:12px}
-.btn-secondary.active{background:var(--bg3);color:var(--green);border-color:var(--green)}
+.btn{border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:12px 24px;cursor:pointer;transition:.2s}
+.btn-primary{background:var(--green);color:#fff;width:100%}
+.btn-primary:hover{background:#4A7E40}
+.btn-secondary{background:var(--white);border:1.5px solid var(--border);color:var(--text2);padding:7px 16px;font-size:12px;font-weight:500}
+.btn-secondary.active{background:#EDF4EA;color:var(--green);border-color:var(--green4)}
 
-/* COMPARATIVO TABLE */
+/* TABLE */
 .comp-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
-.comp-table th{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--green5)}
-.comp-table td{padding:10px 12px;border-bottom:1px solid var(--green5);color:var(--text2)}
+.comp-table th{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.comp-table td{padding:10px 12px;border-bottom:1px solid var(--bg3);color:var(--text2)}
 .comp-table td.win{color:var(--green);font-weight:600}
 .comp-table td.lose{color:var(--red)}
 
 /* TIMELINE */
-.tl-item{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
-.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--green4);margin-top:3px;flex-shrink:0}
+.tl-item{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--border);margin-top:4px;flex-shrink:0}
 .tl-dot.active{background:var(--green)}
 .tl-dot.warn{background:var(--amber)}
 .tl-dot.rain{background:var(--blue)}
-.tl-meta .tl-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)}
-.tl-meta .tl-price{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--green);margin-top:2px;font-weight:500}
-.tl-meta .tl-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.tl-meta .tl-date{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.tl-meta .tl-price{font-size:15px;color:var(--green2);margin-top:2px;font-weight:600}
+.tl-meta .tl-desc{font-size:11px;color:var(--text3);margin-top:2px}
 
 /* RECOMMENDATION */
-.rec-box{background:var(--bg);border:1px solid var(--green);border-radius:10px;padding:18px 20px;margin-top:4px}
-.rec-box .rec-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px}
-.rec-box .rec-text{font-size:12px;color:var(--text2);line-height:1.8}
+.rec-box{background:#F0FDF4;border:1.5px solid var(--green4);border-radius:12px;padding:18px 20px;margin-top:4px}
+.rec-box .rec-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:8px}
+.rec-box .rec-text{font-size:13px;color:var(--text2);line-height:1.8}
 
-/* CHART wrapper */
-.chart-wrap{background:var(--bg2);border:1px solid var(--green5);border-radius:10px;padding:20px;margin-bottom:20px}
-.chart-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+/* CHART */
+.chart-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+.chart-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 
-/* STATE BADGES */
-.estado-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--green5);color:var(--text3)}
-.estado-badge.active{background:var(--bg3);border-color:var(--green4);color:var(--green)}
+/* BADGES */
+.estado-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);color:var(--text3);background:var(--white);transition:.2s}
+.estado-badge.active{background:#EDF4EA;border-color:var(--green4);color:var(--green)}
 
 /* LOADING */
-.loading{color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:20px 0;text-align:center}
+.loading{color:var(--text3);font-size:13px;padding:24px 0;text-align:center}
 
 /* CLIMA */
 .clima-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.clima-bar .cb-data{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);width:70px}
-.clima-bar .cb-track{flex:1;background:var(--green5);border-radius:4px;height:8px;overflow:hidden}
+.clima-bar .cb-data{font-size:11px;color:var(--text3);width:70px}
+.clima-bar .cb-track{flex:1;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden}
 .clima-bar .cb-fill{height:100%;border-radius:4px;background:var(--blue);transition:width .3s}
-.clima-bar .cb-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue);width:50px;text-align:right}
+.clima-bar .cb-val{font-size:11px;color:var(--text2);width:110px;text-align:right}
 
 /* FONTE */
-.fonte-note{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);margin-top:16px;line-height:1.8;text-align:right}
+.fonte-note{font-size:10px;color:var(--text3);margin-top:16px;line-height:1.8;text-align:right}
 
 @media(max-width:700px){
-  nav{padding:14px 20px;flex-direction:column;gap:12px}
-  .page{padding:20px}
+  nav{padding:12px 16px;flex-direction:column;gap:10px}
+  .page{padding:16px}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
-  .price-strip{gap:16px}
+  .price-strip{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <div>
-    <div class="logo">Timing Certo <span>CONSULTORIA PECUÁRIA</span></div>
+  <div class="logo">
+    <div class="logo-mark">T</div>
+    <div>
+      <div class="logo-name">Timing Certo</div>
+      <div class="logo-sub">Consultoria Pecuária</div>
+    </div>
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('calculadora')">Calculadora</button>
@@ -140,24 +151,21 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════ CALCULADORA ═══ -->
 <div id="page-calculadora" class="page active">
 
   <div class="price-strip" id="price-strip">
     <div class="ps-item">
-      <div class="ps-label">BOI GORDO HOJE</div>
+      <div class="ps-label">Boi gordo hoje</div>
       <div class="ps-value" id="ps-preco">carregando...</div>
       <div class="ps-sub" id="ps-atualizado">—</div>
     </div>
-    <div class="ps-divider"></div>
     <div class="ps-item">
-      <div class="ps-label" id="ps-hist-label">MÉDIA HISTÓRICA MAI (MT)</div>
+      <div class="ps-label" id="ps-hist-label">Média histórica Mai (MT)</div>
       <div class="ps-value" id="ps-hist">R$ 304</div>
       <div class="ps-sub">CEPEA 2020–2026</div>
     </div>
-    <div class="ps-divider"></div>
     <div class="ps-item">
-      <div class="ps-label">PERÍODO ATUAL</div>
+      <div class="ps-label">Período atual</div>
       <div class="ps-value" id="ps-periodo">—</div>
       <div class="ps-sub" id="ps-chuva-label">—</div>
     </div>
@@ -165,7 +173,6 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
   </div>
 
   <div class="grid-2" style="gap:24px">
-    <!-- FORM -->
     <div>
       <div class="section-title">Dados do confinamento</div>
 
@@ -234,23 +241,21 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
       </div>
     </div>
 
-    <!-- RESULTADO -->
     <div id="resultado">
       <div class="loading">Calculando...</div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ HISTÓRICO ═════ -->
 <div id="page-historico" class="page">
   <div class="section-title">Histórico de preços — 2020 a 2025</div>
 
   <div class="chart-controls">
-    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'IBM Plex Mono',monospace">ESTADO:</span>
+    <span style="font-size:12px;color:var(--text3);margin-right:4px;font-weight:500">Estado:</span>
     <span class="estado-badge active" onclick="selecionarEstado('MT',this)">MT</span>
     <span class="estado-badge" onclick="selecionarEstado('SP',this)">SP</span>
     <span class="estado-badge" onclick="selecionarEstado('GO',this)">GO</span>
-    <span class="estado-badge" onclick="selecionarEstado('TODOS',this)">TODOS</span>
+    <span class="estado-badge" onclick="selecionarEstado('TODOS',this)">Todos</span>
   </div>
 
   <div class="chart-wrap">
@@ -267,12 +272,11 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
   <div class="fonte-note">Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ CLIMA ══════════ -->
 <div id="page-clima" class="page">
   <div class="section-title">Previsão climática — próximos 16 dias</div>
 
   <div class="chart-controls" style="margin-bottom:20px">
-    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'IBM Plex Mono',monospace">ESTADO:</span>
+    <span style="font-size:12px;color:var(--text3);margin-right:4px;font-weight:500">Estado:</span>
     <span class="estado-badge active" onclick="selecionarClima('MT',this)">MT</span>
     <span class="estado-badge" onclick="selecionarClima('SP',this)">SP</span>
     <span class="estado-badge" onclick="selecionarClima('GO',this)">GO</span>
@@ -283,21 +287,18 @@ nav{background:var(--bg);border-bottom:1px solid var(--green5);padding:18px 40px
 </div>
 
 <script>
-const API = '';  // mesmo host
+const API = '';
 let precoAtual = 294;
 let chartHistorico = null;
 let chartChuva = null;
 let estadoAtual = 'MT';
 let estadoClima = 'MT';
-let futurosB3 = [];  // contratos futuros B3
+let futurosB3 = [];
 
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-const COR_ESTADOS = { MT:'#a8e6b0', SP:'#80b8e6', GO:'#e6c840' };
+const COR_ESTADOS = { MT:'#3D6B35', SP:'#3B7EC8', GO:'#C47A1A' };
 const CHUVA_MASK = [true,true,true,false,false,false,false,false,false,true,true,true];
-//                  Jan  Fev  Mar  Abr  Mai  Jun  Jul  Ago  Set  Out  Nov  Dez
-// MT/GO/SP: chuva Out–Mar · seca Abr–Set (INMET)
 
-// ── Init ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
   await carregarFuturosB3();
   await carregarPrecoAtual();
@@ -316,7 +317,6 @@ async function carregarFuturosB3() {
     const j = await r.json();
     futurosB3 = j.contratos || [];
   } catch(e) {
-    // fallback: dados embutidos do arquivo json fornecido
     futurosB3 = [
       {mes:5,ano:2026,periodo:'Maio/2026',preco_arroba:336.55,variacao_pct:-0.72},
       {mes:6,ano:2026,periodo:'Junho/2026',preco_arroba:335.75,variacao_pct:-1.25},
@@ -345,9 +345,8 @@ function renderB3Strip() {
   const strip = document.getElementById('price-strip');
   const f = proximoFuturo();
   if (!f) return;
-  const varClass = f.variacao_pct >= 0 ? 'color:var(--green)' : 'color:var(--red)';
+  const varColor = f.variacao_pct >= 0 ? 'var(--green)' : 'var(--red)';
   const varSinal = f.variacao_pct >= 0 ? '+' : '';
-  // Remove item B3 anterior se existir
   const existing = document.getElementById('ps-b3-item');
   if (existing) existing.remove();
   const divider = document.createElement('div');
@@ -357,18 +356,15 @@ function renderB3Strip() {
   item.className = 'ps-item';
   item.id = 'ps-b3-item';
   item.innerHTML = `
-    <div class="ps-label">FUTURO B3 — ${f.periodo.toUpperCase()}</div>
-    <div class="ps-value" style="${varClass}">R$ ${f.preco_arroba.toFixed(0)}</div>
-    <div class="ps-sub" style="${varClass}">${varSinal}${f.variacao_pct.toFixed(2)}% · B3 pregão</div>
+    <div class="ps-label">Futuro B3 — ${f.periodo}</div>
+    <div class="ps-value" style="color:${varColor}">R$ ${f.preco_arroba.toFixed(0)}</div>
+    <div class="ps-sub" style="color:${varColor}">${varSinal}${f.variacao_pct.toFixed(2)}% · B3 pregão</div>
   `;
-  // Insere antes do ps-fonte (último filho)
   const fonte = document.getElementById('ps-fonte');
   strip.insertBefore(divider, fonte);
   strip.insertBefore(item, fonte);
 }
 
-// ── Preço atual ───────────────────────────────────────────────────────────
-// Histórico embutido por estado e mês (espelho do scraper.py)
 const HIST = {
   SP: {
     2020:[171,175,168,162,170,183,198,210,205,208,215,220],
@@ -420,7 +416,7 @@ function atualizarHistStrip() {
   const mesNome = MESES[mes-1];
   const val = precoHistMes(estado, mes);
   document.getElementById('ps-hist').textContent = 'R$ ' + val;
-  document.getElementById('ps-hist-label').textContent = `MÉDIA HISTÓRICA ${mesNome} (${estado})`;
+  document.getElementById('ps-hist-label').textContent = `Média histórica ${mesNome} (${estado})`;
 }
 
 async function carregarPrecoAtual(estado) {
@@ -442,7 +438,6 @@ async function carregarPrecoAtual(estado) {
   atualizarHistStrip();
 }
 
-// ── Calculadora ───────────────────────────────────────────────────────────
 function aplicarModalidade() {
   const mod = document.getElementById('modalidade').value;
   const info = document.getElementById('modal-info');
@@ -459,7 +454,6 @@ function aplicarModalidade() {
 }
 
 async function calcular() {
-  // Atualiza média histórica no topo conforme estado selecionado
   atualizarHistStrip();
   const payload = {
     modalidade: document.getElementById('modalidade').value,
@@ -485,40 +479,29 @@ function fmt(n) { return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); }
 
 function renderResultado(d) {
   const c = d.ciclo, f = d.financeiro, cp = d.comparativo;
-  const lucroClass = f.lucro_lote >= 0 ? 'success' : 'danger';
-  const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
-  const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
-
-  // ── Sobrepor preço B3 quando disponível ──────────────────────────────────
   const MESES_NUM = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
   const mesAbateNum = MESES_NUM[c.mes_abate?.toLowerCase().slice(0,3)] || 0;
   const b3Abate = mesAbateNum ? futuroParaMes(mesAbateNum, 2026) : null;
-
-  // Preço efetivo = B3 se disponível, senão histórico
   const precoEfetivo = b3Abate ? b3Abate.preco_arroba : f.preco_abate;
   const fontePreco = b3Abate ? `Futuro B3 · ${b3Abate.periodo}` : `Média histórica CEPEA ${d.estado} · ${c.mes_abate}`;
   const precoCardClass = b3Abate ? 'warn' : '';
-
-  // Recalcular financeiro com preço efetivo
   const arrobasCab = f.arrobas_cab;
   const animais = d.animais;
   const receitaEfetiva = precoEfetivo * arrobasCab * animais;
   const lucroEfetivo = receitaEfetiva - f.custo_lote;
-  const diffEfetivo = precoAtual - precoEfetivo;  // positivo = hoje melhor — usa precoAtual global (por estado)
+  const diffEfetivo = precoAtual - precoEfetivo;
   const diffTotalEfetivo = diffEfetivo * arrobasCab * animais;
-
   const lucroClassEfetivo = lucroEfetivo >= 0 ? 'success' : 'danger';
   const diffClassEfetivo = diffTotalEfetivo > 5000 ? 'danger' : diffTotalEfetivo < -5000 ? 'success' : 'warn';
 
-  // Tabela comparativo com B3 quando disponível
   const mesConfNum = MESES_NUM[cp.confinamento.mes_abate?.toLowerCase().slice(0,3)] || 0;
   const meSemiNum  = MESES_NUM[cp.semiconfinamento.mes_abate?.toLowerCase().slice(0,3)] || 0;
   const b3Conf = mesConfNum ? futuroParaMes(mesConfNum, 2026) : null;
   const b3Semi = meSemiNum  ? futuroParaMes(meSemiNum, 2026)  : null;
   const precoConf = b3Conf ? b3Conf.preco_arroba : cp.confinamento.preco;
   const precoSemi = b3Semi ? b3Semi.preco_arroba : cp.semiconfinamento.preco;
-  const lblConf = b3Conf ? `<span style="font-size:9px;color:var(--amber)">B3</span>` : `<span style="font-size:9px;color:var(--text3)">hist</span>`;
-  const lblSemi = b3Semi ? `<span style="font-size:9px;color:var(--amber)">B3</span>` : `<span style="font-size:9px;color:var(--text3)">hist</span>`;
+  const lblConf = b3Conf ? `<span style="font-size:10px;color:var(--amber)">B3</span>` : `<span style="font-size:10px;color:var(--text3)">hist</span>`;
+  const lblSemi = b3Semi ? `<span style="font-size:10px;color:var(--amber)">B3</span>` : `<span style="font-size:10px;color:var(--text3)">hist</span>`;
   const lucroConfEfetivo = (precoConf * arrobasCab * animais) - cp.confinamento.custo_lote;
   const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
   const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
@@ -528,42 +511,36 @@ function renderResultado(d) {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
     const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
     const b3 = mesNum ? futuroParaMes(mesNum, 2026) : null;
-
     const diffVsHist = b3 ? (b3.preco_arroba - t.preco) : 0;
     const diffColor = diffVsHist >= 0 ? 'var(--green)' : 'var(--red)';
     const diffSinal = diffVsHist >= 0 ? '+' : '';
 
-    // Preço principal: B3 se disponível, histórico se não
     const precoPrincipalHtml = b3
-      ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--bg3);border:1px solid var(--green4);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
+      ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px;flex-wrap:wrap">
+           <span style="font-size:18px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
+           <span style="font-size:11px;color:var(--text3)">/arroba</span>
+           <span style="font-size:10px;background:#FFFBEB;border:1px solid #FDE68A;color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
+           <span style="font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
          </div>
-         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
-           hist. CEPEA: R$ ${t.preco}/arr
-           <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)} vs hist.</span>
-         </div>`
-      : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--green2);font-weight:700">R$ ${t.preco}</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--bg2);border:1px solid var(--green5);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">sem contrato B3</span>
+         <div style="font-size:11px;color:var(--text3);margin-top:3px">hist. CEPEA: R$ ${t.preco}/arr <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)} vs hist.</span></div>`
+      : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px;flex-wrap:wrap">
+           <span style="font-size:18px;color:var(--green2);font-weight:700">R$ ${t.preco}</span>
+           <span style="font-size:11px;color:var(--text3)">/arroba</span>
+           <span style="font-size:10px;background:var(--bg2);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
          </div>`;
 
     const sazonalidadeHtml = `<div style="font-size:11px;color:var(--text3);margin-top:3px">${t.chuva ? '🌧 Período de chuvas — oferta tende a ser maior' : '☀ Período seco — preço tende a ser mais firme'}</div>`;
 
     const abateBadge = t.is_abate
-      ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--green4);color:var(--bg);border-radius:4px;padding:2px 8px;font-weight:700">← ABATE PREVISTO</span>`
+      ? `<span style="font-size:10px;background:var(--green);color:#fff;border-radius:4px;padding:2px 8px;font-weight:600">← ABATE PREVISTO</span>`
       : '';
 
     tlHtml += `
-      <div class="tl-item" style="${t.is_abate ? 'background:var(--bg2);border:1px solid var(--green4);border-radius:8px;padding:10px 12px;margin-bottom:10px' : ''}">
+      <div class="tl-item" style="${t.is_abate ? 'background:#F0FDF4;border:1.5px solid var(--green4);border-radius:10px;padding:10px 12px;margin-bottom:10px' : ''}">
         <div class="tl-dot ${dotClass}" style="${t.is_abate ? 'margin-top:6px' : ''}"></div>
         <div class="tl-meta" style="flex:1">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
+            <span style="font-size:12px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
             ${abateBadge}
           </div>
           ${precoPrincipalHtml}
@@ -576,12 +553,12 @@ function renderResultado(d) {
     <div class="section-title">Análise estratégica</div>
     <div class="grid-2" style="margin-bottom:14px">
       <div class="card ${c.tem_chuva ? 'danger' : 'success'}">
-        <div class="card-label">ABATE PREVISTO</div>
+        <div class="card-label">Abate previsto</div>
         <div class="card-value">${c.mes_abate}/2026</div>
         <div class="card-sub">${c.dias} dias · ${c.meses} meses · ${c.tem_chuva ? '⚠ período de chuvas' : '✅ período seco'}</div>
       </div>
       <div class="card ${precoCardClass}">
-        <div class="card-label">PREÇO REFERÊNCIA NO ABATE</div>
+        <div class="card-label">Preço referência no abate</div>
         <div class="card-value" style="${b3Abate?'color:var(--amber)':''}">R$ ${precoEfetivo.toFixed(0)}/arr</div>
         <div class="card-sub">${fontePreco}${b3Abate ? `<br><span style="color:var(--text3)">Hist. CEPEA: R$ ${f.preco_abate}/arr</span>` : ''}</div>
       </div>
@@ -589,19 +566,19 @@ function renderResultado(d) {
 
     <div class="grid-2" style="margin-bottom:14px">
       <div class="card">
-        <div class="card-label">RECEITA BRUTA DO LOTE</div>
+        <div class="card-label">Receita bruta do lote</div>
         <div class="card-value">${fmt(receitaEfetiva)}</div>
         <div class="card-sub">${d.animais} animais · ${arrobasCab} arr/cab · ${b3Abate ? 'preço B3' : 'preço histórico'}</div>
       </div>
       <div class="card ${lucroClassEfetivo}">
-        <div class="card-label">LUCRO LÍQUIDO ESTIMADO</div>
+        <div class="card-label">Lucro líquido estimado</div>
         <div class="card-value">${fmt(lucroEfetivo)}</div>
         <div class="card-sub">Custo acumulado: ${fmt(f.custo_lote)}</div>
       </div>
     </div>
 
     <div class="card ${diffClassEfetivo}" style="margin-bottom:14px">
-      <div class="card-label">${diffTotalEfetivo > 0 ? 'PERDA SE AGUARDAR (vs. vender hoje)' : 'GANHO SE AGUARDAR (vs. vender hoje)'}</div>
+      <div class="card-label">${diffTotalEfetivo > 0 ? 'Perda se aguardar (vs. vender hoje)' : 'Ganho se aguardar (vs. vender hoje)'}</div>
       <div class="card-value">${fmt(Math.abs(diffTotalEfetivo))}</div>
       <div class="card-sub">R$ ${Math.abs(diffEfetivo).toFixed(0)}/arr de diferença · hoje R$ ${precoAtual} vs abate R$ ${precoEfetivo.toFixed(0)} ${b3Abate ? '(B3)' : '(hist.)'}</div>
     </div>
@@ -640,7 +617,6 @@ function renderResultado(d) {
   `;
 }
 
-// ── Histórico ─────────────────────────────────────────────────────────────
 async function carregarHistorico(estado) {
   try {
     if (estado === 'TODOS') {
@@ -667,37 +643,22 @@ async function carregarHistorico(estado) {
 function renderGraficoHistorico(dados, estado) {
   const labels = dados.map(d => d.periodo);
   const precos = dados.map(d => d.preco);
-  const bgColors = dados.map(d => d.chuva ? 'rgba(128,184,230,0.5)' : 'rgba(168,230,176,0.5)');
-  const borderColors = dados.map(d => d.chuva ? '#80b8e6' : '#a8e6b0');
-
+  const bgColors = dados.map(d => d.chuva ? 'rgba(59,126,200,0.5)' : 'rgba(61,107,53,0.5)');
+  const borderColors = dados.map(d => d.chuva ? '#3B7EC8' : '#3D6B35');
   if (chartHistorico) chartHistorico.destroy();
   const ctx = document.getElementById('chart-historico').getContext('2d');
   chartHistorico = new Chart(ctx, {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: `Preço boi gordo ${estado} (R$/arroba)`,
-        data: precos,
-        backgroundColor: bgColors,
-        borderColor: borderColors,
-        borderWidth: 1,
-      }]
-    },
+    data: { labels, datasets: [{ label: `Preço boi gordo ${estado} (R$/arroba)`, data: precos, backgroundColor: bgColors, borderColor: borderColors, borderWidth: 1 }] },
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } },
-        tooltip: {
-          callbacks: {
-            label: ctx => `R$ ${ctx.raw}/arr`,
-            afterLabel: ctx => dados[ctx.dataIndex].chuva ? '🌧 Período de chuvas' : '☀ Período seco',
-          }
-        }
+        legend: { labels: { color: '#4A6A46', font: { size: 12 } } },
+        tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr`, afterLabel: ctx => dados[ctx.dataIndex].chuva ? '🌧 Período de chuvas' : '☀ Período seco' } }
       },
       scales: {
-        x: { ticks: { color: '#4a7a52', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: '#1e3a22' } },
-        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+        x: { ticks: { color: '#8AAA85', font: { size: 10 }, maxRotation: 90 }, grid: { color: '#E4EBE0' } },
+        y: { ticks: { color: '#8AAA85', font: { size: 11 }, callback: v => 'R$'+v }, grid: { color: '#E4EBE0' }, min: 150 }
       }
     }
   });
@@ -709,20 +670,17 @@ function renderGraficoTodos(mt, sp, go) {
   const ctx = document.getElementById('chart-historico').getContext('2d');
   chartHistorico = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'MT', data: mt.map(d=>d.preco), borderColor: COR_ESTADOS.MT, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
-        { label: 'SP', data: sp.map(d=>d.preco), borderColor: COR_ESTADOS.SP, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
-        { label: 'GO', data: go.map(d=>d.preco), borderColor: COR_ESTADOS.GO, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
-      ]
-    },
+    data: { labels, datasets: [
+      { label: 'MT', data: mt.map(d=>d.preco), borderColor: COR_ESTADOS.MT, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+      { label: 'SP', data: sp.map(d=>d.preco), borderColor: COR_ESTADOS.SP, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+      { label: 'GO', data: go.map(d=>d.preco), borderColor: COR_ESTADOS.GO, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+    ]},
     options: {
       responsive: true,
-      plugins: { legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } } },
+      plugins: { legend: { labels: { color: '#4A6A46', font: { size: 12 } } } },
       scales: {
-        x: { ticks: { color: '#4a7a52', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: '#1e3a22' } },
-        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+        x: { ticks: { color: '#8AAA85', font: { size: 10 }, maxRotation: 90 }, grid: { color: '#E4EBE0' } },
+        y: { ticks: { color: '#8AAA85', font: { size: 11 }, callback: v => 'R$'+v }, grid: { color: '#E4EBE0' }, min: 150 }
       }
     }
   });
@@ -734,22 +692,19 @@ function renderChuvaSeca(dados, estado) {
   const ctx = document.getElementById('chart-chuva-seca').getContext('2d');
   chartChuva = new Chart(ctx, {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: '🌧 Média chuva (R$/arr)', data: dados.map(d=>d.media_chuva), backgroundColor: 'rgba(128,184,230,0.7)', borderColor: '#80b8e6', borderWidth: 1 },
-        { label: '☀ Média seca (R$/arr)',  data: dados.map(d=>d.media_seca),  backgroundColor: 'rgba(168,230,176,0.7)', borderColor: '#a8e6b0', borderWidth: 1 },
-      ]
-    },
+    data: { labels, datasets: [
+      { label: '🌧 Média chuva (R$/arr)', data: dados.map(d=>d.media_chuva), backgroundColor: 'rgba(59,126,200,0.6)', borderColor: '#3B7EC8', borderWidth: 1 },
+      { label: '☀ Média seca (R$/arr)',  data: dados.map(d=>d.media_seca),  backgroundColor: 'rgba(61,107,53,0.6)', borderColor: '#3D6B35', borderWidth: 1 },
+    ]},
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } },
+        legend: { labels: { color: '#4A6A46', font: { size: 12 } } },
         tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr` } }
       },
       scales: {
-        x: { ticks: { color: '#4a7a52', font: { family: 'IBM Plex Mono' } }, grid: { color: '#1e3a22' } },
-        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+        x: { ticks: { color: '#8AAA85', font: { size: 11 } }, grid: { color: '#E4EBE0' } },
+        y: { ticks: { color: '#8AAA85', font: { size: 11 }, callback: v => 'R$'+v }, grid: { color: '#E4EBE0' }, min: 150 }
       }
     }
   });
@@ -760,20 +715,19 @@ function renderCardsComparativo(dados, estado) {
   const mediaDiff = (totalDiff / dados.length).toFixed(1);
   const maxDiff = Math.max(...dados.map(d=>d.diferenca));
   const anoMaxDiff = dados.find(d=>d.diferenca === maxDiff)?.ano;
-
   document.getElementById('cards-comparativo').innerHTML = `
     <div class="card">
-      <div class="card-label">DIFERENÇA MÉDIA SECA VS CHUVA</div>
+      <div class="card-label">Diferença média seca vs chuva</div>
       <div class="card-value">R$ ${mediaDiff}/arr</div>
       <div class="card-sub">Média 2020–2025 · ${estado}</div>
     </div>
     <div class="card warn">
-      <div class="card-label">MAIOR DIFERENÇA REGISTRADA</div>
+      <div class="card-label">Maior diferença registrada</div>
       <div class="card-value">R$ ${maxDiff}/arr</div>
       <div class="card-sub">Em ${anoMaxDiff} · ${estado}</div>
     </div>
     <div class="card danger">
-      <div class="card-label">IMPACTO LOTE 100 CABEÇAS (17 arr)</div>
+      <div class="card-label">Impacto lote 100 cabeças (17 arr)</div>
       <div class="card-value">${fmt(parseFloat(mediaDiff) * 17 * 100)}</div>
       <div class="card-sub">Perda média por vender na chuva vs seca</div>
     </div>
@@ -787,7 +741,6 @@ function selecionarEstado(estado, el) {
   carregarHistorico(estado);
 }
 
-// ── Clima ─────────────────────────────────────────────────────────────────
 async function carregarClima(estado) {
   document.getElementById('clima-content').innerHTML = '<div class="loading">Carregando previsão climática...</div>';
   const coords = COORDS_FRONT[estado] || COORDS_FRONT.MT;
@@ -798,9 +751,7 @@ async function carregarClima(estado) {
     const datas = d.daily?.time || [];
     const chuva = d.daily?.precipitation_sum || [];
     const prob = d.daily?.precipitation_probability_max || [];
-    const previsao = datas.map((data,i) => ({
-      data, chuva_mm: chuva[i]||0, probabilidade_pct: prob[i]||0
-    }));
+    const previsao = datas.map((data,i) => ({ data, chuva_mm: chuva[i]||0, probabilidade_pct: prob[i]||0 }));
     renderClima({ estado, coords, previsao, fonte: 'Open-Meteo', atualizado: new Date().toISOString() });
   } catch(e) {
     document.getElementById('clima-content').innerHTML = '<div class="loading">Erro ao carregar Open-Meteo. Verifique sua conexão.</div>';
@@ -811,7 +762,7 @@ function renderClima(dados) {
   const maxChuva = Math.max(...dados.previsao.map(d=>d.chuva_mm), 1);
   let barras = dados.previsao.slice(0,16).map(d => {
     const pct = Math.round((d.chuva_mm / maxChuva) * 100);
-    const cor = d.probabilidade_pct > 60 ? '#80b8e6' : d.probabilidade_pct > 30 ? '#e6a840' : '#a8e6b0';
+    const cor = d.probabilidade_pct > 60 ? '#3B7EC8' : d.probabilidade_pct > 30 ? '#C47A1A' : '#3D6B35';
     return `
       <div class="clima-bar">
         <div class="cb-data">${d.data.slice(5)}</div>
@@ -825,35 +776,24 @@ function renderClima(dados) {
 
   document.getElementById('clima-content').innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <div style="background:var(--bg3);border:1px solid var(--green4);border-radius:6px;padding:6px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">
+      <div style="background:#EDF4EA;border:1.5px solid var(--green4);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--text2)">
         📍 Referência: <strong style="color:var(--green)">${dados.coords?.cidade || dados.estado}</strong>
       </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">
-        Dados representativos da região — não da propriedade
-      </div>
+      <div style="font-size:11px;color:var(--text3)">Dados representativos da região — não da propriedade</div>
     </div>
     <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#80b8e6"></span> Prob. chuva &gt;60%
-      </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#e6a840"></span> Prob. chuva 30–60%
-      </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#a8e6b0"></span> Prob. chuva &lt;30%
-      </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-left:4px">
-        · Barra = volume em mm · % = probabilidade de ocorrência
-      </div>
+      <div style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#3B7EC8"></span> Prob. chuva &gt;60%</div>
+      <div style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#C47A1A"></span> Prob. chuva 30–60%</div>
+      <div style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#3D6B35"></span> Prob. chuva &lt;30%</div>
     </div>
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card ${diasChuva > 8 ? 'danger' : diasChuva > 4 ? 'warn' : 'success'}">
-        <div class="card-label">DIAS COM CHUVA (16 dias)</div>
+        <div class="card-label">Dias com chuva (16 dias)</div>
         <div class="card-value">${diasChuva} dias</div>
         <div class="card-sub">${diasChuva > 8 ? '⚠ Alta umidade — risco operacional elevado' : diasChuva > 4 ? 'Atenção — período úmido' : '✅ Condições favoráveis ao confinamento'}</div>
       </div>
       <div class="card">
-        <div class="card-label">CHUVA ACUMULADA PREVISTA</div>
+        <div class="card-label">Chuva acumulada prevista</div>
         <div class="card-value">${totalMM} mm</div>
         <div class="card-sub">Próximos 16 dias · ${dados.coords?.cidade || dados.estado}</div>
       </div>
@@ -870,13 +810,11 @@ function selecionarClima(estado, el) {
   carregarClima(estado);
 }
 
-// ── Pages ─────────────────────────────────────────────────────────────────
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   event.target.classList.add('active');
-
   if (id === 'historico') carregarHistorico(estadoAtual);
   if (id === 'clima') carregarClima(estadoClima);
 }
