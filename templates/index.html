@@ -130,6 +130,13 @@ nav{
   font-family:'JetBrains Mono',monospace;
 }
 .ps-divider{width:1px;height:48px;background:var(--border)}
+.ps-item .ps-update{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  color:var(--text4);
+  margin-top:4px;
+  letter-spacing:.02em;
+}
 .ps-fonte{
   font-family:'JetBrains Mono',monospace;
   font-size:10px;
@@ -397,12 +404,14 @@ nav{
       <div class="ps-label">BOI GORDO HOJE</div>
       <div class="ps-value" id="ps-preco">carregando...</div>
       <div class="ps-sub" id="ps-atualizado">—</div>
+      <div class="ps-update" id="ps-scot-update">—</div>
     </div>
     <div class="ps-divider"></div>
     <div class="ps-item">
       <div class="ps-label" id="ps-hist-label">MÉDIA HISTÓRICA MAI (MT)</div>
       <div class="ps-value" id="ps-hist">R$ 304</div>
       <div class="ps-sub">CEPEA 2020–2026</div>
+      <div class="ps-update" id="ps-hist-update">—</div>
     </div>
     <div class="ps-divider"></div>
     <div class="ps-item">
@@ -410,10 +419,9 @@ nav{
       <div class="ps-value" id="ps-periodo">—</div>
       <div class="ps-sub" id="ps-chuva-label">—</div>
     </div>
-    <div class="ps-fonte" id="ps-fonte" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
-      <span id="ps-fonte-texto">—</span>
-      <span id="ps-fonte-atualizacao" style="font-size:9px;color:var(--text4)">—</span>
-    </div>
+    <!-- B3 inserido dinamicamente via renderB3Strip() -->
+    <!-- id ps-fonte mantido como âncora de inserção, invisível -->
+    <div id="ps-fonte" style="display:none"></div>
   </div>
 
   <div class="grid-2" style="gap:24px">
@@ -574,29 +582,41 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('ps-chuva-label').textContent = CHUVA_MASK[mes] ? '🌧 Período de chuvas' : '☀ Período seco';
 });
 
+let labelAtualizadoB3 = '';   // data de atualização do futuros_b3.json
+let labelAtualizadoHist = ''; // data de atualização do historico.json
+
 async function carregarFuturosB3() {
   try {
     const r = await fetch('futuros_b3.json');
     const j = await r.json();
     futurosB3 = j.contratos || [];
 
-    // Data de atualização do arquivo futuros_b3.json
     const atualizadoB3 = j.atualizado_em || j.timestamp || null;
-    const labelB3 = atualizadoB3
-      ? `Futuro B3 · atualizado em ${formatarDataHora(atualizadoB3)}`
-      : 'Futuro B3';
+    labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
 
     // Tenta carregar historico.json para pegar sua data de atualização
     try {
       const rH = await fetch('historico.json');
       const jH = await rH.json();
       const atualizadoHist = jH.atualizado_em || jH.timestamp || null;
+      labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
+
+      // Preenche a data abaixo da média histórica no price strip
+      const elHistUpdate = document.getElementById('ps-hist-update');
+      if (elHistUpdate) elHistUpdate.textContent = labelAtualizadoHist
+        ? `CEPEA · ${labelAtualizadoHist}`
+        : '';
+
       const labelHist = atualizadoHist
-        ? `CEPEA/Esalq · atualizado em ${formatarDataHora(atualizadoHist)}`
+        ? `CEPEA/Esalq · atualizado em ${labelAtualizadoHist}`
         : 'CEPEA/Esalq';
+      const labelB3 = atualizadoB3
+        ? `Futuro B3 · atualizado em ${labelAtualizadoB3}`
+        : 'Futuro B3';
       document.getElementById('fonte-note-historico').innerHTML =
         `Fonte: ${labelHist}<br>${labelB3} · Médias mensais boi gordo @15kg · R$/arroba`;
     } catch(_) {
+      const labelB3 = atualizadoB3 ? `Futuro B3 · atualizado em ${labelAtualizadoB3}` : 'Futuro B3';
       document.getElementById('fonte-note-historico').innerHTML =
         `Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba<br>${labelB3}`;
     }
@@ -634,10 +654,9 @@ function renderB3Strip() {
   const varSinal = f.variacao_pct >= 0 ? '+' : '';
   // Remove item B3 anterior se existir
   const existing = document.getElementById('ps-b3-item');
-  if (existing) existing.remove();
+  if (existing) { existing.previousElementSibling?.remove(); existing.remove(); }
   const divider = document.createElement('div');
   divider.className = 'ps-divider';
-  divider.id = 'ps-b3-divider';
   const item = document.createElement('div');
   item.className = 'ps-item';
   item.id = 'ps-b3-item';
@@ -645,8 +664,9 @@ function renderB3Strip() {
     <div class="ps-label">FUTURO B3 — ${f.periodo.toUpperCase()}</div>
     <div class="ps-value" style="${varClass}">R$ ${f.preco_arroba.toFixed(0)}</div>
     <div class="ps-sub" style="${varClass}">${varSinal}${f.variacao_pct.toFixed(2)}% · B3 pregão</div>
+    <div class="ps-update">${labelAtualizadoB3 ? 'B3 · ' + labelAtualizadoB3 : ''}</div>
   `;
-  // Insere antes do ps-fonte (último filho)
+  // Insere antes do ps-fonte (âncora invisível)
   const fonte = document.getElementById('ps-fonte');
   strip.insertBefore(divider, fonte);
   strip.insertBefore(item, fonte);
@@ -718,26 +738,23 @@ async function carregarPrecoAtual(estado) {
       document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual.toFixed(0);
       document.getElementById('ps-atualizado').textContent = 'por arroba · ' + estado;
 
-      // Fonte + data de cotação
-      const dataCot = j.data.data_cotacao ? j.data.data_cotacao : '';
-      document.getElementById('ps-fonte-texto').textContent = j.data.fonte + (dataCot ? ' · ' + dataCot : '');
-
-      // Hora da última atualização do arquivo (campo atualizado_em do JSON, ou fallback para agora)
+      // Data/hora da última consulta do scraper ao site Scot
       const atualizadoEm = j.data.atualizado_em || j.data.timestamp || null;
-      document.getElementById('ps-fonte-atualizacao').textContent = atualizadoEm
-        ? 'Atualizado em ' + formatarDataHora(atualizadoEm)
-        : 'Atualizado em ' + formatarDataHora(new Date().toISOString());
+      const dataCot = j.data.data_cotacao || '';
+      const fonteLabel = j.data.fonte || 'Scot Consultoria';
+      document.getElementById('ps-scot-update').textContent = atualizadoEm
+        ? `${fonteLabel}${dataCot ? ' · ' + dataCot : ''} · ${formatarDataHora(atualizadoEm)}`
+        : fonteLabel + (dataCot ? ' · ' + dataCot : '');
 
       // Atualiza fonte-note da calculadora
       document.getElementById('fonte-note-calc').innerHTML =
-        `Preço atual: ${j.data.fonte}${dataCot ? ' · ' + dataCot : ''}<br>` +
+        `Preço atual: ${fonteLabel}${dataCot ? ' · ' + dataCot : ''}<br>` +
         `Histórico: CEPEA 2020–2025 · Clima: Open-Meteo · Futuro: B3<br>` +
         `Protótipo v0.3 · MT, SP e GO`;
     }
   } catch(e) {
     document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual;
-    document.getElementById('ps-fonte-texto').textContent = 'histórico CEPEA (fallback)';
-    document.getElementById('ps-fonte-atualizacao').textContent = '';
+    document.getElementById('ps-scot-update').textContent = 'histórico CEPEA (fallback)';
   }
   atualizarHistStrip();
 }
