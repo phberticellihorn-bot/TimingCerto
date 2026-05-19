@@ -6,253 +6,317 @@
 <title>Timing Certo — Consultoria Pecuária</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  color:var(--text2);
-  font-size:13px;
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#F7F3EE; --cream2:#EDE7DD; --cream3:#E0D9CE;
+  --brown:#2C1810; --brown2:#4A2E1A; --brown3:#6B4226;
+  --gold:#C4832A; --gold2:#E8B84B; --gold3:#F5D78E;
+  --green:#2D5A2E; --green2:#4A7A3A; --green3:#8FAB84;
+  --red:#8B2020; --blue:#1A3A6B; --amber:#B87820;
+  --text:#1C1008; --text2:#5C3C20; --text3:#9C7A5A;
+  --border:#D4C4B0; --border2:#EAE0D3;
 }
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px}
 
-.cb-track{
-  flex:1;
-  height:12px;
-  background:#172554;
-  border-radius:999px;
-  overflow:hidden;
-}
+/* ── LAYOUT ── */
+.app-shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
 
-.cb-fill{
-  height:100%;
-  border-radius:999px;
-  background:linear-gradient(to right,#3b82f6,#60a5fa);
-}
+/* ── SIDEBAR ── */
+.sidebar{background:var(--brown);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-top{padding:32px 28px 24px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo-badge{width:44px;height:44px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.logo-badge span{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--brown);font-style:italic}
+.logo-name{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold3);font-weight:600;line-height:1.2}
+.logo-sub{font-size:10px;color:var(--brown3);letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
 
-.cb-val{
-  width:70px;
-  text-align:right;
-  color:#93c5fd;
-  font-size:13px;
-  font-weight:700;
-}
+.sidebar-nav{padding:20px 16px;flex:1}
+.nav-label{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brown3);padding:0 12px;margin-bottom:6px;margin-top:16px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;cursor:pointer;margin-bottom:2px;transition:.15s;border:1px solid transparent}
+.nav-item:hover{background:rgba(196,131,42,.1);border-color:rgba(196,131,42,.15)}
+.nav-item.active{background:rgba(196,131,42,.15);border-color:rgba(196,131,42,.3)}
+.nav-item .ni-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.7}
+.nav-item .ni-label{font-size:13px;color:var(--gold3);font-weight:500}
+.nav-item.active .ni-label{color:var(--gold2);font-weight:600}
+.nav-item.active .ni-icon{opacity:1}
 
-.fonte-note{
-  margin-top:18px;
-  color:var(--text3);
-  font-size:12px;
-  line-height:1.9;
-}
+.sidebar-footer{padding:20px 28px;border-top:1px solid rgba(255,255,255,.06);font-size:10px;color:var(--brown3);line-height:1.8}
 
-canvas{
-  max-width:100%;
-}
+/* ── MAIN ── */
+.main{background:var(--cream);display:flex;flex-direction:column}
+.topbar{background:var(--brown2);border-bottom:1px solid rgba(196,131,42,.2);padding:0 36px;display:flex;align-items:stretch;gap:0}
+.tb-cell{padding:14px 24px;border-right:1px solid rgba(196,131,42,.12);flex:1}
+.tb-cell:last-child{border-right:none}
+.tb-label{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--brown3)}
+.tb-value{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold2);margin-top:3px;line-height:1}
+.tb-sub{font-size:10px;color:var(--brown3);margin-top:2px}
+.tb-fonte{font-size:9px;color:var(--brown3);padding:14px 24px;display:flex;align-items:center;font-style:italic}
 
-@media(max-width:1000px){
-  .grid-2{
-    grid-template-columns:1fr;
-  }
-}
+.content{padding:32px 36px;flex:1}
 
-@media(max-width:700px){
-  nav{
-    padding:18px;
-    flex-direction:column;
-    gap:18px;
-  }
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
 
-  .page{
-    padding:18px;
-  }
+/* ── TYPOGRAPHY ── */
+.section-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--brown2);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
 
-  .grid-3,
-  .form-row{
-    grid-template-columns:1fr;
-  }
+/* ── CARDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.card{background:#fff;border:1px solid var(--border2);border-radius:10px;padding:20px}
+.card.dark{background:var(--cream2);border-color:var(--border)}
+.card-label{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.card-value{font-family:'Playfair Display',serif;font-size:26px;color:var(--brown);font-weight:600}
+.card-sub{font-size:12px;color:var(--text3);margin-top:6px;line-height:1.6}
+.card.danger{background:#FDF0F0;border-color:#D4A0A0}
+.card.danger .card-value{color:var(--red)}
+.card.danger .card-label{color:#A06060}
+.card.warn{background:#FDF6E8;border-color:#D4B870}
+.card.warn .card-value{color:var(--amber)}
+.card.warn .card-label{color:#A08040}
+.card.success{background:#EEF5EC;border-color:#A0C4A0}
+.card.success .card-value{color:var(--green)}
+.card.success .card-label{color:#608060}
 
-  .card-value{
-    font-size:34px;
-  }
+/* ── FORM ── */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.form-group input,.form-group select{width:100%;background:var(--cream);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:9px 12px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.form-group input:focus,.form-group select:focus{border-color:var(--gold);background:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-info{background:var(--cream2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:14px}
 
-  .ps-value{
-    font-size:28px;
-  }
+/* ── BUTTON ── */
+.btn-primary{background:var(--green);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:11px 24px;cursor:pointer;width:100%;letter-spacing:.02em;transition:.2s}
+.btn-primary:hover{background:var(--green2)}
+
+/* ── TABLE ── */
+.comp-table{width:100%;border-collapse:collapse;font-size:13px}
+.comp-table th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.comp-table td{padding:10px 12px;border-bottom:1px solid var(--border2);color:var(--text2)}
+.comp-table td.win{color:var(--green);font-weight:600}
+.comp-table td.lose{color:var(--red)}
+
+/* ── TIMELINE ── */
+.tl-item{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--border);margin-top:5px;flex-shrink:0;border:2px solid var(--border)}
+.tl-dot.active{background:var(--green);border-color:var(--green2)}
+.tl-dot.rain{background:var(--blue);border-color:var(--blue)}
+.tl-meta{flex:1}
+
+/* ── REC ── */
+.rec-box{background:#fff;border:1px solid var(--border2);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:18px 20px}
+.rec-box .rec-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--brown2);margin-bottom:8px}
+.rec-box .rec-text{font-size:13px;color:var(--text2);line-height:1.8}
+
+/* ── CHARTS ── */
+.chart-wrap{background:#fff;border:1px solid var(--border2);border-radius:10px;padding:20px;margin-bottom:20px}
+.chart-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.estado-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);color:var(--text3);background:#fff;transition:.2s}
+.estado-badge:hover{border-color:var(--gold);color:var(--gold)}
+.estado-badge.active{background:var(--green);border-color:var(--green);color:#fff}
+
+.loading{color:var(--text3);font-size:13px;padding:24px 0;text-align:center;font-style:italic}
+.fonte-note{font-size:10px;color:var(--text3);margin-top:16px;line-height:1.8;text-align:right;font-style:italic}
+
+/* ── CLIMA ── */
+.clima-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.clima-bar .cb-data{font-size:11px;color:var(--text3);width:70px}
+.clima-bar .cb-track{flex:1;background:var(--cream2);border-radius:4px;height:7px;overflow:hidden}
+.clima-bar .cb-fill{height:100%;border-radius:4px;transition:width .3s}
+.clima-bar .cb-val{font-size:11px;color:var(--text2);width:110px;text-align:right}
+
+@media(max-width:900px){
+  .app-shell{grid-template-columns:1fr}
+  .sidebar{height:auto;position:relative;flex-direction:row;flex-wrap:wrap}
+  .sidebar-top{padding:16px 20px;border-right:1px solid rgba(255,255,255,.06);border-bottom:none;flex:1}
+  .sidebar-nav{padding:12px 16px;display:flex;flex-wrap:wrap;gap:4px}
+  .nav-label{display:none}
+  .sidebar-footer{display:none}
+  .topbar{flex-wrap:wrap}
+  .tb-cell{min-width:140px}
+  .content{padding:20px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
+<div class="app-shell">
 
-<nav>
-  <div>
-    <div class="logo">Timing Certo <span>CONSULTORIA PECUÁRIA</span></div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('calculadora')">Calculadora</button>
-    <button class="nav-tab" onclick="showPage('historico')">Histórico 5 anos</button>
-    <button class="nav-tab" onclick="showPage('clima')">Clima</button>
-  </div>
-</nav>
-
-<!-- ═══════════════════════════════════════════════ CALCULADORA ═══ -->
-<div id="page-calculadora" class="page active">
-
-  <div class="price-strip" id="price-strip">
-    <div class="ps-item">
-      <div class="ps-label">BOI GORDO HOJE</div>
-      <div class="ps-value" id="ps-preco">carregando...</div>
-      <div class="ps-sub" id="ps-atualizado">—</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo-badge"><span>T</span></div>
+      <div class="logo-name">Timing Certo</div>
+      <div class="logo-sub">Consultoria Pecuária</div>
     </div>
-    <div class="ps-divider"></div>
-    <div class="ps-item">
-      <div class="ps-label" id="ps-hist-label">MÉDIA HISTÓRICA MAI (MT)</div>
-      <div class="ps-value" id="ps-hist">R$ 304</div>
-      <div class="ps-sub">CEPEA 2020–2026</div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Módulos</div>
+      <div class="nav-item active" onclick="showPage('calculadora',this)">
+        <div class="ni-icon">🧮</div>
+        <div class="ni-label">Calculadora</div>
+      </div>
+      <div class="nav-item" onclick="showPage('historico',this)">
+        <div class="ni-icon">📈</div>
+        <div class="ni-label">Histórico 5 anos</div>
+      </div>
+      <div class="nav-item" onclick="showPage('clima',this)">
+        <div class="ni-icon">🌦</div>
+        <div class="ni-label">Clima</div>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      Preço: CEPEA/Esalq · atualização 6h<br>
+      Histórico: 2020–2025<br>
+      Clima: Open-Meteo · Futuro: B3<br>
+      Protótipo v0.3 · MT, SP e GO
     </div>
-    <div class="ps-divider"></div>
-    <div class="ps-item">
-      <div class="ps-label">PERÍODO ATUAL</div>
-      <div class="ps-value" id="ps-periodo">—</div>
-      <div class="ps-sub" id="ps-chuva-label">—</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR / PRICE STRIP -->
+    <div class="topbar" id="price-strip">
+      <div class="tb-cell">
+        <div class="tb-label">Boi gordo hoje</div>
+        <div class="tb-value" id="ps-preco">—</div>
+        <div class="tb-sub" id="ps-atualizado">carregando</div>
+      </div>
+      <div class="tb-cell">
+        <div class="tb-label" id="ps-hist-label">Média histórica Mai (MT)</div>
+        <div class="tb-value" id="ps-hist">R$ 304</div>
+        <div class="tb-sub">CEPEA 2020–2026</div>
+      </div>
+      <div class="tb-cell">
+        <div class="tb-label">Período atual</div>
+        <div class="tb-value" id="ps-periodo" style="font-size:14px;margin-top:6px">—</div>
+        <div class="tb-sub" id="ps-chuva-label">—</div>
+      </div>
+      <div class="tb-fonte" id="ps-fonte">—</div>
     </div>
-    <div class="ps-fonte" id="ps-fonte">—</div>
-  </div>
 
-  <div class="grid-2" style="gap:24px">
-    <!-- FORM -->
-    <div>
-      <div class="section-title">Dados do confinamento</div>
+    <!-- CONTENT -->
+    <div class="content">
 
-      <div class="form-group">
-        <label>Estado</label>
-        <select id="estado" onchange="carregarPrecoAtual(); calcular()">
-          <option value="MT">Mato Grosso (MT)</option>
-          <option value="SP">São Paulo (SP)</option>
-          <option value="GO">Goiás (GO)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Modalidade</label>
-        <select id="modalidade" onchange="aplicarModalidade()">
-          <option value="confinamento">Confinamento (ciclo 10–12 meses)</option>
-          <option value="semi">Semiconfinamento (ciclo 20–24 meses)</option>
-        </select>
-      </div>
-      <div class="modal-info" id="modal-info">
-        <strong style="color:var(--green)">Confinamento:</strong> Alimentação 100% no cocho. Ciclo curto, maior custo/dia, abate concentrado ago–set. Alta exposição à sazonalidade.
-      </div>
-
-      <div class="form-group">
-        <label>Número de animais</label>
-        <input type="number" id="animais" value="100" min="1" oninput="calcular()">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Peso atual médio (kg)</label>
-          <input type="number" id="peso_atual" value="420" min="100" oninput="calcular()">
+      <!-- CALCULADORA -->
+      <div id="page-calculadora" class="page active">
+        <div class="grid-2" style="gap:28px">
+          <div>
+            <div class="section-title">Dados do confinamento</div>
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="estado" onchange="carregarPrecoAtual(); calcular()">
+                <option value="MT">Mato Grosso (MT)</option>
+                <option value="SP">São Paulo (SP)</option>
+                <option value="GO">Goiás (GO)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Modalidade</label>
+              <select id="modalidade" onchange="aplicarModalidade()">
+                <option value="confinamento">Confinamento (ciclo 10–12 meses)</option>
+                <option value="semi">Semiconfinamento (ciclo 20–24 meses)</option>
+              </select>
+            </div>
+            <div class="modal-info" id="modal-info">
+              <strong style="color:var(--green)">Confinamento:</strong> Alimentação 100% no cocho. Ciclo curto, maior custo/dia, abate concentrado ago–set. Alta exposição à sazonalidade.
+            </div>
+            <div class="form-group">
+              <label>Número de animais</label>
+              <input type="number" id="animais" value="100" min="1" oninput="calcular()">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Peso atual médio (kg)</label>
+                <input type="number" id="peso_atual" value="420" min="100" oninput="calcular()">
+              </div>
+              <div class="form-group">
+                <label>Peso de abate (kg)</label>
+                <input type="number" id="peso_abate" value="520" min="100" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>GPD — ganho/dia (kg)</label>
+                <input type="number" id="gpd" value="1.4" step="0.1" min="0.3" oninput="calcular()">
+              </div>
+              <div class="form-group">
+                <label>Custo/dia por cabeça (R$)</label>
+                <input type="number" id="custo_dia" value="28" min="1" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Mês de entrada no sistema</label>
+              <select id="mes_entrada" onchange="calcular()">
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5" selected>Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="calcular()">Recalcular</button>
+          </div>
+          <div id="resultado"><div class="loading">Calculando...</div></div>
         </div>
-        <div class="form-group">
-          <label>Peso de abate (kg)</label>
-          <input type="number" id="peso_abate" value="520" min="100" oninput="calcular()">
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div id="page-historico" class="page">
+        <div class="section-title">Histórico de preços — 2020 a 2025</div>
+        <div class="chart-controls">
+          <span style="font-size:12px;color:var(--text3);margin-right:4px;font-weight:500">Estado:</span>
+          <span class="estado-badge active" onclick="selecionarEstado('MT',this)">MT</span>
+          <span class="estado-badge" onclick="selecionarEstado('SP',this)">SP</span>
+          <span class="estado-badge" onclick="selecionarEstado('GO',this)">GO</span>
+          <span class="estado-badge" onclick="selecionarEstado('TODOS',this)">Todos</span>
         </div>
+        <div class="chart-wrap"><canvas id="chart-historico" height="90"></canvas></div>
+        <div class="section-title">Chuva vs. Seca — impacto no preço</div>
+        <div class="chart-wrap"><canvas id="chart-chuva-seca" height="80"></canvas></div>
+        <div id="cards-comparativo" class="grid-3" style="margin-top:20px"></div>
+        <div class="fonte-note">Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba</div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>GPD — ganho/dia (kg)</label>
-          <input type="number" id="gpd" value="1.4" step="0.1" min="0.3" oninput="calcular()">
+      <!-- CLIMA -->
+      <div id="page-clima" class="page">
+        <div class="section-title">Previsão climática — próximos 16 dias</div>
+        <div class="chart-controls" style="margin-bottom:20px">
+          <span style="font-size:12px;color:var(--text3);margin-right:4px;font-weight:500">Estado:</span>
+          <span class="estado-badge active" onclick="selecionarClima('MT',this)">MT</span>
+          <span class="estado-badge" onclick="selecionarClima('SP',this)">SP</span>
+          <span class="estado-badge" onclick="selecionarClima('GO',this)">GO</span>
         </div>
-        <div class="form-group">
-          <label>Custo/dia por cabeça (R$)</label>
-          <input type="number" id="custo_dia" value="28" min="1" oninput="calcular()">
-        </div>
+        <div id="clima-content"><div class="loading">Carregando previsão climática...</div></div>
+        <div class="fonte-note">Fonte: Open-Meteo API · Atualizado automaticamente</div>
       </div>
 
-      <div class="form-group">
-        <label>Mês de entrada no sistema</label>
-        <select id="mes_entrada" onchange="calcular()">
-          <option value="3">Março</option>
-          <option value="4">Abril</option>
-          <option value="5" selected>Maio</option>
-          <option value="6">Junho</option>
-          <option value="7">Julho</option>
-        </select>
-      </div>
-
-      <div class="fonte-note">
-        Preço atual: CEPEA/Esalq (atualização automática 6h)<br>
-        Histórico: CEPEA 2020–2025 · Clima: Open-Meteo · Futuro: B3<br>
-        Protótipo v0.3 · MT, SP e GO
-      </div>
-    </div>
-
-    <!-- RESULTADO -->
-    <div id="resultado">
-      <div class="loading">Calculando...</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════ HISTÓRICO ═════ -->
-<div id="page-historico" class="page">
-  <div class="section-title">Histórico de preços — 2020 a 2025</div>
-
-  <div class="chart-controls">
-    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'Inter',sans-serif">ESTADO:</span>
-    <span class="estado-badge active" onclick="selecionarEstado('MT',this)">MT</span>
-    <span class="estado-badge" onclick="selecionarEstado('SP',this)">SP</span>
-    <span class="estado-badge" onclick="selecionarEstado('GO',this)">GO</span>
-    <span class="estado-badge" onclick="selecionarEstado('TODOS',this)">TODOS</span>
-  </div>
-
-  <div class="chart-wrap">
-    <canvas id="chart-historico" height="90"></canvas>
-  </div>
-
-  <div class="section-title">Chuva vs. Seca — impacto no preço</div>
-  <div class="chart-wrap">
-    <canvas id="chart-chuva-seca" height="80"></canvas>
-  </div>
-
-  <div id="cards-comparativo" class="grid-3" style="margin-top:20px"></div>
-
-  <div class="fonte-note">Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba</div>
-</div>
-
-<!-- ═══════════════════════════════════════════════ CLIMA ══════════ -->
-<div id="page-clima" class="page">
-  <div class="section-title">Previsão climática — próximos 16 dias</div>
-
-  <div class="chart-controls" style="margin-bottom:20px">
-    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'Inter',sans-serif">ESTADO:</span>
-    <span class="estado-badge active" onclick="selecionarClima('MT',this)">MT</span>
-    <span class="estado-badge" onclick="selecionarClima('SP',this)">SP</span>
-    <span class="estado-badge" onclick="selecionarClima('GO',this)">GO</span>
-  </div>
-
-  <div id="clima-content"><div class="loading">Carregando previsão climática...</div></div>
-  <div class="fonte-note">Fonte: Open-Meteo API · Atualizado automaticamente · Gratuito e sem autenticação</div>
-</div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-shell -->
 
 <script>
-const API = '';  // mesmo host
+const API = '';
 let precoAtual = 294;
 let chartHistorico = null;
 let chartChuva = null;
 let estadoAtual = 'MT';
 let estadoClima = 'MT';
-let futurosB3 = [];  // contratos futuros B3
+let futurosB3 = [];
 
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-const COR_ESTADOS = { MT:'#a8e6b0', SP:'#80b8e6', GO:'#e6c840' };
+const COR_ESTADOS = { MT:'#2D5A2E', SP:'#1A3A6B', GO:'#8B6000' };
 const CHUVA_MASK = [true,true,true,false,false,false,false,false,false,true,true,true];
-//                  Jan  Fev  Mar  Abr  Mai  Jun  Jul  Ago  Set  Out  Nov  Dez
-// MT/GO/SP: chuva Out–Mar · seca Abr–Set (INMET)
 
-// ── Init ──────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
   await carregarFuturosB3();
   await carregarPrecoAtual();
   calcular();
   carregarHistorico('MT');
   carregarClima('MT');
-
   const mes = new Date().getMonth();
   document.getElementById('ps-periodo').textContent = MESES[mes] + '/' + new Date().getFullYear();
   document.getElementById('ps-chuva-label').textContent = CHUVA_MASK[mes] ? '🌧 Período de chuvas' : '☀ Período seco';
@@ -264,7 +328,6 @@ async function carregarFuturosB3() {
     const j = await r.json();
     futurosB3 = j.contratos || [];
   } catch(e) {
-    // fallback: dados embutidos do arquivo json fornecido
     futurosB3 = [
       {mes:5,ano:2026,periodo:'Maio/2026',preco_arroba:336.55,variacao_pct:-0.72},
       {mes:6,ano:2026,periodo:'Junho/2026',preco_arroba:335.75,variacao_pct:-1.25},
@@ -278,14 +341,10 @@ async function carregarFuturosB3() {
   renderB3Strip();
 }
 
-function futuroParaMes(mes, ano) {
-  return futurosB3.find(f => f.mes === mes && f.ano === ano) || null;
-}
-
+function futuroParaMes(mes, ano) { return futurosB3.find(f => f.mes === mes && f.ano === ano) || null; }
 function proximoFuturo() {
   const agora = new Date();
-  const mesAtual = agora.getMonth() + 1;
-  const anoAtual = agora.getFullYear();
+  const mesAtual = agora.getMonth() + 1, anoAtual = agora.getFullYear();
   return futurosB3.find(f => f.ano > anoAtual || (f.ano === anoAtual && f.mes >= mesAtual)) || futurosB3[0] || null;
 }
 
@@ -293,60 +352,27 @@ function renderB3Strip() {
   const strip = document.getElementById('price-strip');
   const f = proximoFuturo();
   if (!f) return;
-  const varClass = f.variacao_pct >= 0 ? 'color:var(--green)' : 'color:var(--red)';
+  const varColor = f.variacao_pct >= 0 ? 'var(--green)' : 'var(--red)';
   const varSinal = f.variacao_pct >= 0 ? '+' : '';
-  // Remove item B3 anterior se existir
   const existing = document.getElementById('ps-b3-item');
   if (existing) existing.remove();
-  const divider = document.createElement('div');
-  divider.className = 'ps-divider';
-  divider.id = 'ps-b3-divider';
   const item = document.createElement('div');
-  item.className = 'ps-item';
+  item.className = 'tb-cell';
   item.id = 'ps-b3-item';
   item.innerHTML = `
-    <div class="ps-label">FUTURO B3 — ${f.periodo.toUpperCase()}</div>
-    <div class="ps-value" style="${varClass}">R$ ${f.preco_arroba.toFixed(0)}</div>
-    <div class="ps-sub" style="${varClass}">${varSinal}${f.variacao_pct.toFixed(2)}% · B3 pregão</div>
+    <div class="tb-label">Futuro B3 — ${f.periodo}</div>
+    <div class="tb-value" style="color:${varColor}">R$ ${f.preco_arroba.toFixed(0)}</div>
+    <div class="tb-sub" style="color:${varColor}">${varSinal}${f.variacao_pct.toFixed(2)}% · B3 pregão</div>
   `;
-  // Insere antes do ps-fonte (último filho)
   const fonte = document.getElementById('ps-fonte');
-  strip.insertBefore(divider, fonte);
   strip.insertBefore(item, fonte);
 }
 
-// ── Preço atual ───────────────────────────────────────────────────────────
-// Histórico embutido por estado e mês (espelho do scraper.py)
 const HIST = {
-  SP: {
-    2020:[171,175,168,162,170,183,198,210,205,208,215,220],
-    2021:[228,235,242,248,255,258,262,268,258,250,245,248],
-    2022:[298,305,312,308,295,285,278,272,265,260,255,262],
-    2023:[248,242,238,235,230,228,232,238,242,248,252,258],
-    2024:[225,228,243,258,268,278,288,300,292,302,335,352],
-    2025:[310,318,320,315,308,312,316,318,312,318,322,325],
-    2026:[330,340,348,355,350,0,0,0,0,0,0,0],
-  },
-  MT: {
-    2020:[168,172,165,158,166,180,195,207,202,205,212,218],
-    2021:[225,232,238,245,252,255,258,265,255,247,242,245],
-    2022:[294,301,308,304,291,281,274,268,261,256,251,258],
-    2023:[244,238,234,231,226,224,228,234,238,244,248,254],
-    2024:[221,224,239,254,264,274,284,296,288,298,331,348],
-    2025:[306,314,316,311,304,308,312,314,308,314,318,321],
-    2026:[326,336,344,351,346,0,0,0,0,0,0,0],
-  },
-  GO: {
-    2020:[169,173,166,160,168,181,196,208,203,206,213,219],
-    2021:[226,233,240,246,253,256,260,266,256,248,243,246],
-    2022:[296,303,310,306,293,283,276,270,263,258,253,260],
-    2023:[246,240,236,233,228,226,230,236,240,246,250,256],
-    2024:[223,226,241,256,266,276,286,298,290,300,333,350],
-    2025:[308,316,318,313,306,310,314,316,310,316,320,323],
-    2026:[328,338,346,353,348,0,0,0,0,0,0,0],
-  },
+  SP:{2020:[171,175,168,162,170,183,198,210,205,208,215,220],2021:[228,235,242,248,255,258,262,268,258,250,245,248],2022:[298,305,312,308,295,285,278,272,265,260,255,262],2023:[248,242,238,235,230,228,232,238,242,248,252,258],2024:[225,228,243,258,268,278,288,300,292,302,335,352],2025:[310,318,320,315,308,312,316,318,312,318,322,325],2026:[330,340,348,355,350,0,0,0,0,0,0,0]},
+  MT:{2020:[168,172,165,158,166,180,195,207,202,205,212,218],2021:[225,232,238,245,252,255,258,265,255,247,242,245],2022:[294,301,308,304,291,281,274,268,261,256,251,258],2023:[244,238,234,231,226,224,228,234,238,244,248,254],2024:[221,224,239,254,264,274,284,296,288,298,331,348],2025:[306,314,316,311,304,308,312,314,308,314,318,321],2026:[326,336,344,351,346,0,0,0,0,0,0,0]},
+  GO:{2020:[169,173,166,160,168,181,196,208,203,206,213,219],2021:[226,233,240,246,253,256,260,266,256,248,243,246],2022:[296,303,310,306,293,283,276,270,263,258,253,260],2023:[246,240,236,233,228,226,230,236,240,246,250,256],2024:[223,226,241,256,266,276,286,298,290,300,333,350],2025:[308,316,318,313,306,310,314,316,310,316,320,323],2026:[328,338,346,353,348,0,0,0,0,0,0,0]},
 };
-
 const COORDS_FRONT = {
   MT:{lat:-15.601,lon:-56.097,nome:'Mato Grosso',cidade:'Cuiabá, MT'},
   SP:{lat:-21.177,lon:-47.810,nome:'São Paulo',cidade:'Ribeirão Preto, SP'},
@@ -355,22 +381,15 @@ const COORDS_FRONT = {
 
 function precoHistMes(estado, mes) {
   const anos = Object.keys(HIST[estado]).map(Number).sort((a,b)=>b-a);
-  for (const ano of anos) {
-    const v = HIST[estado][ano][mes-1];
-    if (v > 0) return v;
-  }
+  for (const ano of anos) { const v = HIST[estado][ano][mes-1]; if (v > 0) return v; }
   return 350;
 }
-
 function atualizarHistStrip() {
   const estado = document.getElementById('estado').value;
   const mes = new Date().getMonth() + 1;
-  const mesNome = MESES[mes-1];
-  const val = precoHistMes(estado, mes);
-  document.getElementById('ps-hist').textContent = 'R$ ' + val;
-  document.getElementById('ps-hist-label').textContent = `MÉDIA HISTÓRICA ${mesNome} (${estado})`;
+  document.getElementById('ps-hist').textContent = 'R$ ' + precoHistMes(estado, mes);
+  document.getElementById('ps-hist-label').textContent = `Média histórica ${MESES[mes-1]} (${estado})`;
 }
-
 async function carregarPrecoAtual(estado) {
   estado = estado || document.getElementById('estado')?.value || 'SP';
   try {
@@ -389,8 +408,6 @@ async function carregarPrecoAtual(estado) {
   }
   atualizarHistStrip();
 }
-
-// ── Calculadora ───────────────────────────────────────────────────────────
 function aplicarModalidade() {
   const mod = document.getElementById('modalidade').value;
   const info = document.getElementById('modal-info');
@@ -405,9 +422,7 @@ function aplicarModalidade() {
   }
   calcular();
 }
-
 async function calcular() {
-  // Atualiza média histórica no topo conforme estado selecionado
   atualizarHistStrip();
   const payload = {
     modalidade: document.getElementById('modalidade').value,
@@ -419,7 +434,6 @@ async function calcular() {
     mes_entrada: parseInt(document.getElementById('mes_entrada').value) || 5,
     estado: document.getElementById('estado').value,
   };
-
   try {
     const r = await fetch(API + '/api/calcular', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
     const j = await r.json();
@@ -428,405 +442,194 @@ async function calcular() {
     document.getElementById('resultado').innerHTML = '<div class="loading">Erro ao calcular. Verifique a conexão.</div>';
   }
 }
-
 function fmt(n) { return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); }
-
 function renderResultado(d) {
   const c = d.ciclo, f = d.financeiro, cp = d.comparativo;
-  const lucroClass = f.lucro_lote >= 0 ? 'success' : 'danger';
-  const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
-  const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
-
-  // ── Sobrepor preço B3 quando disponível ──────────────────────────────────
   const MESES_NUM = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
   const mesAbateNum = MESES_NUM[c.mes_abate?.toLowerCase().slice(0,3)] || 0;
   const b3Abate = mesAbateNum ? futuroParaMes(mesAbateNum, 2026) : null;
-
-  // Preço efetivo = B3 se disponível, senão histórico
   const precoEfetivo = b3Abate ? b3Abate.preco_arroba : f.preco_abate;
   const fontePreco = b3Abate ? `Futuro B3 · ${b3Abate.periodo}` : `Média histórica CEPEA ${d.estado} · ${c.mes_abate}`;
   const precoCardClass = b3Abate ? 'warn' : '';
-
-  // Recalcular financeiro com preço efetivo
-  const arrobasCab = f.arrobas_cab;
-  const animais = d.animais;
+  const arrobasCab = f.arrobas_cab, animais = d.animais;
   const receitaEfetiva = precoEfetivo * arrobasCab * animais;
   const lucroEfetivo = receitaEfetiva - f.custo_lote;
-  const diffEfetivo = precoAtual - precoEfetivo;  // positivo = hoje melhor — usa precoAtual global (por estado)
+  const diffEfetivo = precoAtual - precoEfetivo;
   const diffTotalEfetivo = diffEfetivo * arrobasCab * animais;
-
   const lucroClassEfetivo = lucroEfetivo >= 0 ? 'success' : 'danger';
   const diffClassEfetivo = diffTotalEfetivo > 5000 ? 'danger' : diffTotalEfetivo < -5000 ? 'success' : 'warn';
-
-  // Tabela comparativo com B3 quando disponível
   const mesConfNum = MESES_NUM[cp.confinamento.mes_abate?.toLowerCase().slice(0,3)] || 0;
   const meSemiNum  = MESES_NUM[cp.semiconfinamento.mes_abate?.toLowerCase().slice(0,3)] || 0;
   const b3Conf = mesConfNum ? futuroParaMes(mesConfNum, 2026) : null;
   const b3Semi = meSemiNum  ? futuroParaMes(meSemiNum, 2026)  : null;
   const precoConf = b3Conf ? b3Conf.preco_arroba : cp.confinamento.preco;
   const precoSemi = b3Semi ? b3Semi.preco_arroba : cp.semiconfinamento.preco;
-  const lblConf = b3Conf ? `<span style="font-size:13px;color:var(--amber)">B3</span>` : `<span style="font-size:13px;color:var(--text3)">hist</span>`;
-  const lblSemi = b3Semi ? `<span style="font-size:13px;color:var(--amber)">B3</span>` : `<span style="font-size:13px;color:var(--text3)">hist</span>`;
+  const lblConf = b3Conf ? `<span style="font-size:9px;color:var(--amber)">B3</span>` : `<span style="font-size:9px;color:var(--text3)">hist</span>`;
+  const lblSemi = b3Semi ? `<span style="font-size:9px;color:var(--amber)">B3</span>` : `<span style="font-size:9px;color:var(--text3)">hist</span>`;
   const lucroConfEfetivo = (precoConf * arrobasCab * animais) - cp.confinamento.custo_lote;
   const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
   const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
-
   let tlHtml = '';
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
     const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
     const b3 = mesNum ? futuroParaMes(mesNum, 2026) : null;
-
     const diffVsHist = b3 ? (b3.preco_arroba - t.preco) : 0;
     const diffColor = diffVsHist >= 0 ? 'var(--green)' : 'var(--red)';
     const diffSinal = diffVsHist >= 0 ? '+' : '';
-
-    // Preço principal: B3 se disponível, histórico se não
     const precoPrincipalHtml = b3
-      ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'Inter',sans-serif;font-size:18px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
-           <span style="font-family:'Inter',sans-serif;font-size:15px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'Inter',sans-serif;font-size:14px;background:var(--bg2);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
-           <span style="font-family:'Inter',sans-serif;font-size:14px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
+      ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px;flex-wrap:wrap">
+           <span style="font-size:18px;color:var(--amber);font-weight:600;font-family:'Playfair Display',serif">R$ ${b3.preco_arroba.toFixed(0)}</span>
+           <span style="font-size:11px;color:var(--text3)">/arroba</span>
+           <span style="font-size:10px;background:#FDF6E8;border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
+           <span style="font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}%</span>
          </div>
-         <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
-           hist. CEPEA: R$ ${t.preco}/arr
-           <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)} vs hist.</span>
-         </div>`
-      : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'Inter',sans-serif;font-size:18px;color:var(--green-muted);font-weight:700">R$ ${t.preco}</span>
-           <span style="font-family:'Inter',sans-serif;font-size:15px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'Inter',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
-           <span style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3)">sem contrato B3</span>
+         <div style="font-size:10px;color:var(--text3);margin-top:2px">hist. CEPEA: R$ ${t.preco}/arr · <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)}</span></div>`
+      : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px;flex-wrap:wrap">
+           <span style="font-size:18px;color:var(--green2);font-weight:600;font-family:'Playfair Display',serif">R$ ${t.preco}</span>
+           <span style="font-size:11px;color:var(--text3)">/arroba · hist. CEPEA</span>
          </div>`;
-
-    const sazonalidadeHtml = `<div style="font-size:15px;color:var(--text3);margin-top:3px">${t.chuva ? '🌧 Período de chuvas — oferta tende a ser maior' : '☀ Período seco — preço tende a ser mais firme'}</div>`;
-
-    const abateBadge = t.is_abate
-      ? `<span style="font-family:'Inter',sans-serif;font-size:14px;background:var(--green);color:#fff;border-radius:4px;padding:2px 8px;font-weight:700">← ABATE PREVISTO</span>`
-      : '';
-
-    tlHtml += `
-      <div class="tl-item" style="${t.is_abate ? 'background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px' : ''}">
-        <div class="tl-dot ${dotClass}" style="${t.is_abate ? 'margin-top:6px' : ''}"></div>
-        <div class="tl-meta" style="flex:1">
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-family:'Inter',sans-serif;font-size:15px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
-            ${abateBadge}
-          </div>
-          ${precoPrincipalHtml}
-          ${sazonalidadeHtml}
+    const sazonalidadeHtml = `<div style="font-size:11px;color:var(--text3);margin-top:2px">${t.chuva ? '🌧 Período de chuvas' : '☀ Período seco'}</div>`;
+    const abateBadge = t.is_abate ? `<span style="font-size:10px;background:var(--green);color:#fff;border-radius:4px;padding:2px 8px;font-weight:600">← ABATE PREVISTO</span>` : '';
+    tlHtml += `<div class="tl-item" style="${t.is_abate ? 'background:#EEF5EC;border:1px solid #A0C4A0;border-radius:8px;padding:10px 12px;margin-bottom:10px' : ''}">
+      <div class="tl-dot ${dotClass}" style="${t.is_abate ? 'margin-top:6px' : ''}"></div>
+      <div class="tl-meta" style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>${abateBadge}
         </div>
-      </div>`;
+        ${precoPrincipalHtml}${sazonalidadeHtml}
+      </div>
+    </div>`;
   });
-
   document.getElementById('resultado').innerHTML = `
     <div class="section-title">Análise estratégica</div>
     <div class="grid-2" style="margin-bottom:14px">
-      <div class="card ${c.tem_chuva ? 'danger' : 'success'}">
-        <div class="card-label">ABATE PREVISTO</div>
-        <div class="card-value">${c.mes_abate}/2026</div>
-        <div class="card-sub">${c.dias} dias · ${c.meses} meses · ${c.tem_chuva ? '⚠ período de chuvas' : '✅ período seco'}</div>
-      </div>
-      <div class="card ${precoCardClass}">
-        <div class="card-label">PREÇO REFERÊNCIA NO ABATE</div>
-        <div class="card-value" style="${b3Abate?'color:var(--amber)':''}">R$ ${precoEfetivo.toFixed(0)}/arr</div>
-        <div class="card-sub">${fontePreco}${b3Abate ? `<br><span style="color:var(--text3)">Hist. CEPEA: R$ ${f.preco_abate}/arr</span>` : ''}</div>
-      </div>
+      <div class="card ${c.tem_chuva ? 'danger' : 'success'}"><div class="card-label">Abate previsto</div><div class="card-value">${c.mes_abate}/2026</div><div class="card-sub">${c.dias} dias · ${c.meses} meses · ${c.tem_chuva ? '⚠ período de chuvas' : '✅ período seco'}</div></div>
+      <div class="card ${precoCardClass}"><div class="card-label">Preço referência no abate</div><div class="card-value" style="${b3Abate?'color:var(--amber)':''}">R$ ${precoEfetivo.toFixed(0)}/arr</div><div class="card-sub">${fontePreco}${b3Abate ? `<br><span style="color:var(--text3)">Hist. CEPEA: R$ ${f.preco_abate}/arr</span>` : ''}</div></div>
     </div>
-
     <div class="grid-2" style="margin-bottom:14px">
-      <div class="card">
-        <div class="card-label">RECEITA BRUTA DO LOTE</div>
-        <div class="card-value">${fmt(receitaEfetiva)}</div>
-        <div class="card-sub">${d.animais} animais · ${arrobasCab} arr/cab · ${b3Abate ? 'preço B3' : 'preço histórico'}</div>
-      </div>
-      <div class="card ${lucroClassEfetivo}">
-        <div class="card-label">LUCRO LÍQUIDO ESTIMADO</div>
-        <div class="card-value">${fmt(lucroEfetivo)}</div>
-        <div class="card-sub">Custo acumulado: ${fmt(f.custo_lote)}</div>
-      </div>
+      <div class="card"><div class="card-label">Receita bruta do lote</div><div class="card-value">${fmt(receitaEfetiva)}</div><div class="card-sub">${d.animais} animais · ${arrobasCab} arr/cab</div></div>
+      <div class="card ${lucroClassEfetivo}"><div class="card-label">Lucro líquido estimado</div><div class="card-value">${fmt(lucroEfetivo)}</div><div class="card-sub">Custo acumulado: ${fmt(f.custo_lote)}</div></div>
     </div>
-
     <div class="card ${diffClassEfetivo}" style="margin-bottom:14px">
-      <div class="card-label">${diffTotalEfetivo > 0 ? 'PERDA SE AGUARDAR (vs. vender hoje)' : 'GANHO SE AGUARDAR (vs. vender hoje)'}</div>
+      <div class="card-label">${diffTotalEfetivo > 0 ? 'Perda se aguardar (vs. vender hoje)' : 'Ganho se aguardar (vs. vender hoje)'}</div>
       <div class="card-value">${fmt(Math.abs(diffTotalEfetivo))}</div>
-      <div class="card-sub">R$ ${Math.abs(diffEfetivo).toFixed(0)}/arr de diferença · hoje R$ ${precoAtual} vs abate R$ ${precoEfetivo.toFixed(0)} ${b3Abate ? '(B3)' : '(hist.)'}</div>
+      <div class="card-sub">R$ ${Math.abs(diffEfetivo).toFixed(0)}/arr · hoje R$ ${precoAtual} vs abate R$ ${precoEfetivo.toFixed(0)} ${b3Abate ? '(B3)' : '(hist.)'}</div>
     </div>
-
     <div class="section-title" style="margin-top:20px">Confinamento vs. semiconfinamento</div>
     <div class="card dark" style="margin-bottom:14px">
       <table class="comp-table">
         <thead><tr><th>Indicador</th><th>Confinamento</th><th>Semiconfinamento</th></tr></thead>
         <tbody>
-          <tr><td>Dias até abate</td>
-            <td class="${confWinEfetivo?'win':''}">${cp.confinamento.dias}d</td>
-            <td class="${!confWinEfetivo?'win':''}">${cp.semiconfinamento.dias}d</td></tr>
-          <tr><td>Mês de abate</td>
-            <td>${cp.confinamento.mes_abate} ${cp.confinamento.chuva?'🌧':'☀'}</td>
-            <td>${cp.semiconfinamento.mes_abate} ${cp.semiconfinamento.chuva?'🌧':'☀'}</td></tr>
-          <tr><td>Preço referência</td>
-            <td class="${precoConf>=precoSemi?'win':'lose'}">R$ ${precoConf.toFixed(0)}/arr ${lblConf}</td>
-            <td class="${precoSemi>precoConf?'win':'lose'}">R$ ${precoSemi.toFixed(0)}/arr ${lblSemi}</td></tr>
-          <tr><td>Custo total lote</td>
-            <td class="${cp.confinamento.custo_lote<=cp.semiconfinamento.custo_lote?'win':'lose'}">${fmt(cp.confinamento.custo_lote)}</td>
-            <td class="${cp.semiconfinamento.custo_lote<cp.confinamento.custo_lote?'win':'lose'}">${fmt(cp.semiconfinamento.custo_lote)}</td></tr>
-          <tr><td><strong>Lucro líquido lote</strong></td>
-            <td class="${confWinEfetivo?'win':'lose'}"><strong>${fmt(lucroConfEfetivo)}</strong></td>
-            <td class="${!confWinEfetivo?'win':'lose'}"><strong>${fmt(lucroSemiEfetivo)}</strong></td></tr>
+          <tr><td>Dias até abate</td><td class="${confWinEfetivo?'win':''}">${cp.confinamento.dias}d</td><td class="${!confWinEfetivo?'win':''}">${cp.semiconfinamento.dias}d</td></tr>
+          <tr><td>Mês de abate</td><td>${cp.confinamento.mes_abate} ${cp.confinamento.chuva?'🌧':'☀'}</td><td>${cp.semiconfinamento.mes_abate} ${cp.semiconfinamento.chuva?'🌧':'☀'}</td></tr>
+          <tr><td>Preço referência</td><td class="${precoConf>=precoSemi?'win':'lose'}">R$ ${precoConf.toFixed(0)}/arr ${lblConf}</td><td class="${precoSemi>precoConf?'win':'lose'}">R$ ${precoSemi.toFixed(0)}/arr ${lblSemi}</td></tr>
+          <tr><td>Custo total lote</td><td class="${cp.confinamento.custo_lote<=cp.semiconfinamento.custo_lote?'win':'lose'}">${fmt(cp.confinamento.custo_lote)}</td><td class="${cp.semiconfinamento.custo_lote<cp.confinamento.custo_lote?'win':'lose'}">${fmt(cp.semiconfinamento.custo_lote)}</td></tr>
+          <tr><td><strong>Lucro líquido lote</strong></td><td class="${confWinEfetivo?'win':'lose'}"><strong>${fmt(lucroConfEfetivo)}</strong></td><td class="${!confWinEfetivo?'win':'lose'}"><strong>${fmt(lucroSemiEfetivo)}</strong></td></tr>
         </tbody>
       </table>
     </div>
-
-    <div class="rec-box" style="margin-bottom:20px">
-      <div class="rec-title">📋 Recomendação estratégica</div>
-      <div class="rec-text">${d.recomendacao}</div>
-    </div>
-
+    <div class="rec-box" style="margin-bottom:20px"><div class="rec-title">📋 Recomendação estratégica</div><div class="rec-text">${d.recomendacao}</div></div>
     <div class="section-title">Evolução de preços — próximos meses</div>
     <div class="card dark">${tlHtml}</div>
   `;
 }
-
-// ── Histórico ─────────────────────────────────────────────────────────────
 async function carregarHistorico(estado) {
   try {
     if (estado === 'TODOS') {
-      const [rMT, rSP, rGO] = await Promise.all([
-        fetch(API + '/api/historico/MT').then(r=>r.json()),
-        fetch(API + '/api/historico/SP').then(r=>r.json()),
-        fetch(API + '/api/historico/GO').then(r=>r.json()),
-      ]);
+      const [rMT, rSP, rGO] = await Promise.all([fetch(API+'/api/historico/MT').then(r=>r.json()),fetch(API+'/api/historico/SP').then(r=>r.json()),fetch(API+'/api/historico/GO').then(r=>r.json())]);
       renderGraficoTodos(rMT.data, rSP.data, rGO.data);
-      const [cMT] = await Promise.all([fetch(API + '/api/chuva/MT').then(r=>r.json())]);
-      renderChuvaSeca(cMT.data, 'MT');
+      const [cMT] = await Promise.all([fetch(API+'/api/chuva/MT').then(r=>r.json())]);
+      renderChuvaSeca(cMT.data,'MT');
     } else {
-      const [rH, rC] = await Promise.all([
-        fetch(API + `/api/historico/${estado}`).then(r=>r.json()),
-        fetch(API + `/api/chuva/${estado}`).then(r=>r.json()),
-      ]);
+      const [rH, rC] = await Promise.all([fetch(API+`/api/historico/${estado}`).then(r=>r.json()),fetch(API+`/api/chuva/${estado}`).then(r=>r.json())]);
       renderGraficoHistorico(rH.data, estado);
       renderChuvaSeca(rC.data, estado);
       renderCardsComparativo(rC.data, estado);
     }
   } catch(e) { console.error(e); }
 }
-
 function renderGraficoHistorico(dados, estado) {
-  const labels = dados.map(d => d.periodo);
-  const precos = dados.map(d => d.preco);
-  const bgColors = dados.map(d => d.chuva ? 'rgba(128,184,230,0.5)' : 'rgba(168,230,176,0.5)');
-  const borderColors = dados.map(d => d.chuva ? '#80b8e6' : '#a8e6b0');
-
+  const bgColors = dados.map(d => d.chuva ? 'rgba(26,58,107,0.5)' : 'rgba(45,90,46,0.5)');
+  const borderColors = dados.map(d => d.chuva ? '#1A3A6B' : '#2D5A2E');
   if (chartHistorico) chartHistorico.destroy();
-  const ctx = document.getElementById('chart-historico').getContext('2d');
-  chartHistorico = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: `Preço boi gordo ${estado} (R$/arroba)`,
-        data: precos,
-        backgroundColor: bgColors,
-        borderColor: borderColors,
-        borderWidth: 1,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: '#cbd5e1', font: { family: 'IBM Plex Mono', size: 11 } } },
-        tooltip: {
-          callbacks: {
-            label: ctx => `R$ ${ctx.raw}/arr`,
-            afterLabel: ctx => dados[ctx.dataIndex].chuva ? '🌧 Período de chuvas' : '☀ Período seco',
-          }
-        }
-      },
-      scales: {
-        x: { ticks: { color: 'rgba(255,255,255,.4)', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: 'rgba(255,255,255,.06)' } },
-        y: { ticks: { color: 'rgba(255,255,255,.4)', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: 'rgba(255,255,255,.06)' }, min: 150 }
-      }
-    }
+  chartHistorico = new Chart(document.getElementById('chart-historico').getContext('2d'), {
+    type:'bar', data:{labels:dados.map(d=>d.periodo),datasets:[{label:`Preço boi gordo ${estado} (R$/arroba)`,data:dados.map(d=>d.preco),backgroundColor:bgColors,borderColor:borderColors,borderWidth:1}]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#5C3C20',font:{size:12}}},tooltip:{callbacks:{label:ctx=>`R$ ${ctx.raw}/arr`,afterLabel:ctx=>dados[ctx.dataIndex].chuva?'🌧 Chuvas':'☀ Seco'}}},scales:{x:{ticks:{color:'#9C7A5A',font:{size:9},maxRotation:90},grid:{color:'#EAE0D3'}},y:{ticks:{color:'#9C7A5A',font:{size:10},callback:v=>'R$'+v},grid:{color:'#EAE0D3'},min:150}}}
   });
 }
-
 function renderGraficoTodos(mt, sp, go) {
-  const labels = mt.map(d => d.periodo);
   if (chartHistorico) chartHistorico.destroy();
-  const ctx = document.getElementById('chart-historico').getContext('2d');
-  chartHistorico = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'MT', data: mt.map(d=>d.preco), borderColor: COR_ESTADOS.MT, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
-        { label: 'SP', data: sp.map(d=>d.preco), borderColor: COR_ESTADOS.SP, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
-        { label: 'GO', data: go.map(d=>d.preco), borderColor: COR_ESTADOS.GO, backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { color: '#cbd5e1', font: { family: 'IBM Plex Mono', size: 11 } } } },
-      scales: {
-        x: { ticks: { color: 'rgba(255,255,255,.4)', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: 'rgba(255,255,255,.06)' } },
-        y: { ticks: { color: 'rgba(255,255,255,.4)', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: 'rgba(255,255,255,.06)' }, min: 150 }
-      }
-    }
+  chartHistorico = new Chart(document.getElementById('chart-historico').getContext('2d'), {
+    type:'line', data:{labels:mt.map(d=>d.periodo),datasets:[{label:'MT',data:mt.map(d=>d.preco),borderColor:COR_ESTADOS.MT,backgroundColor:'transparent',tension:0.3,pointRadius:2},{label:'SP',data:sp.map(d=>d.preco),borderColor:COR_ESTADOS.SP,backgroundColor:'transparent',tension:0.3,pointRadius:2},{label:'GO',data:go.map(d=>d.preco),borderColor:COR_ESTADOS.GO,backgroundColor:'transparent',tension:0.3,pointRadius:2}]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#5C3C20',font:{size:12}}}},scales:{x:{ticks:{color:'#9C7A5A',font:{size:9},maxRotation:90},grid:{color:'#EAE0D3'}},y:{ticks:{color:'#9C7A5A',callback:v=>'R$'+v},grid:{color:'#EAE0D3'},min:150}}}
   });
 }
-
 function renderChuvaSeca(dados, estado) {
-  const labels = dados.map(d => d.ano.toString());
   if (chartChuva) chartChuva.destroy();
-  const ctx = document.getElementById('chart-chuva-seca').getContext('2d');
-  chartChuva = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: '🌧 Média chuva (R$/arr)', data: dados.map(d=>d.media_chuva), backgroundColor: 'rgba(96,165,250,.65)', borderColor: '#80b8e6', borderWidth: 1 },
-        { label: '☀ Média seca (R$/arr)',  data: dados.map(d=>d.media_seca),  backgroundColor: 'rgba(168,230,176,0.7)', borderColor: '#a8e6b0', borderWidth: 1 },
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: '#cbd5e1', font: { family: 'IBM Plex Mono', size: 11 } } },
-        tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr` } }
-      },
-      scales: {
-        x: { ticks: { color: 'rgba(255,255,255,.4)', font: { family: 'IBM Plex Mono' } }, grid: { color: 'rgba(255,255,255,.06)' } },
-        y: { ticks: { color: 'rgba(255,255,255,.4)', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: 'rgba(255,255,255,.06)' }, min: 150 }
-      }
-    }
+  chartChuva = new Chart(document.getElementById('chart-chuva-seca').getContext('2d'), {
+    type:'bar', data:{labels:dados.map(d=>d.ano.toString()),datasets:[{label:'🌧 Média chuva (R$/arr)',data:dados.map(d=>d.media_chuva),backgroundColor:'rgba(26,58,107,0.6)',borderColor:'#1A3A6B',borderWidth:1},{label:'☀ Média seca (R$/arr)',data:dados.map(d=>d.media_seca),backgroundColor:'rgba(45,90,46,0.6)',borderColor:'#2D5A2E',borderWidth:1}]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#5C3C20',font:{size:12}}},tooltip:{callbacks:{label:ctx=>`R$ ${ctx.raw}/arr`}}},scales:{x:{ticks:{color:'#9C7A5A'},grid:{color:'#EAE0D3'}},y:{ticks:{color:'#9C7A5A',callback:v=>'R$'+v},grid:{color:'#EAE0D3'},min:150}}}
   });
 }
-
 function renderCardsComparativo(dados, estado) {
-  const totalDiff = dados.reduce((s,d) => s + d.diferenca, 0);
-  const mediaDiff = (totalDiff / dados.length).toFixed(1);
+  const totalDiff = dados.reduce((s,d)=>s+d.diferenca,0);
+  const mediaDiff = (totalDiff/dados.length).toFixed(1);
   const maxDiff = Math.max(...dados.map(d=>d.diferenca));
-  const anoMaxDiff = dados.find(d=>d.diferenca === maxDiff)?.ano;
-
-  document.getElementById('cards-comparativo').innerHTML = `
-    <div class="card">
-      <div class="card-label">DIFERENÇA MÉDIA SECA VS CHUVA</div>
-      <div class="card-value">R$ ${mediaDiff}/arr</div>
-      <div class="card-sub">Média 2020–2025 · ${estado}</div>
-    </div>
-    <div class="card warn">
-      <div class="card-label">MAIOR DIFERENÇA REGISTRADA</div>
-      <div class="card-value">R$ ${maxDiff}/arr</div>
-      <div class="card-sub">Em ${anoMaxDiff} · ${estado}</div>
-    </div>
-    <div class="card danger">
-      <div class="card-label">IMPACTO LOTE 100 CABEÇAS (17 arr)</div>
-      <div class="card-value">${fmt(parseFloat(mediaDiff) * 17 * 100)}</div>
-      <div class="card-sub">Perda média por vender na chuva vs seca</div>
-    </div>
+  const anoMaxDiff = dados.find(d=>d.diferenca===maxDiff)?.ano;
+  document.getElementById('cards-comparativo').innerHTML=`
+    <div class="card"><div class="card-label">Diferença média seca vs chuva</div><div class="card-value">R$ ${mediaDiff}/arr</div><div class="card-sub">Média 2020–2025 · ${estado}</div></div>
+    <div class="card warn"><div class="card-label">Maior diferença registrada</div><div class="card-value">R$ ${maxDiff}/arr</div><div class="card-sub">Em ${anoMaxDiff} · ${estado}</div></div>
+    <div class="card danger"><div class="card-label">Impacto lote 100 cabeças (17 arr)</div><div class="card-value">${fmt(parseFloat(mediaDiff)*17*100)}</div><div class="card-sub">Perda média por vender na chuva vs seca</div></div>
   `;
 }
-
 function selecionarEstado(estado, el) {
-  document.querySelectorAll('#page-historico .estado-badge').forEach(e => e.classList.remove('active'));
-  el.classList.add('active');
-  estadoAtual = estado;
-  carregarHistorico(estado);
+  document.querySelectorAll('#page-historico .estado-badge').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active'); estadoAtual=estado; carregarHistorico(estado);
 }
-
-// ── Clima ─────────────────────────────────────────────────────────────────
 async function carregarClima(estado) {
-  document.getElementById('clima-content').innerHTML = '<div class="loading">Carregando previsão climática...</div>';
-  const coords = COORDS_FRONT[estado] || COORDS_FRONT.MT;
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=precipitation_sum,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=16`;
+  document.getElementById('clima-content').innerHTML='<div class="loading">Carregando previsão climática...</div>';
+  const coords=COORDS_FRONT[estado]||COORDS_FRONT.MT;
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=precipitation_sum,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=16`;
   try {
-    const r = await fetch(url);
-    const d = await r.json();
-    const datas = d.daily?.time || [];
-    const chuva = d.daily?.precipitation_sum || [];
-    const prob = d.daily?.precipitation_probability_max || [];
-    const previsao = datas.map((data,i) => ({
-      data, chuva_mm: chuva[i]||0, probabilidade_pct: prob[i]||0
-    }));
-    renderClima({ estado, coords, previsao, fonte: 'Open-Meteo', atualizado: new Date().toISOString() });
-  } catch(e) {
-    document.getElementById('clima-content').innerHTML = '<div class="loading">Erro ao carregar Open-Meteo. Verifique sua conexão.</div>';
-  }
+    const r=await fetch(url); const d=await r.json();
+    const datas=d.daily?.time||[], chuva=d.daily?.precipitation_sum||[], prob=d.daily?.precipitation_probability_max||[];
+    renderClima({estado,coords,previsao:datas.map((data,i)=>({data,chuva_mm:chuva[i]||0,probabilidade_pct:prob[i]||0})),fonte:'Open-Meteo',atualizado:new Date().toISOString()});
+  } catch(e) { document.getElementById('clima-content').innerHTML='<div class="loading">Erro ao carregar Open-Meteo.</div>'; }
 }
-
 function renderClima(dados) {
-  const maxChuva = Math.max(...dados.previsao.map(d=>d.chuva_mm), 1);
-  let barras = dados.previsao.slice(0,16).map(d => {
-    const pct = Math.round((d.chuva_mm / maxChuva) * 100);
-    const cor = d.probabilidade_pct > 60 ? '#80b8e6' : d.probabilidade_pct > 30 ? '#e6a840' : '#a8e6b0';
-    return `
-      <div class="clima-bar">
-        <div class="cb-data">${d.data.slice(5)}</div>
-        <div class="cb-track"><div class="cb-fill" style="width:${pct}%;background:${cor}"></div></div>
-        <div class="cb-val">${d.chuva_mm.toFixed(1)}mm · ${d.probabilidade_pct}%</div>
-      </div>`;
+  const maxChuva=Math.max(...dados.previsao.map(d=>d.chuva_mm),1);
+  let barras=dados.previsao.slice(0,16).map(d=>{
+    const pct=Math.round((d.chuva_mm/maxChuva)*100);
+    const cor=d.probabilidade_pct>60?'#1A3A6B':d.probabilidade_pct>30?'#B87820':'#2D5A2E';
+    return `<div class="clima-bar"><div class="cb-data">${d.data.slice(5)}</div><div class="cb-track"><div class="cb-fill" style="width:${pct}%;background:${cor}"></div></div><div class="cb-val">${d.chuva_mm.toFixed(1)}mm · ${d.probabilidade_pct}%</div></div>`;
   }).join('');
-
-  const diasChuva = dados.previsao.filter(d=>d.probabilidade_pct>50).length;
-  const totalMM = dados.previsao.reduce((s,d)=>s+d.chuva_mm, 0).toFixed(1);
-
-  document.getElementById('clima-content').innerHTML = `
+  const diasChuva=dados.previsao.filter(d=>d.probabilidade_pct>50).length;
+  const totalMM=dados.previsao.reduce((s,d)=>s+d.chuva_mm,0).toFixed(1);
+  document.getElementById('clima-content').innerHTML=`
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'Inter',sans-serif;font-size:15px;color:var(--text2)">
-        📍 Referência: <strong style="color:var(--green)">${dados.coords?.cidade || dados.estado}</strong>
-      </div>
-      <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3)">
-        Dados representativos da região — não da propriedade
-      </div>
-    </div>
-    <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap">
-      <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3);display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#80b8e6"></span> Prob. chuva &gt;60%
-      </div>
-      <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3);display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#e6a840"></span> Prob. chuva 30–60%
-      </div>
-      <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3);display:flex;align-items:center;gap:6px">
-        <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#a8e6b0"></span> Prob. chuva &lt;30%
-      </div>
-      <div style="font-family:'Inter',sans-serif;font-size:14px;color:var(--text3);margin-left:4px">
-        · Barra = volume em mm · % = probabilidade de ocorrência
-      </div>
+      <div style="background:#EEF5EC;border:1px solid #A0C4A0;border-radius:6px;padding:6px 14px;font-size:12px;color:var(--green)">📍 <strong>${dados.coords?.cidade||dados.estado}</strong></div>
+      <div style="font-size:11px;color:var(--text3)">Dados representativos da região — não da propriedade</div>
     </div>
     <div class="grid-2" style="margin-bottom:20px">
-      <div class="card ${diasChuva > 8 ? 'danger' : diasChuva > 4 ? 'warn' : 'success'}">
-        <div class="card-label">DIAS COM CHUVA (16 dias)</div>
-        <div class="card-value">${diasChuva} dias</div>
-        <div class="card-sub">${diasChuva > 8 ? '⚠ Alta umidade — risco operacional elevado' : diasChuva > 4 ? 'Atenção — período úmido' : '✅ Condições favoráveis ao confinamento'}</div>
-      </div>
-      <div class="card">
-        <div class="card-label">CHUVA ACUMULADA PREVISTA</div>
-        <div class="card-value">${totalMM} mm</div>
-        <div class="card-sub">Próximos 16 dias · ${dados.coords?.cidade || dados.estado}</div>
-      </div>
+      <div class="card ${diasChuva>8?'danger':diasChuva>4?'warn':'success'}"><div class="card-label">Dias com chuva (16 dias)</div><div class="card-value">${diasChuva} dias</div><div class="card-sub">${diasChuva>8?'⚠ Alta umidade — risco operacional':diasChuva>4?'Atenção — período úmido':'✅ Condições favoráveis'}</div></div>
+      <div class="card"><div class="card-label">Chuva acumulada prevista</div><div class="card-value">${totalMM} mm</div><div class="card-sub">Próximos 16 dias · ${dados.coords?.cidade||dados.estado}</div></div>
     </div>
-    <div class="card dark">${barras}</div>
-    <div class="fonte-note">Fonte: ${dados.fonte} · Referência: ${dados.coords?.cidade || dados.estado} · Atualizado: ${new Date(dados.atualizado).toLocaleString('pt-BR')}</div>
+    <div class="chart-wrap">${barras}</div>
+    <div class="fonte-note">Fonte: ${dados.fonte} · ${dados.coords?.cidade||dados.estado} · ${new Date(dados.atualizado).toLocaleString('pt-BR')}</div>
   `;
 }
-
 function selecionarClima(estado, el) {
-  document.querySelectorAll('#page-clima .estado-badge').forEach(e => e.classList.remove('active'));
-  el.classList.add('active');
-  estadoClima = estado;
-  carregarClima(estado);
+  document.querySelectorAll('#page-clima .estado-badge').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active'); estadoClima=estado; carregarClima(estado);
 }
-
-// ── Pages ─────────────────────────────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  event.target.classList.add('active');
-
-  if (id === 'historico') carregarHistorico(estadoAtual);
-  if (id === 'clima') carregarClima(estadoClima);
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id==='historico') carregarHistorico(estadoAtual);
+  if (id==='clima') carregarClima(estadoClima);
 }
 </script>
 </body>
