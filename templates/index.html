@@ -738,17 +738,27 @@ async function carregarPrecoAtual(estado) {
       document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual.toFixed(0);
       document.getElementById('ps-atualizado').textContent = 'por arroba · ' + estado;
 
-      // Data/hora da última consulta do scraper ao site Scot
-      const atualizadoEm = j.data.atualizado_em || j.data.timestamp || null;
-      const dataCot = j.data.data_cotacao || '';
-      const fonteLabel = j.data.fonte || 'Scot Consultoria';
-      document.getElementById('ps-scot-update').textContent = atualizadoEm
-        ? `${fonteLabel}${dataCot ? ' · ' + dataCot : ''} · ${formatarDataHora(atualizadoEm)}`
-        : fonteLabel + (dataCot ? ' · ' + dataCot : '');
+      // Campos do cotacoes_scot.json: "atualizado", "fonte"
+      // O backend pode repassar diretamente ou não — tentamos os dois nomes
+      let atualizadoEm = j.data.atualizado || j.data.atualizado_em || j.data.timestamp || null;
+      let fonteLabel   = j.data.fonte || 'Scot Consultoria';
 
-      // Atualiza fonte-note da calculadora
+      // Se o backend não repassou "atualizado", lê o JSON diretamente
+      if (!atualizadoEm) {
+        try {
+          const rj = await fetch('app/cotacoes_scot.json');
+          const cj = await rj.json();
+          atualizadoEm = cj.atualizado || null;
+          fonteLabel   = cj.fonte || fonteLabel;
+        } catch(_) {}
+      }
+
+      document.getElementById('ps-scot-update').textContent = atualizadoEm
+        ? `${fonteLabel} · ${formatarDataHora(atualizadoEm)}`
+        : fonteLabel;
+
       document.getElementById('fonte-note-calc').innerHTML =
-        `Preço atual: ${fonteLabel}${dataCot ? ' · ' + dataCot : ''}<br>` +
+        `Preço atual: ${fonteLabel}<br>` +
         `Histórico: CEPEA 2020–2025 · Clima: Open-Meteo · Futuro: B3<br>` +
         `Protótipo v0.3 · MT, SP e GO`;
     }
