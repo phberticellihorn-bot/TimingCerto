@@ -27,7 +27,6 @@ UFS_ALVO = {
     "São Paulo":       "SP",
     "Mato Grosso":     "MT",
     "Goiás":           "GO",
-    "Paraná":          "PR",
 }
 
 
@@ -103,9 +102,9 @@ def buscar_cotacoes_scot() -> dict:
                 # Verifica se é uma UF de interesse
                 estado_sigla = None
                 for nome_uf, sigla in UFS_ALVO.items():
-                    if nome_uf.lower() in uf_texto.lower():
-                        estado_sigla = sigla
-                        break
+    if uf_texto.strip().lower() == nome_uf.lower():
+        estado_sigla = sigla
+        break
 
                 if not estado_sigla:
                     continue
