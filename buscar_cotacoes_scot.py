@@ -23,10 +23,11 @@ logger = logging.getLogger(__name__)
 URL = "https://www.scotconsultoria.com.br/cotacoes/boi-gordo/"
 
 # UFs de interesse + mapeamento para os estados do app
+# ATENÇÃO: match exato para evitar "Mato Grosso do Sul" colidir com "Mato Grosso"
 UFS_ALVO = {
-    "São Paulo":       "SP",
-    "Mato Grosso":     "MT",
-    "Goiás":           "GO",
+    "São Paulo":   "SP",
+    "Mato Grosso": "MT",
+    "Goiás":       "GO",
 }
 
 
@@ -59,7 +60,7 @@ def parse_preco(txt: str):
 def buscar_cotacoes_scot() -> dict:
     """
     Acessa Scot Consultoria e coleta preço bruto 30 dias por UF.
-    Retorna dict: {"SP": 353.0, "MT": 357.0, "GO": 335.0, "PR": 347.0}
+    Retorna dict: {"SP": 353.0, "MT": 357.0, "GO": 330.0}
     """
     logger.info(f"Buscando cotações Scot: {URL}")
     driver = criar_driver()
@@ -99,12 +100,12 @@ def buscar_cotacoes_scot() -> dict:
                 uf_texto = cols[0].text.strip()
                 preco_bruto_txt = cols[1].text.strip()  # coluna "Preço bruto 30 dias"
 
-                # Verifica se é uma UF de interesse
+                # Correspondência EXATA para evitar "Mato Grosso do Sul" casar com "Mato Grosso"
                 estado_sigla = None
                 for nome_uf, sigla in UFS_ALVO.items():
-    if uf_texto.strip().lower() == nome_uf.lower():
-        estado_sigla = sigla
-        break
+                    if uf_texto.lower() == nome_uf.lower():
+                        estado_sigla = sigla
+                        break
 
                 if not estado_sigla:
                     continue
@@ -135,7 +136,7 @@ def salvar_cotacoes_json(cotacoes: dict) -> str:
         "atualizado": datetime.now().isoformat(),
         "fonte":      "Scot Consultoria · Boi China a Prazo · Preço bruto 30 dias",
         "url":        URL,
-        "cotacoes":   cotacoes,  # {"SP": 353.0, "MT": 357.0, ...}
+        "cotacoes":   cotacoes,  # {"SP": 353.0, "MT": 357.0, "GO": 330.0}
     }
     caminho = os.path.join(os.path.dirname(__file__), "app", "cotacoes_scot.json")
     with open(caminho, "w", encoding="utf-8") as f:
