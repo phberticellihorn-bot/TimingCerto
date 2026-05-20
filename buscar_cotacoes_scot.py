@@ -133,7 +133,7 @@ def buscar_cotacoes_scot() -> dict:
 def salvar_cotacoes_json(cotacoes: dict) -> str:
     """Salva app/cotacoes_scot.json"""
     saida = {
-        "atualizado": datetime.now().isoformat(),
+        "atualizado": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") + "Z",
         "fonte":      "Scot Consultoria · Boi China a Prazo · Preço bruto 30 dias",
         "url":        URL,
         "cotacoes":   cotacoes,  # {"SP": 353.0, "MT": 357.0, "GO": 330.0}
