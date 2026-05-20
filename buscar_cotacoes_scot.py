@@ -4,23 +4,33 @@ Fonte: scotconsultoria.com.br/cotacoes/boi-gordo/
 Tabela: "Boi China a Prazo (R$/@)" — preço bruto 30 dias por UF
 
 Salva: app/cotacoes_scot.json
-Roda: GitHub Action diariamente às 19h (após fechamento 18h Scot)
+Roda: GitHub Action diariamente às 21:44 BRT
 """
 
-import json, time, logging, os, re
+import json, logging, os, re, time
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
+
+import requests
+from bs4 import BeautifulSoup
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s — %(levelname)s — %(message)s")
 logger = logging.getLogger(__name__)
 
 URL = "https://www.scotconsultoria.com.br/cotacoes/boi-gordo/"
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Cache-Control": "max-age=0",
+}
 
 # UFs de interesse + mapeamento para os estados do app
 # ATENÇÃO: match exato para evitar "Mato Grosso do Sul" colidir com "Mato Grosso"
@@ -31,21 +41,6 @@ UFS_ALVO = {
 }
 
 
-def criar_driver():
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1920,1080")
-    options.add_argument(
-        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    )
-    service = Service(ChromeDriverManager().install())
-    return webdriver.Chrome(service=service, options=options)
-
-
 def parse_preco(txt: str):
     """Converte '353,00' ou '353.00' para 353.0"""
     txt = txt.strip().replace("R$", "").replace("@", "").strip()
@@ -53,7 +48,7 @@ def parse_preco(txt: str):
     try:
         v = float(txt)
         return round(v, 2) if 100 < v < 800 else None
-    except:
+    except Exception:
         return None
 
 
@@ -61,71 +56,71 @@ def buscar_cotacoes_scot() -> dict:
     """
     Acessa Scot Consultoria e coleta preço bruto 30 dias por UF.
     Retorna dict: {"SP": 353.0, "MT": 357.0, "GO": 330.0}
+    Tenta até 3 vezes com backoff em caso de falha temporária.
     """
     logger.info(f"Buscando cotações Scot: {URL}")
-    driver = criar_driver()
+
+    html = None
+    for tentativa in range(1, 4):
+        try:
+            response = requests.get(URL, headers=HEADERS, timeout=30)
+            response.raise_for_status()
+            html = response.text
+            logger.info(f"Página obtida com sucesso (tentativa {tentativa}, status {response.status_code}, {len(html)} chars)")
+            break
+        except requests.RequestException as e:
+            logger.warning(f"Tentativa {tentativa}/3 falhou: {e}")
+            if tentativa < 3:
+                time.sleep(5 * tentativa)
+
+    if not html:
+        logger.error("Não foi possível obter a página após 3 tentativas")
+        return {}
+
+    soup = BeautifulSoup(html, "html.parser")
+    tabelas = soup.find_all("table")
+    logger.info(f"{len(tabelas)} tabela(s) encontrada(s) no HTML")
+
     resultados = {}
 
-    try:
-        driver.get(URL)
+    for tabela in tabelas:
+        texto_tabela = tabela.get_text().lower()
+        if "boi china" not in texto_tabela and "prazo" not in texto_tabela:
+            continue
 
-        # Aguarda tabela carregar
-        try:
-            WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "table tbody tr"))
-            )
-        except:
-            logger.warning("Timeout aguardando tabela — tentando mesmo assim")
+        linhas = tabela.select("tbody tr")
+        logger.info(f"Tabela 'Boi China a Prazo' — {len(linhas)} linhas")
 
-        time.sleep(3)
-
-        # Localiza todas as tabelas da página
-        tabelas = driver.find_elements(By.CSS_SELECTOR, "table")
-        logger.info(f"{len(tabelas)} tabela(s) encontrada(s)")
-
-        for tabela in tabelas:
-            # Verifica se é a tabela "Boi China a Prazo"
-            texto_tabela = tabela.text.lower()
-            if "boi china" not in texto_tabela and "prazo" not in texto_tabela:
+        for linha in linhas:
+            cols = linha.find_all("td")
+            if len(cols) < 2:
                 continue
 
-            linhas = tabela.find_elements(By.CSS_SELECTOR, "tbody tr")
-            logger.info(f"Tabela 'Boi China a Prazo' — {len(linhas)} linhas")
+            uf_texto = cols[0].get_text(strip=True)
+            preco_bruto_txt = cols[1].get_text(strip=True)
 
-            for linha in linhas:
-                cols = linha.find_elements(By.TAG_NAME, "td")
-                if len(cols) < 2:
-                    continue
+            # Correspondência EXATA para evitar "Mato Grosso do Sul" casar com "Mato Grosso"
+            estado_sigla = None
+            for nome_uf, sigla in UFS_ALVO.items():
+                if uf_texto.lower() == nome_uf.lower():
+                    estado_sigla = sigla
+                    break
 
-                uf_texto = cols[0].text.strip()
-                preco_bruto_txt = cols[1].text.strip()  # coluna "Preço bruto 30 dias"
+            if not estado_sigla:
+                continue
 
-                # Correspondência EXATA para evitar "Mato Grosso do Sul" casar com "Mato Grosso"
-                estado_sigla = None
-                for nome_uf, sigla in UFS_ALVO.items():
-                    if uf_texto.lower() == nome_uf.lower():
-                        estado_sigla = sigla
-                        break
+            preco = parse_preco(preco_bruto_txt)
+            if preco:
+                resultados[estado_sigla] = preco
+                logger.info(f"  {uf_texto} ({estado_sigla}): R$ {preco}/arr")
 
-                if not estado_sigla:
-                    continue
+        if resultados:
+            break
 
-                preco = parse_preco(preco_bruto_txt)
-                if preco:
-                    resultados[estado_sigla] = preco
-                    logger.info(f"  {uf_texto} ({estado_sigla}): R$ {preco}/arr")
-
-            # Achou a tabela certa, pode parar
-            if resultados:
-                break
-
-        if not resultados:
-            logger.error("Nenhuma cotação encontrada — estrutura da página pode ter mudado")
-
-    except Exception as e:
-        logger.error(f"Erro ao buscar Scot: {e}")
-    finally:
-        driver.quit()
+    # Fallback: se não achou tabela "boi china", loga o HTML para diagnóstico
+    if not resultados:
+        logger.error("Nenhuma cotação encontrada — estrutura da página pode ter mudado")
+        logger.debug(f"HTML recebido (primeiros 2000 chars):\n{html[:2000]}")
 
     return resultados
 
@@ -139,6 +134,7 @@ def salvar_cotacoes_json(cotacoes: dict) -> str:
         "cotacoes":   cotacoes,  # {"SP": 353.0, "MT": 357.0, "GO": 330.0}
     }
     caminho = os.path.join(os.path.dirname(__file__), "app", "cotacoes_scot.json")
+    os.makedirs(os.path.dirname(caminho), exist_ok=True)
     with open(caminho, "w", encoding="utf-8") as f:
         json.dump(saida, f, ensure_ascii=False, indent=2)
     logger.info(f"✅ Salvo: {caminho}")
@@ -161,7 +157,6 @@ def main():
             logger.info(f"  {estado}: R$ {preco}/arr")
     else:
         logger.error("❌ Nenhuma cotação coletada")
-        # Cria arquivo vazio para evitar erro no servidor
         salvar_cotacoes_json({})
 
 
