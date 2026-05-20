@@ -2,7 +2,7 @@ name: Atualizar Cotações Scot
 
 on:
   schedule:
-    - cron: '30 2 * * *'   # Todo dia às 00:15 UTC (21:15 Brasília)
+    - cron: '45 2 * * *'   # Todo dia às 00:44 UTC (21:44 Brasília)
   workflow_dispatch:         # Permite rodar manualmente
 
 jobs:
@@ -21,11 +21,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Instalar Chrome
-        uses: browser-actions/setup-chrome@v1
-
       - name: Instalar dependências
-        run: pip install selenium webdriver-manager
+        run: pip install requests beautifulsoup4
 
       - name: Rodar scraper Scot
         run: python buscar_cotacoes_scot.py
