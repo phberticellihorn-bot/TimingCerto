@@ -1,6 +1,10 @@
 {
-  "atualizado": "2026-05-20T02:39:25.454469",
+  "atualizado": "2026-05-20T02:42:35.127854",
   "fonte": "Scot Consultoria · Boi China a Prazo · Preço bruto 30 dias",
   "url": "https://www.scotconsultoria.com.br/cotacoes/boi-gordo/",
-  "cotacoes": {}
+  "cotacoes": {
+    "SP": 353.0,
+    "MT": 357.0,
+    "GO": 330.0
+  }
 }
