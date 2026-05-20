@@ -2,7 +2,7 @@ name: Atualizar Cotações Scot
 
 on:
   schedule:
-    - cron: '19 0 * * *'   # Todo dia às 00:15 UTC (21:15 Brasília)
+    - cron: '23 0 * * *'   # Todo dia às 00:15 UTC (21:15 Brasília)
   workflow_dispatch:         # Permite rodar manualmente
 
 jobs:
