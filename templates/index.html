@@ -596,7 +596,7 @@ async function carregarFuturosB3() {
 
     // Tenta carregar historico.json para pegar sua data de atualização
     try {
-      const rH = await fetch('historico.json');
+      const rH = await fetch('app/historico.json');
       const jH = await rH.json();
       const atualizadoHist = jH.atualizado_em || jH.timestamp || null;
       labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
