@@ -587,11 +587,11 @@ let labelAtualizadoHist = ''; // data de atualização do historico.json
 
 async function carregarFuturosB3() {
   try {
-    const r = await fetch('app/futuros_b3.json?v=' + Date.now());
+    const r = await fetch('/api/futuro/b3?v=' + Date.now());
     const j = await r.json();
-    futurosB3 = j.contratos || [];
+    futurosB3 = (j.data && j.data.contratos) ? j.data.contratos : (j.contratos || []);
 
-    const atualizadoB3 = j.atualizado || j.atualizado_em || j.timestamp || null;
+    const atualizadoB3 = (j.data && j.data.atualizado) || j.atualizado || j.atualizado_em || j.timestamp || null;
     labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
 
     // Tenta carregar historico.json para pegar sua data de atualização
