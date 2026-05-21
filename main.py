@@ -89,6 +89,16 @@ def api_preco_todos():
 
 # ── API: Histórico 5 anos ────────────────────────────────────────────────────
 
+@app.route("/api/historico/status")
+def api_historico_status():
+    """Retorna metadados do historico.json (data de atualização, fonte, anos disponíveis)."""
+    try:
+        info = status_historico()
+        return jsonify({"ok": True, "data": info})
+    except Exception as e:
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
 @app.route("/api/historico/<estado>")
 def api_historico(estado):
     estado = estado.upper()
