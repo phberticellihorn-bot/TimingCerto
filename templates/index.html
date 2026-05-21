@@ -589,7 +589,7 @@ async function carregarFuturosB3() {
   try {
 const r = await fetch('/api/futuro/b3');
     const j = await r.json();
-    futurosB3 = j.contratos || [];
+    futurosB3 = j.data || [];
 
     const atualizadoB3 = j.atualizado_em || j.timestamp || null;
     labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
