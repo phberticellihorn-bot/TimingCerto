@@ -143,7 +143,7 @@ def salvar_futuros_json(resultados: list):
         "fonte":      "Notícias Agrícolas · B3 Pregão Regular",
         "contratos":  resultados,
     }
-    caminho = os.path.join(os.path.dirname(__file__), "app", "futuros_b3.json")
+    caminho = os.path.join(os.path.dirname(__file__), "futuros_b3.json")
     with open(caminho, "w", encoding="utf-8") as f:
         json.dump(saida, f, ensure_ascii=False, indent=2)
     logger.info(f"✅ Salvo: {caminho}")
