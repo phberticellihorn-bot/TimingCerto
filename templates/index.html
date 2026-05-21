@@ -587,11 +587,11 @@ let labelAtualizadoHist = ''; // data de atualização do historico.json
 
 async function carregarFuturosB3() {
   try {
-    const r = await fetch(API + '/api/futuro/b3');
+    const r = await fetch('futuros_b3.json');
     const j = await r.json();
-    const payload = j.data || j;
-    futurosB3 = payload.contratos || [];
-    const atualizadoB3 = payload.atualizado || payload.atualizado_em || null;
+    futurosB3 = j.contratos || [];
+
+    const atualizadoB3 = j.atualizado_em || j.timestamp || null;
     labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
 
     // Tenta carregar historico.json para pegar sua data de atualização
@@ -850,10 +850,6 @@ function renderResultado(d) {
   const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
   const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
 
-  // Fontes para legenda da timeline
-  const tlFonteB3   = typeof labelAtualizadoB3   !== 'undefined' && labelAtualizadoB3   ? `atualizado em ${labelAtualizadoB3}`   : 'atualizado diariamente';
-  const tlFonteHist = typeof labelAtualizadoHist  !== 'undefined' && labelAtualizadoHist  ? `atualizado em ${labelAtualizadoHist}` : 'atualizado mensalmente';
-
   let tlHtml = '';
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
@@ -968,14 +964,7 @@ function renderResultado(d) {
 
     <div class="section-title">Evolução de preços — próximos meses</div>
     <div class="card dark">${tlHtml}</div>
-
-    <div style="margin-top:10px;padding:10px 14px;background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);line-height:2;">
-      <span style="color:var(--text2);font-weight:600;font-size:11px;">Fontes das projeções</span><br>
-      <span style="color:var(--amber)">■</span> <strong style="color:var(--text2)">FUTURO B3</strong> — Contratos futuros boi gordo · Notícias Agrícolas / B3 Pregão Regular · ${tlFonteB3}<br>
-      <span style="color:var(--green2)">■</span> <strong style="color:var(--text2)">HIST. CEPEA</strong> — Média histórica mensal 2020–2026 · Agrolink / CEPEA Esalq · ${tlFonteHist}<br>
-      <span style="color:var(--blue)">■</span> <strong style="color:var(--text2)">CHUVA/SECA</strong> — Normais climatológicas 20 anos · Open-Meteo ERA5 · atualizado automaticamente
-    </div>
-  \`;
+  `;
 }
 
 // ── Histórico ─────────────────────────────────────────────────────────────
