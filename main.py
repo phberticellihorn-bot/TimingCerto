@@ -24,6 +24,7 @@ from app.scraper import (
     comparativo_estados,
     buscar_clima,
     carregar_futuros_b3,
+    atualizar_futuros_b3,
 )
 from app.calculator import calcular
 
@@ -35,14 +36,22 @@ CORS(app)
 
 # Atualiza preço CEPEA a cada 6h automaticamente
 scheduler = BackgroundScheduler()
-scheduler.add_job(scrape_cepea_atual, "interval", hours=6, id="atualiza_cepea")
+scheduler.add_job(scrape_cepea_atual,    "interval", hours=6,  id="atualiza_cepea")
+scheduler.add_job(atualizar_futuros_b3,  "interval", hours=6,  id="atualiza_futuros_b3")
 scheduler.start()
+
+# Atualiza futuros B3 imediatamente no startup (sem bloquear)
+import threading
+threading.Thread(target=atualizar_futuros_b3, daemon=True).start()
 
 
 # ── Frontend ────────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():
+    # Dispara atualização do CEPEA e futuros B3 em background a cada visita
+    threading.Thread(target=scrape_cepea_atual,   daemon=True).start()
+    threading.Thread(target=atualizar_futuros_b3, daemon=True).start()
     return render_template("index.html")
 
 
