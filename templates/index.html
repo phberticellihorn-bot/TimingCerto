@@ -587,7 +587,7 @@ let labelAtualizadoHist = ''; // data de atualização do historico.json
 
 async function carregarFuturosB3() {
   try {
-    const r = await fetch('futuros_b3.json?v=' + Date.now());
+    const r = await fetch('app/futuros_b3.json?v=' + Date.now());
     const j = await r.json();
     futurosB3 = j.contratos || [];
 
@@ -596,7 +596,7 @@ async function carregarFuturosB3() {
 
     // Tenta carregar historico.json para pegar sua data de atualização
     try {
-      const rH = await fetch('historico.json?v=' + Date.now());
+      const rH = await fetch('app/historico.json?v=' + Date.now());
       const jH = await rH.json();
       const atualizadoHist = jH.atualizado || jH.atualizado_em || jH.timestamp || null;
       labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
