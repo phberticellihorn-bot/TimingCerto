@@ -488,7 +488,7 @@ nav{
       </div>
 
       <div class="fonte-note" id="fonte-note-calc">
-        Preço atual: Scot Consultoria · atualização automática diária<br>
+        Preço atual: Scot Consultoria · atualização automática diária 19h<br>
         Histórico: CEPEA 2020–2025 · Clima: Open-Meteo · Futuro: B3<br>
         Protótipo v0.3 · MT, SP e GO
       </div>
@@ -539,7 +539,7 @@ nav{
   </div>
 
   <div id="clima-content"><div class="loading">Carregando previsão climática...</div></div>
-  <div class="fonte-note" id="fonte-note-clima">Fonte: Open-Meteo API · Atualizado automaticamente</div>
+  <div class="fonte-note" id="fonte-note-clima">Fonte: Open-Meteo API · Atualizado automaticamente · Gratuito e sem autenticação</div>
 </div>
 
 <script>
@@ -863,23 +863,23 @@ function renderResultado(d) {
     // Preço principal: B3 se disponível, histórico se não
     const precoPrincipalHtml = b3
       ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--bg2);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text3)">/arroba</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg2);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
          </div>
-         <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
+         <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
            hist. CEPEA: R$ ${t.preco}/arr
            <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)} vs hist.</span>
          </div>`
       : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--green-muted);font-weight:700">R$ ${t.preco}</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--bg);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">sem contrato B3</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--green-muted);font-weight:700">R$ ${t.preco}</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text3)">/arroba</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
+           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3)">sem contrato B3</span>
          </div>`;
 
-    const sazonalidadeHtml = `<div style="font-size:11px;color:var(--text3);margin-top:3px">${t.chuva ? '🌧 Período de chuvas — oferta tende a ser maior' : '☀ Período seco — preço tende a ser mais firme'}</div>`;
+    const sazonalidadeHtml = `<div style="font-size:13px;color:var(--text3);margin-top:3px">${t.chuva ? '🌧 Período de chuvas — oferta tende a ser maior' : '☀ Período seco — preço tende a ser mais firme'}</div>`;
 
     const abateBadge = t.is_abate
       ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--green);color:#fff;border-radius:4px;padding:2px 8px;font-weight:700">← ABATE PREVISTO</span>`
@@ -890,7 +890,7 @@ function renderResultado(d) {
         <div class="tl-dot ${dotClass}" style="${t.is_abate ? 'margin-top:6px' : ''}"></div>
         <div class="tl-meta" style="flex:1">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
             ${abateBadge}
           </div>
           ${precoPrincipalHtml}
