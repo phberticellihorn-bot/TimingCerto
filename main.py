@@ -19,6 +19,7 @@ import os
 from app.scraper import (
     status_historico,
     scrape_cepea_atual,
+    atualizar_preco_atual,
     historico_5anos,
     comparativo_chuva_seca,
     comparativo_estados,
@@ -58,6 +59,19 @@ def api_preco_atual():
         estado = "SP"
     try:
         dados = scrape_cepea_atual(estado)
+        return jsonify({"ok": True, "data": dados})
+    except Exception as e:
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
+@app.route("/api/preco/atual/atualizar")
+def api_preco_atual_atualizar():
+    """Força scraping imediato ignorando cache. Chamado pelo frontend no carregamento."""
+    estado = request.args.get("estado", "SP").upper()
+    if estado not in ("SP", "MT", "GO"):
+        estado = "SP"
+    try:
+        dados = atualizar_preco_atual(estado)
         return jsonify({"ok": True, "data": dados})
     except Exception as e:
         return jsonify({"ok": False, "erro": str(e)}), 500
