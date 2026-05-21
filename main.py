@@ -40,8 +40,6 @@ scheduler.add_job(scrape_cepea_atual,    "interval", hours=6,  id="atualiza_cepe
 scheduler.add_job(atualizar_futuros_b3,  "interval", hours=6,  id="atualiza_futuros_b3")
 scheduler.start()
 
-# Atualiza futuros B3 imediatamente no startup (sem bloquear)
-threading.Thread(target=atualizar_futuros_b3, daemon=True).start()
 
 
 # ── Frontend ────────────────────────────────────────────────────────────────
