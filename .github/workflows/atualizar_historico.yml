@@ -2,7 +2,7 @@ name: Atualizar Histórico de Preços
 
 on:
   schedule:
-    - cron: '0 8 1 * *'   # Todo dia 1° do mês às 8h UTC (5h Brasília)
+    - cron: '0 8 22 * *'  # Dia 22 às 8h UTC (5h Brasília) — teste; voltar para '0 8 1 * *' depois
   workflow_dispatch:        # Permite rodar manualmente
 
 jobs:
