@@ -14,9 +14,11 @@ orientando o usuário a rodar o atualizar_historico.py primeiro.
 import requests
 import json
 import os
+import re
 import logging
 from datetime import datetime
 from cachetools import TTLCache
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
@@ -483,6 +485,35 @@ def comparativo_estados(ano: int = None) -> dict:
     return resultado
 
 
+_URL_B3 = "https://www.noticiasagricolas.com.br/cotacoes/boi-gordo/boi-gordo-b3-prego-regular"
+
+_MESES_PT = {
+    "janeiro": 1, "fevereiro": 2, "março": 3, "abril": 4,
+    "maio": 5, "junho": 6, "julho": 7, "agosto": 8,
+    "setembro": 9, "outubro": 10, "novembro": 11, "dezembro": 12,
+}
+
+
+def _parse_mes_ano_b3(txt: str):
+    m = re.match(r"(\w+)/(\d{4})", txt.strip().lower())
+    if m:
+        mes = _MESES_PT.get(m.group(1))
+        ano = int(m.group(2))
+        if mes:
+            return mes, ano
+    return None, None
+
+
+def _parse_preco_b3(txt: str):
+    txt = re.sub(r"[^\d,\.]", "", txt.strip())
+    txt = re.sub(r"\.(?=\d{3})", "", txt).replace(",", ".")
+    try:
+        v = float(txt)
+        return round(v, 2) if 50 < v < 1500 else None
+    except Exception:
+        return None
+
+
 def atualizar_futuros_b3() -> dict:
     """
     Faz scraping dos futuros B3 via requests+BeautifulSoup,
@@ -490,16 +521,57 @@ def atualizar_futuros_b3() -> dict:
     Chamado pelo scheduler e pela rota / a cada abertura do site.
     """
     try:
-        from buscar_futuro_b3 import buscar_futuros_b3, salvar_futuros_json
-        resultados = buscar_futuros_b3()
-        if not resultados:
-            logger.warning("atualizar_futuros_b3: nenhum dado retornado")
+        resp = requests.get(_URL_B3, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        tabela = soup.find("table")
+        if not tabela:
+            logger.warning("atualizar_futuros_b3: tabela não encontrada na página")
             return {}
-        salvar_futuros_json(resultados)
+
+        resultados = []
+        for tr in tabela.find_all("tr"):
+            cols = tr.find_all("td")
+            if len(cols) < 2:
+                continue
+            mes, ano = _parse_mes_ano_b3(cols[0].get_text())
+            if not mes or not ano:
+                continue
+            preco = _parse_preco_b3(cols[1].get_text())
+            if not preco:
+                continue
+            variacao = None
+            if len(cols) >= 3:
+                try:
+                    variacao = float(cols[2].get_text().strip().replace(",", "."))
+                except Exception:
+                    pass
+            resultados.append({
+                "mes":          mes,
+                "ano":          ano,
+                "periodo":      cols[0].get_text().strip(),
+                "preco_arroba": preco,
+                "variacao_pct": variacao,
+            })
+
+        if not resultados:
+            logger.warning("atualizar_futuros_b3: nenhum contrato coletado")
+            return {}
+
+        saida = {
+            "atualizado": datetime.now().isoformat(),
+            "fonte":      "Notícias Agrícolas · B3 Pregão Regular",
+            "contratos":  resultados,
+        }
+        caminho = os.path.join(os.path.dirname(__file__), "futuros_b3.json")
+        with open(caminho, "w", encoding="utf-8") as f:
+            json.dump(saida, f, ensure_ascii=False, indent=2)
+
         # Invalida cache para próxima leitura pegar o arquivo novo
         cache_futuro.pop("futuros_b3", None)
         logger.info(f"✅ futuros_b3 atualizado: {len(resultados)} contratos")
         return carregar_futuros_b3()
+
     except Exception as e:
         logger.error(f"atualizar_futuros_b3 falhou: {e}")
         return {}
