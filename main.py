@@ -41,7 +41,6 @@ scheduler.add_job(atualizar_futuros_b3,  "interval", hours=6,  id="atualiza_futu
 scheduler.start()
 
 # Atualiza futuros B3 imediatamente no startup (sem bloquear)
-import threading
 threading.Thread(target=atualizar_futuros_b3, daemon=True).start()
 
 
@@ -49,9 +48,6 @@ threading.Thread(target=atualizar_futuros_b3, daemon=True).start()
 
 @app.route("/")
 def index():
-    # Dispara atualização do CEPEA e futuros B3 em background a cada visita
-    threading.Thread(target=scrape_cepea_atual,   daemon=True).start()
-    threading.Thread(target=atualizar_futuros_b3, daemon=True).start()
     return render_template("index.html")
 
 
@@ -143,6 +139,20 @@ def api_futuro_b3():
         return jsonify({"ok": True, "data": dados})
     except FileNotFoundError as e:
         return jsonify({"ok": False, "erro": str(e)}), 404
+    except Exception as e:
+        return jsonify({"ok": False, "erro": str(e)}), 500
+
+
+@app.route("/api/futuro/b3/atualizar")
+def api_futuro_b3_atualizar():
+    """Força scraping imediato e retorna dados frescos. Chamado pelo frontend no carregamento."""
+    try:
+        dados = atualizar_futuros_b3()
+        if dados:
+            return jsonify({"ok": True, "data": dados})
+        # Se scraping falhou, tenta retornar o que tiver em cache/arquivo
+        dados = carregar_futuros_b3()
+        return jsonify({"ok": True, "data": dados})
     except Exception as e:
         return jsonify({"ok": False, "erro": str(e)}), 500
 
