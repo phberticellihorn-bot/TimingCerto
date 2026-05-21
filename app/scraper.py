@@ -17,6 +17,9 @@ import os
 import re
 import logging
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+TZ_BR = ZoneInfo("America/Sao_Paulo")
 from cachetools import TTLCache
 from bs4 import BeautifulSoup
 
@@ -64,7 +67,7 @@ def _buscar_normais_precipitacao(estado: str) -> list:
         return cache_normais[cache_key]
 
     coords = COORDS.get(estado, COORDS["MT"])
-    ano_fim   = datetime.now().year - 1          # ano completo mais recente
+    ano_fim   = datetime.now(TZ_BR).year - 1          # ano completo mais recente
     ano_ini   = ano_fim - 19                     # 20 anos de dados
     url = (
         f"https://archive-api.open-meteo.com/v1/archive"
@@ -211,7 +214,7 @@ def status_historico() -> dict:
 
 def _fallback_media_historica(estado: str) -> dict:
     """Fallback: média histórica do mês atual quando todas as APIs falham."""
-    mes_atual = datetime.now().month
+    mes_atual = datetime.now(TZ_BR).month
     try:
         preco = preco_historico_medio(estado, mes_atual)
         logger.info(f"Fallback histórico {estado} mês {mes_atual}: R${preco}")
@@ -219,8 +222,8 @@ def _fallback_media_historica(estado: str) -> dict:
             "preco":        preco,
             "fonte":        f"Média histórica {MESES_NOME[mes_atual-1]} (APIs indisponíveis)",
             "estado":       estado,
-            "atualizado":   datetime.now().isoformat(),
-            "data_cotacao": datetime.now().strftime("%Y-%m-%d"),
+            "atualizado":   datetime.now(TZ_BR).isoformat(),
+            "data_cotacao": datetime.now(TZ_BR).strftime("%Y-%m-%d"),
             "automatico":   False,
             "aviso":        "Preço baseado em média histórica — fontes externas temporariamente indisponíveis.",
         }
@@ -230,11 +233,22 @@ def _fallback_media_historica(estado: str) -> dict:
         "preco":      None,
         "fonte":      "indisponivel",
         "estado":     estado,
-        "atualizado": datetime.now().isoformat(),
+        "atualizado": datetime.now(TZ_BR).isoformat(),
         "automatico": False,
         "erro":       "Todas as fontes indisponíveis e historico.json ausente.",
     }
 
+
+
+def atualizar_preco_atual(estado: str = "SP") -> dict:
+    """
+    Força scraping do preço atual ignorando o cache TTL.
+    Chamado pela rota /api/preco/atual/atualizar no carregamento do site.
+    """
+    estado = estado.upper()
+    cache_key = f"agrodoc_{estado}"
+    cache_preco.pop(cache_key, None)
+    return scrape_cepea_atual(estado)
 
 
 def scrape_cepea_atual(estado: str = "SP") -> dict:
@@ -254,7 +268,7 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
                 meta = json.load(f)
             atualizado = meta.get("atualizado", "")
             data_arquivo = datetime.fromisoformat(atualizado[:19]) if atualizado else None
-            dias_defasagem = (datetime.now() - data_arquivo).days if data_arquivo else 99
+            dias_defasagem = (datetime.now(TZ_BR) - data_arquivo).days if data_arquivo else 99
             if dias_defasagem <= 2:
                 resultado = {
                     "preco":        preco_scot,
@@ -287,14 +301,14 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
         DIFERENCIAL_AGRODOC = {"SP": 0.0, "MT": -3.0, "GO": -14.0}
         preco_sp = float(dados.get("boi_gordo_cepea_sp") or dados.get("valor") or 0)
         preco    = round(preco_sp + DIFERENCIAL_AGRODOC.get(estado, 0), 2) if preco_sp else 0
-        data_cot = (dados.get("atualizado") or datetime.now().isoformat())[:10]
+        data_cot = (dados.get("atualizado") or datetime.now(TZ_BR).isoformat())[:10]
 
         if 200 < preco < 600:
             resultado = {
                 "preco":        preco,
                 "fonte":        "AgroDoc AI · CEPEA/Scot",
                 "estado":       estado,
-                "atualizado":   datetime.now().isoformat(),
+                "atualizado":   datetime.now(TZ_BR).isoformat(),
                 "data_cotacao": data_cot,
                 "automatico":   True,
             }
@@ -335,8 +349,8 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
                 "preco_sp":     preco_sp,
                 "fonte":        "Redação Agro · CEPEA/Esalq",
                 "estado":       estado,
-                "atualizado":   datetime.now().isoformat(),
-                "data_cotacao": datetime.now().strftime("%Y-%m-%d"),
+                "atualizado":   datetime.now(TZ_BR).isoformat(),
+                "data_cotacao": datetime.now(TZ_BR).strftime("%Y-%m-%d"),
                 "automatico":   True,
             }
             cache_preco[cache_key] = resultado
@@ -392,7 +406,7 @@ def buscar_clima(estado: str) -> dict:
             "estado":     estado,
             "coords":     coords,
             "previsao":   previsao,
-            "atualizado": datetime.now().isoformat(),
+            "atualizado": datetime.now(TZ_BR).isoformat(),
             "fonte":      "Open-Meteo",
             "automatico": True,
         }
@@ -404,7 +418,7 @@ def buscar_clima(estado: str) -> dict:
         return {
             "estado":     estado,
             "previsao":   [],
-            "atualizado": datetime.now().isoformat(),
+            "atualizado": datetime.now(TZ_BR).isoformat(),
             "fonte":      "indisponivel",
             "automatico": False,
             "erro":       str(e),
@@ -464,7 +478,7 @@ def comparativo_estados(ano: int = None) -> dict:
     hist    = _carregar_historico()
     ano_ref = ano or max(
         {int(a) for e in hist.values() for a in e.keys()},
-        default=datetime.now().year
+        default=datetime.now(TZ_BR).year
     )
     resultado = {}
     for estado in ESTADOS_VALIDOS:
@@ -559,7 +573,7 @@ def atualizar_futuros_b3() -> dict:
             return {}
 
         saida = {
-            "atualizado": datetime.now().isoformat(),
+            "atualizado": datetime.now(TZ_BR).isoformat(),
             "fonte":      "Notícias Agrícolas · B3 Pregão Regular",
             "contratos":  resultados,
         }
