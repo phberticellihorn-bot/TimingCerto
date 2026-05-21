@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add app/futuros_b3.json
+          git add futuros_b3.json
           git diff --staged --quiet || git commit -m "Futuros B3 atualizados $(date +'%d/%m/%Y')"
           git pull --rebase origin main
           git push
