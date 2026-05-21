@@ -594,11 +594,11 @@ async function carregarFuturosB3() {
     const atualizadoB3 = (j.data && j.data.atualizado) || j.atualizado || j.atualizado_em || j.timestamp || null;
     labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
 
-    // Tenta carregar historico.json para pegar sua data de atualização
+    // Tenta carregar metadados do histórico via API
     try {
-      const rH = await fetch('app/historico.json?v=' + Date.now());
+      const rH = await fetch('/api/historico/status?v=' + Date.now());
       const jH = await rH.json();
-      const atualizadoHist = jH.atualizado || jH.atualizado_em || jH.timestamp || null;
+      const atualizadoHist = jH.ok ? (jH.data.atualizado || null) : null;
       labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
 
       // Preenche a data abaixo da média histórica no price strip
