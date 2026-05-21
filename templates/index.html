@@ -850,6 +850,10 @@ function renderResultado(d) {
   const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
   const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
 
+  // Fontes para legenda da timeline
+  const tlFonteB3   = typeof labelAtualizadoB3   !== 'undefined' && labelAtualizadoB3   ? `atualizado em ${labelAtualizadoB3}`   : 'atualizado diariamente';
+  const tlFonteHist = typeof labelAtualizadoHist  !== 'undefined' && labelAtualizadoHist  ? `atualizado em ${labelAtualizadoHist}` : 'atualizado mensalmente';
+
   let tlHtml = '';
   d.timeline.forEach(t => {
     const dotClass = t.is_abate ? 'active' : t.chuva ? 'rain' : '';
