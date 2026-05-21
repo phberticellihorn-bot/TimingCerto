@@ -587,7 +587,7 @@ let labelAtualizadoHist = ''; // data de atualização do historico.json
 
 async function carregarFuturosB3() {
   try {
-    const r = await fetch('futuros_b3.json');
+const r = await fetch('/api/futuro/b3');
     const j = await r.json();
     futurosB3 = j.contratos || [];
 
