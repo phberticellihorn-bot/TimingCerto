@@ -483,6 +483,28 @@ def comparativo_estados(ano: int = None) -> dict:
     return resultado
 
 
+def atualizar_futuros_b3() -> dict:
+    """
+    Faz scraping dos futuros B3 via requests+BeautifulSoup,
+    salva em app/futuros_b3.json e invalida o cache.
+    Chamado pelo scheduler e pela rota / a cada abertura do site.
+    """
+    try:
+        from buscar_futuro_b3 import buscar_futuros_b3, salvar_futuros_json
+        resultados = buscar_futuros_b3()
+        if not resultados:
+            logger.warning("atualizar_futuros_b3: nenhum dado retornado")
+            return {}
+        salvar_futuros_json(resultados)
+        # Invalida cache para próxima leitura pegar o arquivo novo
+        cache_futuro.pop("futuros_b3", None)
+        logger.info(f"✅ futuros_b3 atualizado: {len(resultados)} contratos")
+        return carregar_futuros_b3()
+    except Exception as e:
+        logger.error(f"atualizar_futuros_b3 falhou: {e}")
+        return {}
+
+
 def carregar_futuros_b3() -> dict:
     """
     Lê app/futuros_b3.json gerado pelo buscar_futuro_b3.py.
