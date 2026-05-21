@@ -587,18 +587,18 @@ let labelAtualizadoHist = ''; // data de atualização do historico.json
 
 async function carregarFuturosB3() {
   try {
-    const r = await fetch('futuros_b3.json');
+    const r = await fetch('futuros_b3.json?v=' + Date.now());
     const j = await r.json();
     futurosB3 = j.contratos || [];
 
-    const atualizadoB3 = j.atualizado_em || j.timestamp || null;
+    const atualizadoB3 = j.atualizado || j.atualizado_em || j.timestamp || null;
     labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
 
     // Tenta carregar historico.json para pegar sua data de atualização
     try {
-      const rH = await fetch('historico.json');
+      const rH = await fetch('historico.json?v=' + Date.now());
       const jH = await rH.json();
-      const atualizadoHist = jH.atualizado_em || jH.timestamp || null;
+      const atualizadoHist = jH.atualizado || jH.atualizado_em || jH.timestamp || null;
       labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
 
       // Preenche a data abaixo da média histórica no price strip
