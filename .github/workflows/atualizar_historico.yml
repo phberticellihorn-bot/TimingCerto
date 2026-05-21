@@ -27,14 +27,11 @@ jobs:
       - name: Rodar scraper de histórico
         run: python atualizar_historico.py
 
-      - name: Rodar scraper de futuros B3
-        run: python buscar_futuro_b3.py
-
-      - name: Salvar arquivos no repositório
+      - name: Salvar historico.json no repositório
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add app/historico.json app/futuros_b3.json
-          git diff --staged --quiet || git commit -m "Atualização automática $(date +'%m/%Y')"
+          git add app/historico.json
+          git diff --staged --quiet || git commit -m "Histórico atualizado $(date +'%m/%Y')"
           git pull --rebase origin main
           git push
