@@ -866,36 +866,59 @@ nav {
 }
 
 /* ════════════════════════════════════════════
-   STRATEGIC COMPARISON — premium modal table
+   STRATEGIC COMPARISON — dark card (sempre escuro)
 ════════════════════════════════════════════ */
 .strat-comp-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 0;
+  background: #111827;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 14px;
+  overflow: hidden;
 }
 .sc-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--t-base);
+  background: #111827;
+  border: none;
+  border-right: 1px solid rgba(255,255,255,.07);
+  border-radius: 0;
+  padding: 18px 20px;
+  box-shadow: none;
+  transition: background var(--t-fast);
 }
-.sc-card:first-child { border-right: 1px solid var(--border); }
-.sc-card:hover { box-shadow: var(--shadow); }
-.sc-card.sc-winner      { border-color: var(--emerald); background: var(--emerald-bg); }
-.sc-card.sc-winner-blue { border-color: var(--teal2); background: var(--teal-bg); }
+.sc-card:last-child { border-right: none; }
+.sc-card:first-child { border-right: 1px solid rgba(255,255,255,.07); }
+.sc-card:hover { background: #151e2e; box-shadow: none; }
+.sc-card.sc-winner      { background: #0d1f18; border-right-color: rgba(255,255,255,.07); }
+.sc-card.sc-winner-blue { background: #0d1824; border-right-color: rgba(255,255,255,.07); }
 .sc-head {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px; padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px; padding-bottom: 11px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
 }
 .sc-name {
-  font-size: 11.5px; font-weight: 700;
+  font-size: 12px; font-weight: 700;
   display: flex; align-items: center; gap: 6px;
 }
-.scn-g { color: var(--emerald); }
-.scn-b { color: var(--teal); }
+.scn-g { color: #10B981; }
+.scn-b { color: #0EA5E9; }
+/* override comp-row para fundo escuro */
+.strat-comp-cards .comp-row {
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.strat-comp-cards .comp-row:last-child { border-bottom: none; }
+.strat-comp-cards .comp-row-label { color: #8490A5; font-weight: 500; }
+.strat-comp-cards .comp-row-val   { color: #BEC7D8; }
+.strat-comp-cards .comp-row-val.win  { color: #34D399; }
+.strat-comp-cards .comp-row-val.lose { color: #576070; opacity: 1; }
+.strat-comp-cards .comp-divider { background: rgba(255,255,255,.07); }
+.strat-comp-cards .winner-badge {
+  background: #10B981; color: #000; font-size: 8.5px;
+}
+.strat-comp-cards .winner-badge-blue {
+  background: #0EA5E9; color: #000;
+}
 
 /* ════════════════════════════════════════════
    HISTÓRICO PAGE
@@ -1586,7 +1609,7 @@ function renderResultado(d) {
               </div>
               <div class="comp-divider"></div>
               <div class="comp-row">
-                <span class="comp-row-label" style="font-weight:700;color:var(--t1)">Lucro lote</span>
+                <span class="comp-row-label" style="font-weight:700;color:#E6ECF4">Lucro lote</span>
                 <span class="comp-row-val ${confWinEfetivo?'win':'lose'}" style="font-size:14px">${fmt(lucroConfEfetivo)}</span>
               </div>
             </div>
@@ -1619,7 +1642,7 @@ function renderResultado(d) {
               </div>
               <div class="comp-divider"></div>
               <div class="comp-row">
-                <span class="comp-row-label" style="font-weight:700;color:var(--t1)">Lucro lote</span>
+                <span class="comp-row-label" style="font-weight:700;color:#E6ECF4">Lucro lote</span>
                 <span class="comp-row-val ${!confWinEfetivo?'win':'lose'}" style="font-size:14px">${fmt(lucroSemiEfetivo)}</span>
               </div>
             </div>
