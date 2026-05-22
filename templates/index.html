@@ -476,15 +476,21 @@ nav{
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Mês de entrada no sistema</label>
-        <select id="mes_entrada" onchange="calcular()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Custo fixo por cabeça (R$)</label>
+          <input type="number" id="custo_fixo_cab" value="0" min="0" placeholder="Ex: 500" oninput="calcular()">
+        </div>
+        <div class="form-group">
+          <label>Mês de entrada no sistema</label>
+          <select id="mes_entrada" onchange="calcular()">
           <option value="3">Março</option>
           <option value="4">Abril</option>
           <option value="5" selected>Maio</option>
           <option value="6">Junho</option>
           <option value="7">Julho</option>
         </select>
+        </div>
       </div>
 
       <div class="fonte-note" id="fonte-note-calc">
@@ -522,7 +528,7 @@ nav{
     <canvas id="chart-chuva-seca" height="80"></canvas>
   </div>
 
-  <div id="cards-comparativo" class="grid-3" style="margin-top:20px"></div>
+  
 
   <div class="fonte-note" id="fonte-note-historico">Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba</div>
 </div>
@@ -795,6 +801,7 @@ async function calcular() {
     peso_abate: parseFloat(document.getElementById('peso_abate').value) || 520,
     gpd: parseFloat(document.getElementById('gpd').value) || 1.4,
     custo_dia: parseFloat(document.getElementById('custo_dia').value) || 28,
+    custo_fixo_cab: parseFloat(document.getElementById('custo_fixo_cab').value) || 0,
     mes_entrada: parseInt(document.getElementById('mes_entrada').value) || 5,
     estado: document.getElementById('estado').value,
   };
@@ -986,7 +993,6 @@ async function carregarHistorico(estado) {
       ]);
       renderGraficoHistorico(rH.data, estado);
       renderChuvaSeca(rC.data, estado);
-      renderCardsComparativo(rC.data, estado);
     }
   } catch(e) { console.error(e); }
 }
@@ -1141,7 +1147,7 @@ function renderClima(dados) {
     const cor = d.probabilidade_pct > 60 ? '#80b8e6' : d.probabilidade_pct > 30 ? '#e6a840' : '#a8e6b0';
     return `
       <div class="clima-bar">
-        <div class="cb-data">${d.data.slice(5)}</div>
+        <div class="cb-data">${d.data.slice(8)}-${d.data.slice(5,7)}</div>
         <div class="cb-track"><div class="cb-fill" style="width:${pct}%;background:${cor}"></div></div>
         <div class="cb-val">${d.chuva_mm.toFixed(1)}mm · ${d.probabilidade_pct}%</div>
       </div>`;
