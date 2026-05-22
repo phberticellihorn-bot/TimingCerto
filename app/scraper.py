@@ -2,7 +2,7 @@
 scraper.py — Coleta automática de dados para o Timing Certo
 
 Fontes de dados (todas automáticas):
-  1. Preço atual:   Indicador do Boi DATAGRO (principal) → Scot Consultoria → AgroDoc AI → Redação Agro → histórico
+  1. Preço atual:   AgroDoc AI API (CEPEA/Scot · gratuita · diária)
   2. Histórico:     historico.json gerado pelo atualizar_historico.py (Selenium/Agrolink)
   3. Clima:         Open-Meteo API (gratuita · sem autenticação · atualizada a cada 3h)
 
@@ -257,68 +257,12 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
     if cache_key in cache_preco:
         return cache_preco[cache_key]
 
-    # --- Fonte 0: Indicador do Boi DATAGRO (preço real por estado, atualizado diariamente) ---
-    # Mapeamento de estado para índice de coluna na tabela (ordem: SP, BA, GO, MG, MS, MT, PA, RO, TO)
-    _DATAGRO_COLS = {"SP": 0, "BA": 1, "GO": 2, "MG": 3, "MS": 4, "MT": 5, "PA": 6, "RO": 7, "TO": 8}
-    try:
-        resp_dag = requests.get(
-            "https://www.indicadordoboi.com.br/pt-br",
-            headers=HEADERS,
-            timeout=15,
-        )
-        resp_dag.raise_for_status()
-        soup_dag = BeautifulSoup(resp_dag.text, "html.parser")
-        tabela_dag = soup_dag.find("table")
-        if tabela_dag:
-            col_idx = _DATAGRO_COLS.get(estado)
-            if col_idx is not None:
-                linhas = tabela_dag.find_all("tr")
-                preco_dag = None
-                data_dag  = None
-                for tr in reversed(linhas):
-                    cols_dag = tr.find_all("td")
-                    if len(cols_dag) < col_idx + 2:
-                        continue
-                    data_txt = cols_dag[0].get_text(strip=True)
-                    # Ignora linha de média e cabeçalho
-                    if "dia" in data_txt.lower() or "méd" in data_txt.lower() or not data_txt:
-                        continue
-                    val_txt = cols_dag[col_idx + 1].get_text(strip=True).replace(",", ".")
-                    try:
-                        val = float(val_txt)
-                        if 200 < val < 600:
-                            preco_dag = round(val, 2)
-                            data_dag  = data_txt
-                            break
-                    except Exception:
-                        continue
-
-                if preco_dag:
-                    resultado = {
-                        "preco":        preco_dag,
-                        "fonte":        "Indicador do Boi DATAGRO",
-                        "estado":       estado,
-                        "atualizado":   datetime.now(TZ_BR).isoformat(),
-                        "data_cotacao": data_dag,
-                        "automatico":   True,
-                    }
-                    cache_preco[cache_key] = resultado
-                    logger.info(f"DATAGRO: {estado} = R${preco_dag} ({data_dag})")
-                    return resultado
-                else:
-                    logger.warning(f"DATAGRO: preço não encontrado para {estado}")
-            else:
-                logger.warning(f"DATAGRO: estado {estado} não mapeado na tabela")
-        else:
-            logger.warning("DATAGRO: tabela não encontrada na página")
-    except Exception as e:
-        logger.warning(f"Indicador do Boi DATAGRO falhou para {estado}: {e}")
-
-    # --- Fonte 1: Scot Consultoria (preço real por estado, atualizado diariamente) ---
+    # --- Fonte 0: Scot Consultoria (preço real por estado, atualizado diariamente) ---
     try:
         cotacoes_scot = carregar_cotacoes_scot()
         preco_scot = cotacoes_scot.get(estado)
         if preco_scot and 200 < preco_scot < 600:
+            # Verifica se o JSON não está desatualizado (mais de 2 dias)
             caminho = os.path.join(os.path.dirname(__file__), "cotacoes_scot.json")
             with open(caminho, "r", encoding="utf-8") as f:
                 meta = json.load(f)
@@ -342,7 +286,7 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
     except Exception as e:
         logger.warning(f"Scot Consultoria falhou para {estado}: {e}")
 
-    # --- Fonte 2: AgroDoc AI API (fallback — SP base + diferencial fixo) ---
+    # --- Fonte 1: AgroDoc AI API (fallback — SP base + diferencial fixo) ---
     try:
         resp = requests.get(
             "https://agrodocai.com.br/api/v1/cotacao",
@@ -376,7 +320,7 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
     except Exception as e:
         logger.warning(f"AgroDoc API falhou para {estado}: {e}")
 
-    # --- Fonte 3: Redação Agro API (CEPEA/Esalq · gratuita · sem auth) ---
+    # --- Fonte 2: Redação Agro API (CEPEA/Esalq · gratuita · sem auth) ---
     # Retorna referência SP; aplica diferencial para MT/GO
     DIFERENCIAL = {"SP": 0.0, "MT": -3.0, "GO": -14.0}
     try:
@@ -415,7 +359,7 @@ def scrape_cepea_atual(estado: str = "SP") -> dict:
     except Exception as e:
         logger.warning(f"Redação Agro API falhou: {e}")
 
-    # --- Fonte 4: Fallback média histórica do mês ---
+    # --- Fonte 3: Fallback média histórica do mês ---
     return _fallback_media_historica(estado)
 
 
