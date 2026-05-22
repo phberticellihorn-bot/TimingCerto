@@ -866,59 +866,49 @@ nav {
 }
 
 /* ════════════════════════════════════════════
-   STRATEGIC COMPARISON — dark card (sempre escuro)
+   STRATEGIC COMPARISON — light card
 ════════════════════════════════════════════ */
 .strat-comp-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
-  background: #111827;
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 14px;
-  overflow: hidden;
+  gap: 14px;
 }
 .sc-card {
-  background: #111827;
-  border: none;
-  border-right: 1px solid rgba(255,255,255,.07);
-  border-radius: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
   padding: 18px 20px;
-  box-shadow: none;
-  transition: background var(--t-fast);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t-base), border-color var(--t-base);
 }
-.sc-card:last-child { border-right: none; }
-.sc-card:first-child { border-right: 1px solid rgba(255,255,255,.07); }
-.sc-card:hover { background: #151e2e; box-shadow: none; }
-.sc-card.sc-winner      { background: #0d1f18; border-right-color: rgba(255,255,255,.07); }
-.sc-card.sc-winner-blue { background: #0d1824; border-right-color: rgba(255,255,255,.07); }
+.sc-card:first-child { border-right: 1.5px solid var(--border); }
+.sc-card:hover { box-shadow: var(--shadow); }
+.sc-card.sc-winner      { border-color: var(--emerald); background: var(--surface); box-shadow: 0 0 0 1px var(--emerald-bd), var(--shadow-sm); }
+.sc-card.sc-winner-blue { border-color: var(--teal2);   background: var(--surface); box-shadow: 0 0 0 1px var(--teal-bd),    var(--shadow-sm); }
 .sc-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 14px; padding-bottom: 11px;
-  border-bottom: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid var(--border);
 }
 .sc-name {
   font-size: 12px; font-weight: 700;
   display: flex; align-items: center; gap: 6px;
 }
-.scn-g { color: #10B981; }
-.scn-b { color: #0EA5E9; }
-/* override comp-row para fundo escuro */
+.scn-g { color: var(--emerald); }
+.scn-b { color: var(--teal2); }
+/* comp-row inside strat-comp — light theme */
 .strat-comp-cards .comp-row {
-  padding: 7px 0;
-  border-bottom: 1px solid rgba(255,255,255,.05);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
 }
 .strat-comp-cards .comp-row:last-child { border-bottom: none; }
-.strat-comp-cards .comp-row-label { color: #8490A5; font-weight: 500; }
-.strat-comp-cards .comp-row-val   { color: #BEC7D8; }
-.strat-comp-cards .comp-row-val.win  { color: #34D399; }
-.strat-comp-cards .comp-row-val.lose { color: #576070; opacity: 1; }
-.strat-comp-cards .comp-divider { background: rgba(255,255,255,.07); }
-.strat-comp-cards .winner-badge {
-  background: #10B981; color: #000; font-size: 8.5px;
-}
-.strat-comp-cards .winner-badge-blue {
-  background: #0EA5E9; color: #000;
-}
+.strat-comp-cards .comp-row-label { color: var(--t3); font-weight: 500; }
+.strat-comp-cards .comp-row-val   { color: var(--t2); }
+.strat-comp-cards .comp-row-val.win  { color: var(--emerald); }
+.strat-comp-cards .comp-row-val.lose { color: var(--red); opacity: .7; }
+.strat-comp-cards .comp-divider { background: var(--border); }
+.strat-comp-cards .winner-badge      { background: var(--teal2); color: #fff; font-size: 8.5px; }
+.strat-comp-cards .winner-badge-blue { background: var(--teal2); color: #fff; }
 
 /* ════════════════════════════════════════════
    HISTÓRICO PAGE
@@ -1502,6 +1492,9 @@ function renderResultado(d) {
   const b3Semi = meSemiNum  ? futuroParaMes(meSemiNum, 2026)  : null;
   const precoConf = b3Conf ? b3Conf.preco_arroba : cp.confinamento.preco;
   const precoSemi = b3Semi ? b3Semi.preco_arroba : cp.semiconfinamento.preco;
+  // Ignorar centavos na comparação de preço B3 (mesmo vencimento = mesmo preço)
+  const precoConfInt = Math.round(precoConf);
+  const precoSemiInt = Math.round(precoSemi);
   const lblConf = b3Conf ? `<span style="font-size:9px;color:var(--gold2)">B3</span>` : `<span style="font-size:9px;color:var(--t4)">hist</span>`;
   const lblSemi = b3Semi ? `<span style="font-size:9px;color:var(--gold2)">B3</span>` : `<span style="font-size:9px;color:var(--t4)">hist</span>`;
   const lucroConfEfetivo = (precoConf * arrobasCab * animais) - cp.confinamento.custo_lote;
@@ -1601,7 +1594,7 @@ function renderResultado(d) {
               </div>
               <div class="comp-row">
                 <span class="comp-row-label">Preço ref.</span>
-                <span class="comp-row-val ${precoConf>=precoSemi?'win':'lose'}">R$ ${precoConf.toFixed(0)} ${lblConf}</span>
+                <span class="comp-row-val ${precoConfInt>precoSemiInt?'win':precoConfInt===precoSemiInt?'':'lose'}">R$ ${precoConf.toFixed(0)} ${lblConf}</span>
               </div>
               <div class="comp-row">
                 <span class="comp-row-label">Custo total lote</span>
@@ -1609,7 +1602,7 @@ function renderResultado(d) {
               </div>
               <div class="comp-divider"></div>
               <div class="comp-row">
-                <span class="comp-row-label" style="font-weight:700;color:#E6ECF4">Lucro lote</span>
+                <span class="comp-row-label" style="font-weight:700;color:var(--t1)">Lucro lote</span>
                 <span class="comp-row-val ${confWinEfetivo?'win':'lose'}" style="font-size:14px">${fmt(lucroConfEfetivo)}</span>
               </div>
             </div>
@@ -1634,7 +1627,7 @@ function renderResultado(d) {
               </div>
               <div class="comp-row">
                 <span class="comp-row-label">Preço ref.</span>
-                <span class="comp-row-val ${precoSemi>precoConf?'win':'lose'}">R$ ${precoSemi.toFixed(0)} ${lblSemi}</span>
+                <span class="comp-row-val ${precoSemiInt>precoConfInt?'win':precoSemiInt===precoConfInt?'':'lose'}">R$ ${precoSemi.toFixed(0)} ${lblSemi}</span>
               </div>
               <div class="comp-row">
                 <span class="comp-row-label">Custo total lote</span>
@@ -1642,7 +1635,7 @@ function renderResultado(d) {
               </div>
               <div class="comp-divider"></div>
               <div class="comp-row">
-                <span class="comp-row-label" style="font-weight:700;color:#E6ECF4">Lucro lote</span>
+                <span class="comp-row-label" style="font-weight:700;color:var(--t1)">Lucro lote</span>
                 <span class="comp-row-val ${!confWinEfetivo?'win':'lose'}" style="font-size:14px">${fmt(lucroSemiEfetivo)}</span>
               </div>
             </div>
