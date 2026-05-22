@@ -1149,7 +1149,7 @@ nav {
           </div>
 
           <div class="fonte-note" id="fonte-note-calc">
-            Preço atual: Scot Consultoria · atualização automática diária 19h<br>
+            Preço atual: carregando fonte...<br>
             Histórico: CEPEA 2020–2025 · Clima: Open-Meteo · Futuro: B3<br>
             Protótipo v0.3 · MT, SP e GO
           </div>
@@ -1401,7 +1401,7 @@ async function carregarPrecoAtual(estado) {
       document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual.toFixed(0);
       document.getElementById('ps-atualizado').textContent = 'por arroba · ' + estado;
       let atualizadoEm = j.data.atualizado || j.data.atualizado_em || j.data.timestamp || null;
-      let fonteLabel = j.data.fonte || 'Scot Consultoria';
+      let fonteLabel = j.data.fonte || 'Indicador do Boi DATAGRO';
       if (!atualizadoEm) {
         try {
           const rj = await fetch('app/cotacoes_scot.json');
@@ -1418,7 +1418,7 @@ async function carregarPrecoAtual(estado) {
     }
   } catch(e) {
     document.getElementById('ps-preco').textContent = 'R$ ' + precoAtual;
-    document.getElementById('ps-scot-update').textContent = 'histórico CEPEA (fallback)';
+    document.getElementById('ps-scot-update').textContent = 'indisponível · usando histórico CEPEA';
   }
   atualizarHistStrip();
 }
