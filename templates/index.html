@@ -6,39 +6,49 @@
 <title>Timing Certo — Consultoria Pecuária</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F7F5F0;
-  --bg2:#EDEAE3;
-  --bg3:#FFFFFF;
-  --border:#D8D4CB;
-  --border2:#C8C4BB;
+  --bg:#F5F7F9;
+  --bg2:#FFFFFF;
+  --bg3:#F0F2F5;
+  --bg4:#E8EBF0;
+  --border:#E2E8F0;
+  --border2:#CBD5E1;
+  --border3:#94A3B8;
 
-  --green:#2D6A4F;
-  --green-light:#3A8A65;
-  --green-muted:#5A8A72;
-  --green-pale:#E8F2EC;
-  --green-pale2:#D1E8DA;
+  --gold:#F59E0B;
+  --gold-light:#FBBF24;
+  --gold-pale:#FFFBEB;
+  --gold-pale2:#FEF3C7;
 
-  --amber:#B8860B;
-  --amber-bg:#FDF5DC;
-  --amber-border:#D4B24A;
-  --red:#B03A2E;
-  --red-bg:#FDECEA;
-  --red-border:#D9837A;
-  --success-bg:#E8F5EE;
-  --success-border:#7ABF9A;
+  --green:#059669;
+  --green-light:#10B981;
+  --green-muted:#34D399;
+  --green-pale:#ECFDF5;
+  --green-pale2:#D1FAE5;
 
-  --text:#1A1A1A;
-  --text2:#4A4A4A;
-  --text3:#7A7A7A;
-  --text4:#AAAAAA;
+  --amber:#F59E0B;
+  --amber-bg:#FFFBEB;
+  --amber-border:#FDE68A;
+  --red:#DC2626;
+  --red-bg:#FEF2F2;
+  --red-border:#FECACA;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+
+  --text:#0F172A;
+  --text2:#475569;
+  --text3:#94A3B8;
+  --text4:#CBD5E1;
+
+  --accent:#6366F1;
+  --accent-pale:#EEF2FF;
 }
 
 body{
-  font-family:'Inter',sans-serif;
+  font-family:'Plus Jakarta Sans',sans-serif;
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
@@ -48,46 +58,48 @@ body{
 
 /* ─── NAV ─────────────────────────────────────────── */
 nav{
-  background:#FFFFFF;
+  background:var(--bg2);
   border-bottom:1px solid var(--border);
   padding:0 40px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  height:60px;
-  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  height:64px;
+  box-shadow:0 1px 4px rgba(15,23,42,0.06);
 }
 .logo{
-  font-size:18px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:17px;
   font-weight:800;
-  color:var(--green);
-  letter-spacing:-.3px;
+  color:var(--text);
+  letter-spacing:-.4px;
 }
 .logo span{
   color:var(--text3);
-  font-weight:400;
-  font-size:12px;
+  font-weight:500;
+  font-size:11px;
   margin-left:10px;
   font-family:'JetBrains Mono',monospace;
-  letter-spacing:.04em;
+  letter-spacing:.08em;
+  text-transform:uppercase;
 }
 .nav-tabs{display:flex;gap:2px}
 .nav-tab{
   background:transparent;
   border:none;
   color:var(--text3);
-  font-family:'Inter',sans-serif;
+  font-family:'Plus Jakarta Sans',sans-serif;
   font-size:14px;
   font-weight:500;
-  padding:8px 18px;
-  border-radius:6px;
+  padding:8px 16px;
+  border-radius:8px;
   cursor:pointer;
   transition:all .15s;
 }
-.nav-tab:hover{color:var(--text);background:var(--bg)}
+.nav-tab:hover{color:var(--text);background:var(--bg3)}
 .nav-tab.active{
-  color:var(--green);
-  background:var(--green-pale);
+  color:var(--accent);
+  background:var(--accent-pale);
   font-weight:600;
 }
 
@@ -97,56 +109,61 @@ nav{
 
 /* ─── PRICE STRIP ─────────────────────────────────── */
 .price-strip{
-  background:#FFFFFF;
+  background:var(--bg2);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:20px 28px;
+  border-radius:16px;
+  padding:24px 32px;
   display:flex;
-  gap:36px;
+  gap:0;
   align-items:center;
   margin-bottom:28px;
   flex-wrap:wrap;
-  box-shadow:0 1px 4px rgba(0,0,0,.05);
+  box-shadow:0 2px 12px rgba(15,23,42,0.06);
 }
+.ps-item{padding:0 32px;border-right:1px solid var(--border)}
+.ps-item:first-child{padding-left:0}
+.ps-item:last-of-type{border-right:none}
 .ps-item .ps-label{
   font-family:'JetBrains Mono',monospace;
   font-size:10px;
+  font-weight:500;
   color:var(--text3);
-  letter-spacing:.1em;
+  letter-spacing:.08em;
   text-transform:uppercase;
-  margin-bottom:4px;
+  margin-bottom:6px;
 }
 .ps-item .ps-value{
-  font-size:28px;
-  font-weight:700;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:30px;
+  font-weight:800;
   color:var(--text);
-  letter-spacing:-.5px;
+  letter-spacing:-.8px;
   line-height:1;
 }
 .ps-item .ps-sub{
   font-size:12px;
   color:var(--text3);
-  margin-top:3px;
-  font-family:'JetBrains Mono',monospace;
+  margin-top:5px;
+  font-weight:500;
 }
-.ps-divider{width:1px;height:48px;background:var(--border)}
+.ps-divider{display:none}
 .ps-item .ps-update{
   font-family:'JetBrains Mono',monospace;
-  font-size:9px;
+  font-size:10px;
   color:var(--text4);
   margin-top:4px;
-  letter-spacing:.02em;
 }
 .ps-fonte{
   font-family:'JetBrains Mono',monospace;
   font-size:10px;
   color:var(--text4);
   margin-left:auto;
+  padding-left:32px;
 }
 
 /* ─── SECTION TITLE ───────────────────────────────── */
 .section-title{
-  font-size:12px;
+  font-size:11px;
   font-weight:700;
   color:var(--text3);
   letter-spacing:.1em;
@@ -165,29 +182,29 @@ nav{
 
 /* ─── CARD ────────────────────────────────────────── */
 .card{
-  background:#FFFFFF;
+  background:var(--bg2);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:20px 22px;
-  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  border-radius:16px;
+  padding:22px 24px;
+  box-shadow:0 1px 6px rgba(15,23,42,0.05);
 }
-.card.dark{background:var(--bg2);border-color:var(--border2)}
+.card.dark{background:var(--bg3);border-color:var(--border2)}
 .card-label{
-  font-family:'JetBrains Mono',monospace;
-  font-size:10px;
+  font-size:11px;
+  font-weight:600;
   color:var(--text3);
-  letter-spacing:.1em;
+  letter-spacing:.06em;
   text-transform:uppercase;
-  margin-bottom:8px;
+  margin-bottom:10px;
 }
 .card-value{
   font-size:28px;
-  font-weight:700;
+  font-weight:800;
   color:var(--text);
-  letter-spacing:-.5px;
+  letter-spacing:-.8px;
   line-height:1.1;
 }
-.card-sub{font-size:13px;color:var(--text3);margin-top:6px;line-height:1.5}
+.card-sub{font-size:13px;color:var(--text3);margin-top:8px;line-height:1.6;font-weight:500}
 
 .card.danger{background:var(--red-bg);border-color:var(--red-border)}
 .card.danger .card-value{color:var(--red)}
@@ -197,10 +214,10 @@ nav{
 .card.success .card-value{color:var(--green)}
 
 /* ─── FORM ────────────────────────────────────────── */
-.form-group{margin-bottom:18px}
+.form-group{margin-bottom:16px}
 .form-group label{
   display:block;
-  font-size:13px;
+  font-size:12px;
   font-weight:600;
   color:var(--text2);
   margin-bottom:6px;
@@ -208,12 +225,13 @@ nav{
 .form-group input,
 .form-group select{
   width:100%;
-  background:#FFFFFF;
-  border:1px solid var(--border2);
-  border-radius:8px;
+  background:var(--bg2);
+  border:1.5px solid var(--border);
+  border-radius:10px;
   color:var(--text);
-  font-family:'Inter',sans-serif;
+  font-family:'Plus Jakarta Sans',sans-serif;
   font-size:15px;
+  font-weight:500;
   padding:10px 14px;
   outline:none;
   transition:border-color .15s, box-shadow .15s;
@@ -221,35 +239,35 @@ nav{
 }
 .form-group input:focus,
 .form-group select:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(45,106,79,.12);
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(99,102,241,0.1);
 }
 .form-group select{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7A7A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat;
   background-position:right 14px center;
   padding-right:36px;
   cursor:pointer;
 }
-.form-group select option{background:#FFFFFF;color:var(--text)}
+.form-group select option{background:var(--bg2);color:var(--text)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .modal-info{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-left:3px solid var(--green-muted);
-  border-radius:6px;
-  padding:10px 14px;
+  background:var(--accent-pale);
+  border:1px solid rgba(99,102,241,0.2);
+  border-left:3px solid var(--accent);
+  border-radius:10px;
+  padding:12px 16px;
   font-size:13px;
   color:var(--text2);
-  line-height:1.6;
+  line-height:1.7;
   margin-bottom:18px;
 }
 
 /* ─── BTN ─────────────────────────────────────────── */
 .btn{
   border:none;
-  border-radius:8px;
-  font-family:'Inter',sans-serif;
+  border-radius:10px;
+  font-family:'Plus Jakarta Sans',sans-serif;
   font-size:15px;
   font-weight:700;
   padding:13px 24px;
@@ -257,40 +275,41 @@ nav{
   transition:all .15s;
 }
 .btn-primary{
-  background:var(--green);
+  background:var(--accent);
   color:#FFFFFF;
   width:100%;
-  letter-spacing:.01em;
+  letter-spacing:-.1px;
 }
-.btn-primary:hover{background:var(--green-light);transform:translateY(-1px);box-shadow:0 4px 12px rgba(45,106,79,.25)}
+.btn-primary:hover{background:#4F46E5;transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,0.3)}
 .btn-primary:active{transform:translateY(0)}
 .btn-secondary{
   background:transparent;
-  border:1px solid var(--border2);
+  border:1.5px solid var(--border);
   color:var(--text2);
   padding:8px 16px;
   font-size:13px;
+  font-weight:600;
 }
 .btn-secondary.active{
-  background:var(--green-pale);
-  color:var(--green);
-  border-color:var(--green-muted);
+  background:var(--accent-pale);
+  color:var(--accent);
+  border-color:var(--accent);
 }
 
 /* ─── TABLE ───────────────────────────────────────── */
 .comp-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
 .comp-table th{
-  font-family:'JetBrains Mono',monospace;
-  font-size:10px;
+  font-size:11px;
+  font-weight:700;
   color:var(--text3);
-  letter-spacing:.08em;
+  letter-spacing:.05em;
   text-transform:uppercase;
-  padding:10px 14px;
+  padding:10px 16px;
   text-align:left;
-  border-bottom:2px solid var(--border);
-  background:var(--bg);
+  border-bottom:1.5px solid var(--border);
+  background:var(--bg3);
 }
-.comp-table td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--text2)}
+.comp-table td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--text2);font-weight:500}
 .comp-table tr:last-child td{border-bottom:none}
 .comp-table td.win{color:var(--green);font-weight:700}
 .comp-table td.lose{color:var(--red)}
@@ -298,70 +317,69 @@ nav{
 /* ─── TIMELINE ────────────────────────────────────── */
 .tl-item{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
 .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--border2);margin-top:4px;flex-shrink:0}
-.tl-dot.active{background:var(--green)}
+.tl-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,0.2)}
 .tl-dot.warn{background:var(--amber)}
-.tl-dot.rain{background:#5B9BD5}
+.tl-dot.rain{background:#3B82F6}
 .tl-meta .tl-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)}
-.tl-meta .tl-price{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--green);margin-top:2px;font-weight:600}
-.tl-meta .tl-desc{font-size:12px;color:var(--text2);margin-top:2px}
+.tl-meta .tl-price{font-size:16px;color:var(--green);margin-top:2px;font-weight:700}
+.tl-meta .tl-desc{font-size:12px;color:var(--text3);margin-top:2px}
 
 /* ─── REC BOX ─────────────────────────────────────── */
 .rec-box{
-  background:var(--green-pale);
-  border:1px solid var(--green-pale2);
-  border-left:4px solid var(--green);
-  border-radius:10px;
-  padding:18px 20px;
+  background:var(--success-bg);
+  border:1px solid var(--success-border);
+  border-radius:16px;
+  padding:20px 24px;
   margin-top:4px;
 }
-.rec-box .rec-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px;letter-spacing:.02em}
-.rec-box .rec-text{font-size:13px;color:var(--text2);line-height:1.8}
+.rec-box .rec-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px}
+.rec-box .rec-text{font-size:14px;color:var(--text2);line-height:1.8;font-weight:500}
 
 /* ─── CHART ───────────────────────────────────────── */
 .chart-wrap{
-  background:#FFFFFF;
+  background:var(--bg2);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:22px;
+  border-radius:16px;
+  padding:24px;
   margin-bottom:20px;
-  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  box-shadow:0 1px 6px rgba(15,23,42,0.05);
 }
 .chart-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 
 /* ─── STATE BADGES ────────────────────────────────── */
 .estado-badge{
   display:inline-block;
-  padding:5px 14px;
+  padding:6px 16px;
   border-radius:20px;
-  font-size:12px;
+  font-size:13px;
   font-weight:600;
   cursor:pointer;
-  border:1px solid var(--border2);
+  border:1.5px solid var(--border);
   color:var(--text3);
   transition:all .15s;
 }
-.estado-badge:hover{border-color:var(--green-muted);color:var(--green)}
+.estado-badge:hover{border-color:var(--accent);color:var(--accent)}
 .estado-badge.active{
-  background:var(--green-pale);
-  border-color:var(--green-muted);
-  color:var(--green);
+  background:var(--accent-pale);
+  border-color:var(--accent);
+  color:var(--accent);
 }
 
 /* ─── LOADING ─────────────────────────────────────── */
 .loading{
-  color:var(--text4);
-  font-family:'JetBrains Mono',monospace;
-  font-size:12px;
-  padding:20px 0;
+  color:var(--text3);
+  font-size:13px;
+  font-weight:500;
+  padding:24px 0;
   text-align:center;
 }
 
 /* ─── CLIMA ───────────────────────────────────────── */
 .clima-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .clima-bar .cb-data{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);width:70px}
-.clima-bar .cb-track{flex:1;background:var(--bg2);border-radius:4px;height:8px;overflow:hidden}
+.clima-bar .cb-track{flex:1;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden}
 .clima-bar .cb-fill{height:100%;border-radius:4px;background:#5B9BD5;transition:width .3s}
-.clima-bar .cb-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B9BD5;width:50px;text-align:right}
+.clima-bar .cb-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:#3B82F6;width:50px;text-align:right}
 
 /* ─── FOOTER NOTE ─────────────────────────────────── */
 .fonte-note{
@@ -374,7 +392,7 @@ nav{
 }
 
 @media(max-width:700px){
-  nav{padding:0 20px;height:auto;padding-top:14px;padding-bottom:14px;flex-direction:column;gap:12px}
+  nav{padding:0 20px;height:auto;padding-top:16px;padding-bottom:16px;flex-direction:column;gap:12px}
   .page{padding:20px}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
@@ -512,7 +530,7 @@ nav{
   <div class="section-title">Histórico de preços — 2020 a 2025</div>
 
   <div class="chart-controls">
-    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'IBM Plex Mono',monospace">ESTADO:</span>
+    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'JetBrains Mono',monospace">ESTADO:</span>
     <span class="estado-badge active" onclick="selecionarEstado('MT',this)">MT</span>
     <span class="estado-badge" onclick="selecionarEstado('SP',this)">SP</span>
     <span class="estado-badge" onclick="selecionarEstado('GO',this)">GO</span>
@@ -538,7 +556,7 @@ nav{
   <div class="section-title">Previsão climática — próximos 16 dias</div>
 
   <div class="chart-controls" style="margin-bottom:20px">
-    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'IBM Plex Mono',monospace">ESTADO:</span>
+    <span style="font-size:12px;color:var(--text3);margin-right:8px;font-family:'JetBrains Mono',monospace">ESTADO:</span>
     <span class="estado-badge active" onclick="selecionarClima('MT',this)">MT</span>
     <span class="estado-badge" onclick="selecionarClima('SP',this)">SP</span>
     <span class="estado-badge" onclick="selecionarClima('GO',this)">GO</span>
@@ -870,26 +888,26 @@ function renderResultado(d) {
     // Preço principal: B3 se disponível, histórico se não
     const precoPrincipalHtml = b3
       ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg2);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:22px;color:var(--amber);font-weight:700">R$ ${b3.preco_arroba.toFixed(0)}</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text3)">/arroba</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg2);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:1px 6px">FUTURO B3</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:${b3.variacao_pct>=0?'var(--green)':'var(--red)'}">${b3.variacao_pct>=0?'+':''}${b3.variacao_pct.toFixed(2)}% hoje</span>
          </div>
-         <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
+         <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:6px">
            hist. CEPEA: R$ ${t.preco}/arr
            <span style="color:${diffColor}">${diffSinal}R$ ${Math.abs(diffVsHist).toFixed(0)} vs hist.</span>
          </div>`
       : `<div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--green-muted);font-weight:700">R$ ${t.preco}</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text3)">/arroba</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
-           <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3)">sem contrato B3</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:22px;color:var(--green-muted);font-weight:700">R$ ${t.preco}</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text3)">/arroba</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:1px 6px">hist. CEPEA</span>
+           <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3)">sem contrato B3</span>
          </div>`;
 
     const sazonalidadeHtml = `<div style="font-size:13px;color:var(--text3);margin-top:3px">${t.chuva ? '🌧 Período de chuvas — oferta tende a ser maior' : '☀ Período seco — preço tende a ser mais firme'}</div>`;
 
     const abateBadge = t.is_abate
-      ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:10px;background:var(--green);color:#fff;border-radius:4px;padding:2px 8px;font-weight:700">← ABATE PREVISTO</span>`
+      ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--green);color:#fff;border-radius:4px;padding:2px 8px;font-weight:700">← ABATE PREVISTO</span>`
       : '';
 
     tlHtml += `
@@ -897,7 +915,7 @@ function renderResultado(d) {
         <div class="tl-dot ${dotClass}" style="${t.is_abate ? 'margin-top:6px' : ''}"></div>
         <div class="tl-meta" style="flex:1">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text2);font-weight:600">${t.mes.toUpperCase()} 2026</span>
             ${abateBadge}
           </div>
           ${precoPrincipalHtml}
@@ -1020,7 +1038,7 @@ function renderGraficoHistorico(dados, estado) {
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } },
+        legend: { labels: { color: '#64748B', font: { family: 'JetBrains Mono', size: 11 } } },
         tooltip: {
           callbacks: {
             label: ctx => `R$ ${ctx.raw}/arr`,
@@ -1029,8 +1047,8 @@ function renderGraficoHistorico(dados, estado) {
         }
       },
       scales: {
-        x: { ticks: { color: '#4a7a52', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: '#1e3a22' } },
-        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+        x: { ticks: { color: '#94A3B8', font: { size: 9, family: 'JetBrains Mono' }, maxRotation: 90 }, grid: { color: '#E2E8F0' } },
+        y: { ticks: { color: '#94A3B8', font: { size: 10, family: 'JetBrains Mono' }, callback: v => 'R$'+v }, grid: { color: '#E2E8F0' }, min: 150 }
       }
     }
   });
@@ -1052,10 +1070,10 @@ function renderGraficoTodos(mt, sp, go) {
     },
     options: {
       responsive: true,
-      plugins: { legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } } },
+      plugins: { legend: { labels: { color: '#64748B', font: { family: 'JetBrains Mono', size: 11 } } } },
       scales: {
-        x: { ticks: { color: '#4a7a52', font: { size: 9, family: 'IBM Plex Mono' }, maxRotation: 90 }, grid: { color: '#1e3a22' } },
-        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+        x: { ticks: { color: '#94A3B8', font: { size: 9, family: 'JetBrains Mono' }, maxRotation: 90 }, grid: { color: '#E2E8F0' } },
+        y: { ticks: { color: '#94A3B8', font: { size: 10, family: 'JetBrains Mono' }, callback: v => 'R$'+v }, grid: { color: '#E2E8F0' }, min: 150 }
       }
     }
   });
@@ -1077,12 +1095,12 @@ function renderChuvaSeca(dados, estado) {
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#7ab882', font: { family: 'IBM Plex Mono', size: 11 } } },
+        legend: { labels: { color: '#64748B', font: { family: 'JetBrains Mono', size: 11 } } },
         tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr` } }
       },
       scales: {
-        x: { ticks: { color: '#4a7a52', font: { family: 'IBM Plex Mono' } }, grid: { color: '#1e3a22' } },
-        y: { ticks: { color: '#4a7a52', font: { size: 10, family: 'IBM Plex Mono' }, callback: v => 'R$'+v }, grid: { color: '#1e3a22' }, min: 150 }
+        x: { ticks: { color: '#94A3B8', font: { family: 'JetBrains Mono' } }, grid: { color: '#E2E8F0' } },
+        y: { ticks: { color: '#94A3B8', font: { size: 10, family: 'JetBrains Mono' }, callback: v => 'R$'+v }, grid: { color: '#E2E8F0' }, min: 150 }
       }
     }
   });
@@ -1158,24 +1176,24 @@ function renderClima(dados) {
 
   document.getElementById('clima-content').innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2)">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">
         📍 Referência: <strong style="color:var(--green)">${dados.coords?.cidade || dados.estado}</strong>
       </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">
         Dados representativos da região — não da propriedade
       </div>
     </div>
     <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
         <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#80b8e6"></span> Prob. chuva &gt;60%
       </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
         <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#e6a840"></span> Prob. chuva 30–60%
       </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px">
         <span style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#a8e6b0"></span> Prob. chuva &lt;30%
       </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-left:4px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-left:4px">
         · Barra = volume em mm · % = probabilidade de ocorrência
       </div>
     </div>
