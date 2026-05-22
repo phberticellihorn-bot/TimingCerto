@@ -399,6 +399,615 @@ nav{
   .price-strip{gap:16px;padding:16px 18px}
   .ps-item .ps-value{font-size:22px}
 }
+
+/* ══════════════════════════════════════════════════════════════
+   DECISÃO ESTRATÉGICA — PREMIUM INTELLIGENCE PANEL
+══════════════════════════════════════════════════════════════ */
+
+/* Container principal */
+.decisao-wrapper {
+  margin-top: 28px;
+  position: relative;
+}
+
+/* Header da seção */
+.decisao-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.decisao-header-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.decisao-header-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
+.decisao-ai-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #A5B4FC;
+  letter-spacing: .05em;
+}
+.decisao-ai-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #818CF8;
+  box-shadow: 0 0 6px #6366F1;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(.8); }
+}
+
+/* VEREDITO PRINCIPAL */
+.veredito-card {
+  background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.2), 0 0 0 1px rgba(99,102,241,0.1);
+  animation: fadeInUp .4s ease both;
+}
+.veredito-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.veredito-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: 40px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.veredito-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #6366F1;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.veredito-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background: #6366F1;
+  border-radius: 2px;
+}
+.veredito-headline {
+  font-size: 22px;
+  font-weight: 800;
+  color: #F1F5F9;
+  letter-spacing: -.4px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.veredito-headline .vh-icon {
+  margin-right: 6px;
+}
+.veredito-subtitle {
+  font-size: 14px;
+  color: #94A3B8;
+  font-weight: 500;
+  line-height: 1.6;
+  max-width: 540px;
+}
+.veredito-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.veredito-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid;
+  letter-spacing: .02em;
+}
+.vc-green  { color: #34D399; background: rgba(16,185,129,0.1); border-color: rgba(52,211,153,0.2); }
+.vc-amber  { color: #FBBF24; background: rgba(245,158,11,0.1); border-color: rgba(251,191,36,0.2); }
+.vc-red    { color: #F87171; background: rgba(220,38,38,0.1);  border-color: rgba(248,113,113,0.2); }
+.vc-blue   { color: #93C5FD; background: rgba(59,130,246,0.1); border-color: rgba(147,197,253,0.2); }
+.vc-purple { color: #A5B4FC; background: rgba(99,102,241,0.1); border-color: rgba(165,180,252,0.2); }
+
+/* LAYOUT DUAS COLUNAS */
+.decisao-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+@media(max-width:900px) {
+  .decisao-grid { grid-template-columns: 1fr; }
+}
+
+/* COLUNA ESQUERDA */
+.decisao-col-left { display: flex; flex-direction: column; gap: 16px; }
+.decisao-col-right { display: flex; flex-direction: column; gap: 16px; }
+
+/* SCORE CARD */
+.score-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  animation: fadeInUp .45s ease .05s both;
+}
+.score-card-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.score-headline-number {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.score-headline-label {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.score-bar-row {
+  margin-bottom: 13px;
+}
+.score-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.score-bar-name {
+  font-size: 12px;
+  color: var(--text2);
+  font-weight: 600;
+}
+.score-bar-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+.score-bar-track {
+  height: 5px;
+  background: var(--bg3);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.score-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .8s cubic-bezier(.22,1,.36,1);
+}
+
+/* SEMÁFORO */
+.semaforo-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  animation: fadeInUp .5s ease .08s both;
+}
+.sem-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.sem-row:last-child { border-bottom: none; padding-bottom: 0; }
+.sem-row:first-child { padding-top: 0; }
+.sem-label {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sem-label .sem-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+}
+.sem-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.sem-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sd-green  { background: #10B981; box-shadow: 0 0 6px rgba(16,185,129,.5); }
+.sd-yellow { background: #F59E0B; box-shadow: 0 0 6px rgba(245,158,11,.5); }
+.sd-red    { background: #EF4444; box-shadow: 0 0 6px rgba(239,68,68,.5); }
+.st-green  { color: #059669; }
+.st-yellow { color: #D97706; }
+.st-red    { color: #DC2626; }
+
+/* LEITURA INTELIGENTE */
+.leitura-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  animation: fadeInUp .45s ease .06s both;
+}
+.leitura-card-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.leitura-text {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.8;
+  font-weight: 500;
+}
+.leitura-text strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.leitura-text .leitura-highlight {
+  background: var(--green-pale2);
+  color: var(--green);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.leitura-text .leitura-warn {
+  background: var(--amber-bg);
+  color: var(--amber);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.leitura-text .leitura-danger {
+  background: var(--red-bg);
+  color: var(--red);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+/* COMPARAÇÃO ESTRATÉGICA */
+.comp-strat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  animation: fadeInUp .5s ease .07s both;
+}
+.comp-strat-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+@media(max-width:600px) {
+  .comp-strat-cols { grid-template-columns: 1fr; }
+}
+.comp-strat-item {
+  border-radius: 12px;
+  padding: 16px;
+  border: 1.5px solid;
+}
+.csi-conf {
+  background: rgba(16,185,129,.04);
+  border-color: rgba(16,185,129,.18);
+}
+.csi-semi {
+  background: rgba(59,130,246,.04);
+  border-color: rgba(59,130,246,.18);
+}
+.csi-winner .csi-conf {
+  background: rgba(16,185,129,.08);
+  border-color: rgba(16,185,129,.35);
+  box-shadow: 0 0 0 1px rgba(16,185,129,.1);
+}
+.comp-strat-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.csn-conf { color: var(--green); }
+.csn-semi { color: #3B82F6; }
+.comp-strat-pro {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text2);
+  font-weight: 500;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.comp-strat-pro::before { content: '✅'; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+.comp-strat-con {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 500;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.comp-strat-con::before { content: '⚠️'; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+.csi-winner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-pale2);
+  border: 1px solid rgba(16,185,129,.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  margin-left: 4px;
+}
+
+/* ALERTAS */
+.alertas-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  animation: fadeInUp .55s ease .09s both;
+}
+.alerta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.alerta-item:last-child { margin-bottom: 0; }
+.ai-green  { background: var(--green-pale);  border-color: var(--success-border); color: #065F46; }
+.ai-yellow { background: var(--amber-bg);     border-color: var(--amber-border);   color: #92400E; }
+.ai-red    { background: var(--red-bg);       border-color: var(--red-border);      color: #991B1B; }
+.ai-blue   { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+.alerta-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* AÇÕES RECOMENDADAS */
+.acoes-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  animation: fadeInUp .6s ease .1s both;
+}
+.acao-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.acao-item:last-child { border-bottom: none; padding-bottom: 0; }
+.acao-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--accent-pale);
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.acao-priority {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.ap-high   { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+.ap-medium { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.ap-low    { background: var(--green-pale); color: #065F46; border: 1px solid var(--success-border); }
+
+/* CONFIANÇA */
+.confianca-card {
+  background: linear-gradient(135deg, #0F172A 0%, #1A2744 100%);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.15);
+  animation: fadeInUp .65s ease .11s both;
+}
+.confianca-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.confianca-circle-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+.confianca-circle-wrap svg {
+  transform: rotate(-90deg);
+}
+.confianca-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.confianca-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: #F1F5F9;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.confianca-unit {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #64748B;
+  font-weight: 500;
+  margin-top: 1px;
+}
+.confianca-info {
+  flex: 1;
+  min-width: 160px;
+}
+.confianca-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #64748B;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 8px;
+}
+.confianca-bases {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.confianca-base-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+.confianca-base-item::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #475569;
+  flex-shrink: 0;
+}
+
+/* ANIMAÇÕES */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media(max-width:700px) {
+  .veredito-card { padding: 20px 18px; }
+  .veredito-headline { font-size: 18px; }
+  .score-headline-number { font-size: 38px; }
+  .confianca-inner { gap: 16px; }
+}
 </style>
 </head>
 <body>
@@ -982,10 +1591,7 @@ function renderResultado(d) {
       </table>
     </div>
 
-    <div class="rec-box" style="margin-bottom:20px">
-      <div class="rec-title">📋 Recomendação estratégica</div>
-      <div class="rec-text">${d.recomendacao}</div>
-    </div>
+    ${renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucroConfEfetivo, lucroSemiEfetivo, diffTotalEfetivo, b3Abate)}
 
     <div class="section-title">Evolução de preços — próximos meses</div>
     <div class="card dark">${tlHtml}</div>
@@ -1214,6 +1820,366 @@ function renderClima(dados) {
 
   document.getElementById('fonte-note-clima').textContent =
     `Fonte: ${dados.fonte} · Referência: ${dados.coords?.cidade || dados.estado} · Atualizado: ${formatarDataHora(dados.atualizado)}`;
+}
+
+
+// ── Decisão Estratégica Premium ──────────────────────────────────────────────
+function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucroConfEfetivo, lucroSemiEfetivo, diffTotalEfetivo, b3Abate) {
+
+  const animais    = d.animais;
+  const modalidade = d.modalidade || 'confinamento';
+  const estado     = d.estado || 'MT';
+  const gpd        = d.gpd || 1.4;
+  const custoDia   = d.custo_dia || 28;
+
+  const confWin = lucroConfEfetivo >= lucroSemiEfetivo;
+  const lucroPositivo = lucroEfetivo >= 0;
+  const mesAbate = c.mes_abate || '';
+  const temChuva = c.tem_chuva;
+  const dias = c.dias || 0;
+  const isSeco = !temChuva;
+
+  // ── Dados B3 ──────────────────────────────────────────────────────────────
+  const b3Disponivel = futurosB3 && futurosB3.length > 0;
+  const spreadB3     = b3Disponivel && b3Abate ? (b3Abate.preco_arroba - precoAtual) : 0;
+  const spreadPct    = precoAtual > 0 ? (spreadB3 / precoAtual * 100) : 0;
+  const spreadPositivo = spreadB3 > 0;
+
+  // ── Média histórica do mês de abate ───────────────────────────────────────
+  const MESES_NUM_INV = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
+  const mesAbateNum = MESES_NUM_INV[mesAbate.toLowerCase().slice(0,3)] || 0;
+  const histAbate = mesAbateNum ? precoHistMes(estado, mesAbateNum) : precoEfetivo;
+  const spreadVsHist = precoEfetivo - histAbate;
+
+  // ── Custo por arroba ──────────────────────────────────────────────────────
+  const arrobasCab = f.arrobas_cab || 0;
+  const custoPorArroba = arrobasCab > 0 ? f.custo_lote / (arrobasCab * animais) : 0;
+  const margemArroba = precoEfetivo - custoPorArroba;
+  const margemPct = precoEfetivo > 0 ? (margemArroba / precoEfetivo * 100) : 0;
+
+  // ── SCORE ─────────────────────────────────────────────────────────────────
+  let scorePotencial = 5;
+  if (lucroPositivo)     scorePotencial += 1.5;
+  if (isSeco)            scorePotencial += 1;
+  if (spreadPositivo)    scorePotencial += 1;
+  if (margemPct > 20)    scorePotencial += 0.5;
+  if (margemPct > 30)    scorePotencial += 0.5;
+  if (margemPct < 5)     scorePotencial -= 2;
+  if (margemPct < 0)     scorePotencial -= 2;
+  scorePotencial = Math.min(10, Math.max(0, scorePotencial));
+
+  let scoreRisco = 5;
+  if (temChuva)          scoreRisco += 1.5;
+  if (dias > 120)        scoreRisco += 1;
+  if (!b3Disponivel)     scoreRisco += 0.5;
+  if (custoDia > 32)     scoreRisco += 0.5;
+  if (margemPct < 10)    scoreRisco += 1;
+  if (spreadPositivo && b3Abate)  scoreRisco -= 1;
+  scoreRisco = Math.min(10, Math.max(0, scoreRisco));
+
+  // ── VEREDITO ──────────────────────────────────────────────────────────────
+  let veredIcon, veredTexto, veredSubtitulo, veredCor;
+
+  if (!lucroPositivo) {
+    veredIcon = '📉';
+    veredTexto = 'OPERAÇÃO COM RESULTADO NEGATIVO PROJETADO';
+    veredSubtitulo = `Os parâmetros atuais apontam para prejuízo de ${fmt(Math.abs(lucroEfetivo))}. Revise custo diário ou preço de entrada antes de iniciar o ciclo.`;
+    veredCor = 'red';
+  } else if (confWin && isSeco && spreadPositivo) {
+    veredIcon = '🔥';
+    veredTexto = 'JANELA FORTE IDENTIFICADA — ' + modalidade.toUpperCase();
+    veredSubtitulo = `Período seco + spread B3 positivo de R$ ${spreadB3.toFixed(0)}/arr + lucro projetado de ${fmt(lucroEfetivo)}. Condições favoráveis alinhadas.`;
+    veredCor = 'green';
+  } else if (confWin && isSeco) {
+    veredIcon = '✅';
+    veredTexto = 'MELHOR ESTRATÉGIA: CONFINAMENTO';
+    veredSubtitulo = `Abate em ${mesAbate}/2026 — período seco com preço historicamente mais firme. Lucro estimado de ${fmt(lucroEfetivo)} para o lote.`;
+    veredCor = 'green';
+  } else if (!confWin && lucroSemiEfetivo > lucroConfEfetivo) {
+    veredIcon = '⚠️';
+    veredTexto = 'SEMICONFINAMENTO COM MELHOR RETORNO';
+    veredSubtitulo = `Diferença de ${fmt(lucroSemiEfetivo - lucroConfEfetivo)} favorável ao semiconfinamento. Maior capital imobilizado, menor exposição operacional diária.`;
+    veredCor = 'amber';
+  } else if (temChuva) {
+    veredIcon = '⚠️';
+    veredTexto = 'ATENÇÃO — ABATE NO PERÍODO DE CHUVAS';
+    veredSubtitulo = `O ciclo atual projeta abate em ${mesAbate}/2026, período historicamente de maior oferta e preços mais pressionados.`;
+    veredCor = 'amber';
+  } else {
+    veredIcon = '📊';
+    veredTexto = 'CENÁRIO NEUTRO — MONITORAR MERCADO';
+    veredSubtitulo = `Os indicadores estão dentro da média histórica. Acompanhe a evolução do futuro B3 antes de tomar decisão final.`;
+    veredCor = 'blue';
+  }
+
+  // chips do veredito
+  const chips = [];
+  chips.push({ cor: isSeco ? 'vc-green' : 'vc-amber', texto: isSeco ? '☀ Seca favorável' : '🌧 Período de chuvas' });
+  chips.push({ cor: spreadPositivo ? 'vc-green' : 'vc-red', texto: spreadPositivo ? `B3 +R$${spreadB3.toFixed(0)}/arr` : `B3 -R$${Math.abs(spreadB3).toFixed(0)}/arr` });
+  chips.push({ cor: margemPct > 20 ? 'vc-green' : margemPct > 5 ? 'vc-amber' : 'vc-red', texto: `Margem ${margemPct.toFixed(1)}%` });
+  chips.push({ cor: dias < 100 ? 'vc-green' : dias < 150 ? 'vc-amber' : 'vc-red', texto: `${dias}d ciclo` });
+  if (b3Disponivel) chips.push({ cor: 'vc-purple', texto: '◆ B3 disponível' });
+
+  const chipsHtml = chips.map(ch => `<span class="veredito-chip ${ch.cor}">${ch.texto}</span>`).join('');
+
+  // ── SCORE BARS ────────────────────────────────────────────────────────────
+  const scBars = [
+    { nome: 'Potencial de lucro', val: scorePotencial, max: 10, cor: scorePotencial >= 7 ? '#10B981' : scorePotencial >= 5 ? '#F59E0B' : '#EF4444', label: scorePotencial.toFixed(1) + '/10' },
+    { nome: 'Exposição ao risco', val: scoreRisco, max: 10, cor: scoreRisco >= 7 ? '#EF4444' : scoreRisco >= 5 ? '#F59E0B' : '#10B981', label: scoreRisco >= 7 ? 'Alto' : scoreRisco >= 5 ? 'Médio' : 'Baixo' },
+    { nome: 'Spread futuro B3', val: Math.min(10, Math.max(0, 5 + spreadPct * 2)), max: 10, cor: spreadPositivo ? '#10B981' : '#EF4444', label: spreadPositivo ? `+R$${spreadB3.toFixed(0)}` : `R$${spreadB3.toFixed(0)}` },
+    { nome: 'Margem operacional', val: Math.min(10, Math.max(0, margemPct / 4)), max: 10, cor: margemPct > 20 ? '#10B981' : margemPct > 8 ? '#F59E0B' : '#EF4444', label: `${margemPct.toFixed(1)}%` },
+    { nome: 'Janela sazonal', val: isSeco ? 8.5 : 3.5, max: 10, cor: isSeco ? '#10B981' : '#F59E0B', label: isSeco ? 'Favorável' : 'Desfavorável' },
+  ];
+  const scoreNum = (scorePotencial * 0.5 + (10 - scoreRisco) * 0.3 + (isSeco ? 1 : 0) + (spreadPositivo ? 0.5 : 0)).toFixed(1);
+  const scoreColor = parseFloat(scoreNum) >= 7 ? '#10B981' : parseFloat(scoreNum) >= 5 ? '#F59E0B' : '#EF4444';
+
+  const scoreBarsHtml = scBars.map(b => `
+    <div class="score-bar-row">
+      <div class="score-bar-header">
+        <span class="score-bar-name">${b.nome}</span>
+        <span class="score-bar-value" style="color:${b.cor}">${b.label}</span>
+      </div>
+      <div class="score-bar-track">
+        <div class="score-bar-fill" style="width:${(b.val/b.max*100)}%;background:${b.cor}"></div>
+      </div>
+    </div>`).join('');
+
+  // ── SEMÁFORO ──────────────────────────────────────────────────────────────
+  const semRows = [
+    {
+      icon: '📈', label: 'Mercado atual',
+      dot: spreadPositivo ? 'sd-green' : 'sd-yellow',
+      txt: spreadPositivo ? 'Favorável' : 'Atenção',
+      col: spreadPositivo ? 'st-green' : 'st-yellow'
+    },
+    {
+      icon: '💰', label: 'Custo × arroba',
+      dot: margemPct > 20 ? 'sd-green' : margemPct > 8 ? 'sd-yellow' : 'sd-red',
+      txt: margemPct > 20 ? 'Saudável' : margemPct > 8 ? 'Atenção' : 'Crítico',
+      col: margemPct > 20 ? 'st-green' : margemPct > 8 ? 'st-yellow' : 'st-red'
+    },
+    {
+      icon: '🕐', label: 'Spread histórico',
+      dot: spreadVsHist > 0 ? 'sd-green' : 'sd-yellow',
+      txt: spreadVsHist > 0 ? `+R$${spreadVsHist.toFixed(0)}/arr` : `R$${spreadVsHist.toFixed(0)}/arr`,
+      col: spreadVsHist > 0 ? 'st-green' : 'st-yellow'
+    },
+    {
+      icon: '☀', label: 'Janela climática',
+      dot: isSeco ? 'sd-green' : 'sd-yellow',
+      txt: isSeco ? 'Seca favorável' : 'Período úmido',
+      col: isSeco ? 'st-green' : 'st-yellow'
+    },
+    {
+      icon: '🐄', label: 'Pressão de oferta',
+      dot: temChuva ? 'sd-red' : (mesAbateNum >= 10 ? 'sd-yellow' : 'sd-green'),
+      txt: temChuva ? 'Possível pressão' : (mesAbateNum >= 10 ? 'Monitorar' : 'Controlada'),
+      col: temChuva ? 'st-red' : (mesAbateNum >= 10 ? 'st-yellow' : 'st-green')
+    },
+  ];
+
+  const semHtml = semRows.map(s => `
+    <div class="sem-row">
+      <span class="sem-label"><span class="sem-icon">${s.icon}</span>${s.label}</span>
+      <span class="sem-status ${s.col}"><span class="sem-dot ${s.dot}"></span>${s.txt}</span>
+    </div>`).join('');
+
+  // ── LEITURA INTELIGENTE ────────────────────────────────────────────────────
+  let leitura1 = '';
+  if (b3Abate) {
+    const tendencia = b3Abate.variacao_pct >= 0 ? 'valorização' : 'pressão';
+    leitura1 = `O contrato futuro <strong>B3 ${b3Abate.periodo}</strong> aponta <span class="leitura-${b3Abate.variacao_pct>=0?'highlight':'warn'}">${tendencia} de ${Math.abs(b3Abate.variacao_pct).toFixed(2)}%</span> hoje, com preço de <span class="leitura-highlight">R$ ${b3Abate.preco_arroba.toFixed(0)}/arr</span>. `;
+  }
+  leitura1 += isSeco
+    ? `O período seco (${mesAbate}) historicamente concentra os <strong>melhores preços do ano</strong> em ${estado} — redução da oferta e maior demanda frigorífica.`
+    : `O período de chuvas (${mesAbate}) tende a pressionar preços pela <strong>maior oferta de abate</strong>. Antecipar a saída pode melhorar resultado.`;
+
+  let leitura2 = '';
+  if (margemPct > 25) {
+    leitura2 = `A relação custo–receita está <strong>acima da média</strong>: custo de <span class="leitura-highlight">R$ ${custoPorArroba.toFixed(0)}/arr</span> contra preço de <span class="leitura-highlight">R$ ${precoEfetivo.toFixed(0)}/arr</span> — margem de <span class="leitura-highlight">${margemPct.toFixed(1)}%</span>. Cenário operacional favorável.`;
+  } else if (margemPct > 8) {
+    leitura2 = `Margem operacional de <span class="leitura-warn">${margemPct.toFixed(1)}%</span> (custo R$ ${custoPorArroba.toFixed(0)}/arr vs R$ ${precoEfetivo.toFixed(0)}/arr). Resultado positivo, porém sensível a oscilações no custo alimentar ou preço de venda.`;
+  } else {
+    leitura2 = `<strong>Atenção:</strong> margem estreita de <span class="leitura-danger">${margemPct.toFixed(1)}%</span>. O custo de <span class="leitura-danger">R$ ${custoPorArroba.toFixed(0)}/arr</span> consome a maior parte da receita de R$ ${precoEfetivo.toFixed(0)}/arr — pequenas variações de mercado ou alimentação podem inverter o resultado.`;
+  }
+
+  // ── COMPARAÇÃO ESTRATÉGICA ────────────────────────────────────────────────
+  const confDias = cp.confinamento.dias;
+  const semiDias = cp.semiconfinamento.dias;
+  const confMes  = cp.confinamento.mes_abate;
+  const semiMes  = cp.semiconfinamento.mes_abate;
+  const confSeco = !cp.confinamento.chuva;
+  const semiSeco = !cp.semiconfinamento.chuva;
+
+  // ── ALERTAS ────────────────────────────────────────────────────────────────
+  const alertas = [];
+  if (temChuva) alertas.push({ cls: 'ai-yellow', icon: '⚠️', txt: `Abate em <strong>${mesAbate}</strong> — período de chuvas. Preços historicamente mais baixos em ${estado}.` });
+  if (spreadPositivo && b3Abate) alertas.push({ cls: 'ai-green', icon: '✅', txt: `Spread B3 positivo de <strong>R$ ${spreadB3.toFixed(0)}/arr</strong> em relação ao preço atual — mercado futuro precificando valorização.` });
+  if (!spreadPositivo && b3Abate) alertas.push({ cls: 'ai-red', icon: '🔴', txt: `Spread B3 negativo (<strong>-R$ ${Math.abs(spreadB3).toFixed(0)}/arr</strong>) — futuro abaixo do spot atual. Possível pressão no período do abate.` });
+  if (custoDia > 32) alertas.push({ cls: 'ai-yellow', icon: '⚠️', txt: `Custo diário de <strong>R$ ${custoDia}/cab/dia</strong> acima de R$32 — alta exposição operacional. Margem sensível a atrasos.` });
+  if (dias > 130)   alertas.push({ cls: 'ai-yellow', icon: '⏱', txt: `Ciclo longo de <strong>${dias} dias</strong> — capital imobilizado por mais tempo. Avaliar adiantamento de lote se mercado deteriorar.` });
+  if (margemPct < 10 && margemPct >= 0) alertas.push({ cls: 'ai-yellow', icon: '💰', txt: `Margem estreita de <strong>${margemPct.toFixed(1)}%</strong>. Monitorar custo alimentar semanalmente.` });
+  if (margemPct < 0) alertas.push({ cls: 'ai-red', icon: '🚨', txt: `Projeção de <strong>resultado negativo</strong>. Revisar parâmetros: GPD atual (${gpd} kg/dia) e custo diário (R$ ${custoDia}).` });
+  if (isSeco && spreadPositivo && margemPct > 20) alertas.push({ cls: 'ai-green', icon: '🌟', txt: `Três indicadores positivos alinhados: <strong>seca + B3 favorável + margem saudável</strong>. Janela estratégica de qualidade.` });
+  if (!alertas.length) alertas.push({ cls: 'ai-blue', icon: 'ℹ️', txt: 'Cenário dentro dos parâmetros normais. Sem alertas críticos no momento.' });
+
+  const alertasHtml = alertas.map(a => `
+    <div class="alerta-item ${a.cls}">
+      <span class="alerta-icon">${a.icon}</span>
+      <span>${a.txt}</span>
+    </div>`).join('');
+
+  // ── AÇÕES RECOMENDADAS ────────────────────────────────────────────────────
+  const acoes = [];
+  if (b3Disponivel && spreadPositivo)
+    acoes.push({ txt: 'Travar parcialmente preço futuro via B3 para o mês de abate projetado', priority: 'ap-high', label: 'PRIORITÁRIO' });
+  if (isSeco)
+    acoes.push({ txt: `Priorizar abate antes do início das chuvas (outubro). Janela ideal: ${mesAbate}/2026`, priority: 'ap-high', label: 'PRIORITÁRIO' });
+  if (custoDia > 28)
+    acoes.push({ txt: 'Monitorar custo alimentar semanalmente — alta exposição operacional detectada', priority: 'ap-medium', label: 'ATENÇÃO' });
+  if (dias > 100)
+    acoes.push({ txt: 'Avaliar lote gradualmente: entrar com parte dos animais para diluir risco de timing', priority: 'ap-medium', label: 'ATENÇÃO' });
+  acoes.push({ txt: `Acompanhar contratos futuros B3 para ${mesAbate} — variações acima de R$ 8/arr exigem revisão`, priority: 'ap-low', label: 'ROTINA' });
+  if (!confWin)
+    acoes.push({ txt: 'Semiconfinamento apresenta melhor retorno no cenário atual — considerar reavaliação de modalidade', priority: 'ap-medium', label: 'ATENÇÃO' });
+  acoes.push({ txt: 'Comparar custo de capital imobilizado vs. lucro adicional de ciclos mais longos', priority: 'ap-low', label: 'ROTINA' });
+
+  const acoesHtml = acoes.slice(0,5).map((a, i) => `
+    <div class="acao-item">
+      <span class="acao-num">${String(i+1).padStart(2,'0')}</span>
+      <span>${a.txt}</span>
+      <span class="acao-priority ${a.priority}">${a.label}</span>
+    </div>`).join('');
+
+  // ── CONFIANÇA ─────────────────────────────────────────────────────────────
+  let confiancaPct = 72;
+  if (b3Disponivel) confiancaPct += 10;
+  if (isSeco)       confiancaPct += 5;
+  if (spreadPositivo) confiancaPct += 3;
+  confiancaPct = Math.min(96, confiancaPct);
+  const circumf = 2 * Math.PI * 32;
+  const dashFill = circumf * (confiancaPct / 100);
+  const dashGap  = circumf - dashFill;
+
+  // ── MONTA HTML FINAL ──────────────────────────────────────────────────────
+  return `
+<div class="decisao-wrapper">
+  <div class="decisao-header">
+    <span class="decisao-header-label">Decisão Estratégica</span>
+    <span class="decisao-ai-badge">ANÁLISE AUTOMÁTICA</span>
+  </div>
+
+  <!-- VEREDITO -->
+  <div class="veredito-card">
+    <div class="veredito-eyebrow">Análise de cenário</div>
+    <div class="veredito-headline"><span class="vh-icon">${veredIcon}</span>${veredTexto}</div>
+    <div class="veredito-subtitle">${veredSubtitulo}</div>
+    <div class="veredito-chips">${chipsHtml}</div>
+  </div>
+
+  <!-- GRID PRINCIPAL -->
+  <div class="decisao-grid">
+
+    <!-- COLUNA ESQUERDA -->
+    <div class="decisao-col-left">
+
+      <!-- SCORE -->
+      <div class="score-card">
+        <div class="score-card-title">◈ Score estratégico</div>
+        <div class="score-headline-number" style="color:${scoreColor}">${scoreNum}</div>
+        <div class="score-headline-label">de 10.0 pontos possíveis</div>
+        ${scoreBarsHtml}
+      </div>
+
+      <!-- SEMÁFORO -->
+      <div class="semaforo-card">
+        <div class="score-card-title">◉ Semáforo de indicadores</div>
+        ${semHtml}
+      </div>
+
+    </div>
+
+    <!-- COLUNA DIREITA -->
+    <div class="decisao-col-right">
+
+      <!-- LEITURA INTELIGENTE -->
+      <div class="leitura-card">
+        <div class="leitura-card-title">◎ Leitura inteligente de mercado</div>
+        <div class="leitura-text">${leitura1}</div>
+        <div class="leitura-text" style="margin-top:12px">${leitura2}</div>
+      </div>
+
+      <!-- COMPARAÇÃO ESTRATÉGICA -->
+      <div class="comp-strat-card">
+        <div class="score-card-title">⇌ Comparação estratégica</div>
+        <div class="comp-strat-cols">
+          <div class="comp-strat-item csi-conf ${confWin ? 'csi-winner' : ''}">
+            <div class="comp-strat-name csn-conf">
+              🐂 Confinamento
+              ${confWin ? '<span class="csi-winner-badge">✓ VENCEDOR</span>' : ''}
+            </div>
+            <div class="comp-strat-pro">Giro em ${confDias} dias${confSeco ? ' (período seco)' : ''}</div>
+            <div class="comp-strat-pro">Abate em ${confMes}/2026 ${confSeco ? '— preço firme' : ''}</div>
+            <div class="comp-strat-con">Custo/dia elevado — R$ ${custoDia}/cab</div>
+            <div class="comp-strat-con">Alta exposição operacional</div>
+          </div>
+          <div class="comp-strat-item csi-semi ${!confWin ? 'csi-winner' : ''}">
+            <div class="comp-strat-name csn-semi">
+              🌿 Semiconfinamento
+              ${!confWin ? '<span class="csi-winner-badge" style="color:#3B82F6;background:#EFF6FF;border-color:#BFDBFE">✓ VENCEDOR</span>' : ''}
+            </div>
+            <div class="comp-strat-pro">Menor custo/dia (~R$ 11)</div>
+            <div class="comp-strat-pro">Abate em ${semiMes}/2026 ${semiSeco ? '— período seco' : ''}</div>
+            <div class="comp-strat-con">Capital imobilizado ${semiDias} dias</div>
+            <div class="comp-strat-con">Menor controle sobre timing</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERTAS -->
+      <div class="alertas-card">
+        <div class="score-card-title">⚑ Pontos de atenção</div>
+        ${alertasHtml}
+      </div>
+
+      <!-- AÇÕES -->
+      <div class="acoes-card">
+        <div class="score-card-title">▶ Ações recomendadas</div>
+        ${acoesHtml}
+      </div>
+
+      <!-- CONFIANÇA -->
+      <div class="confianca-card">
+        <div class="confianca-inner">
+          <div class="confianca-circle-wrap">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(100,116,139,0.2)" stroke-width="7"/>
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#6366F1" stroke-width="7"
+                stroke-dasharray="${dashFill.toFixed(1)} ${dashGap.toFixed(1)}"
+                stroke-linecap="round"/>
+            </svg>
+            <div class="confianca-pct">
+              <span class="confianca-num">${confiancaPct}</span>
+              <span class="confianca-unit">%</span>
+            </div>
+          </div>
+          <div class="confianca-info">
+            <div class="confianca-title">Confiança da projeção</div>
+            <div class="confianca-bases">
+              <div class="confianca-base-item">Histórico CEPEA 2020–2026</div>
+              <div class="confianca-base-item">Sazonalidade chuva × seca</div>
+              ${b3Disponivel ? '<div class="confianca-base-item">Contrato futuro B3 disponível</div>' : '<div class="confianca-base-item" style="opacity:.5">Futuro B3 indisponível</div>'}
+              <div class="confianca-base-item">GPD e custo operacional</div>
+              <div class="confianca-base-item">Spread histórico ${estado}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+  </div><!-- /grid -->
+</div><!-- /decisao-wrapper -->
+  `;
 }
 
 function selecionarClima(estado, el) {
