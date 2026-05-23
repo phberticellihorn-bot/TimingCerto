@@ -2,7 +2,7 @@
 scraper.py — Coleta automática de dados para o Timing Certo
 
 Fontes de dados (todas automáticas):
-  1. Preço atual:   Indicador do Boi DATAGRO (indicadordoboi.com.br) → fallback histórico CEPEA
+  1. Preço atual:   Indicador do Boi DATAGRO (pec.datagro.com/pec/mapas/boletim_cinco.svg) → fallback histórico CEPEA
   2. Histórico:     historico.json gerado pelo atualizar_historico.py (Selenium/Agrolink)
   3. Clima:         Open-Meteo API (gratuita · sem autenticação · atualizada a cada 3h)
 
@@ -253,69 +253,107 @@ def atualizar_preco_atual(estado: str = "SP") -> dict:
 
 def scrape_cepea_atual(estado: str = "SP") -> dict:
     """
-    Busca o preço diário do boi gordo via Indicador do Boi DATAGRO.
-    Fonte: https://www.indicadordoboi.com.br/pt-br
-    Pega a data mais recente disponível para SP, GO e MT.
-    Fallback: média histórica do mês caso o site esteja indisponível.
+    Busca o preço diário do boi gordo via SVG estático da DATAGRO.
+    Fonte: https://pec.datagro.com/pec/mapas/boletim_cinco.svg
+
+    Estrutura do SVG:
+      - Tags <text x="10" y="265|302|339|376|413"> contêm as datas (18/Mai, 19/Mai...)
+      - Tags <text transform="matrix(1 0 0 1 X Y)"> contêm os valores por coluna
+      - O Y da matrix bate com o Y da linha de data correspondente
+      - Colunas por posição X aproximada:
+          SP≈150, BA≈222, GO≈294, MG≈366, MS≈438, MT≈510, PA≈582, RO≈654, TO≈726
+
+    Pega sempre a linha com maior Y (data mais recente).
+    Fallback: média histórica do mês.
     """
     estado    = estado.upper()
     cache_key = f"agrodoc_{estado}"
     if cache_key in cache_preco:
         return cache_preco[cache_key]
 
-    # Mapeamento estado → índice de coluna (SP, BA, GO, MG, MS, MT, PA, RO, TO)
-    DATAGRO_COLS = {"SP": 0, "BA": 1, "GO": 2, "MG": 3, "MS": 4, "MT": 5, "PA": 6, "RO": 7, "TO": 8}
+    # X aproximado do centro de cada coluna no SVG (tolerância ±30px)
+    DATAGRO_X = {"SP": 150, "BA": 222, "GO": 294, "MG": 366, "MS": 438,
+                 "MT": 510, "PA": 582, "RO": 654, "TO": 726}
+    COL_TOL = 30  # tolerância em px para identificar a coluna
 
     try:
         resp = requests.get(
-            "https://www.indicadordoboi.com.br/pt-br",
+            "https://pec.datagro.com/pec/mapas/boletim_cinco.svg",
             headers=HEADERS,
             timeout=15,
         )
         resp.raise_for_status()
-        soup   = BeautifulSoup(resp.text, "html.parser")
-        tabela = soup.find("table")
 
-        if not tabela:
-            logger.warning("DATAGRO: tabela não encontrada na página")
-            return _fallback_media_historica(estado)
+        soup = BeautifulSoup(resp.content, "xml")  # parser XML para SVG
 
-        col_idx = DATAGRO_COLS.get(estado)
-        if col_idx is None:
-            logger.warning(f"DATAGRO: estado {estado} não mapeado")
-            return _fallback_media_historica(estado)
-
-        # Percorre as linhas de baixo para cima para pegar a data mais recente
-        for tr in reversed(tabela.find_all("tr")):
-            cols = tr.find_all("td")
-            if len(cols) < col_idx + 2:
-                continue
-            data_txt = cols[0].get_text(strip=True)
-            # Ignora linha de média e linhas sem data válida
-            if not data_txt or "dia" in data_txt.lower() or "méd" in data_txt.lower():
-                continue
-            val_txt = cols[col_idx + 1].get_text(strip=True).replace(",", ".")
+        # 1. Coletar todas as linhas de data: <text x="10" y="NNN">DD/Mmm</text>
+        #    Y válidos: 265, 302, 339, 376, 413 (5 dias úteis)
+        datas_y = {}  # {y_int: "22/Mai"}
+        for tag in soup.find_all("text"):
+            x_attr = tag.get("x", "")
+            y_attr = tag.get("y", "")
+            txt    = tag.get_text(strip=True)
             try:
-                val = float(val_txt)
-                if 200 < val < 600:
-                    resultado = {
-                        "preco":        round(val, 2),
-                        "fonte":        "Indicador do Boi DATAGRO",
-                        "estado":       estado,
-                        "atualizado":   datetime.now(TZ_BR).isoformat(),
-                        "data_cotacao": data_txt,
-                        "automatico":   True,
-                    }
-                    cache_preco[cache_key] = resultado
-                    logger.info(f"DATAGRO: {estado} = R${val} ({data_txt})")
-                    return resultado
+                if int(float(x_attr)) == 10 and "/" in txt and len(txt) <= 7:
+                    datas_y[int(float(y_attr))] = txt
             except Exception:
                 continue
 
-        logger.warning(f"DATAGRO: preço válido não encontrado para {estado}")
+        if not datas_y:
+            logger.warning("DATAGRO SVG: nenhuma linha de data encontrada")
+            return _fallback_media_historica(estado)
+
+        # Linha mais recente = maior Y
+        y_recente  = max(datas_y.keys())
+        data_recente = datas_y[y_recente]
+
+        # 2. Coletar valores via transform="matrix(1 0 0 1 X Y)"
+        #    Filtra pelo Y da linha mais recente e pelo X da coluna do estado
+        x_alvo = DATAGRO_X.get(estado)
+        if x_alvo is None:
+            logger.warning(f"DATAGRO SVG: estado {estado} não mapeado")
+            return _fallback_media_historica(estado)
+
+        preco_encontrado = None
+        for tag in soup.find_all("text"):
+            transform = tag.get("transform", "")
+            m = re.match(r"matrix\(1\s+0\s+0\s+1\s+([\d.]+)\s+([\d.]+)\)", transform)
+            if not m:
+                continue
+            tx = float(m.group(1))
+            ty = float(m.group(2))
+            # Y deve bater com a linha mais recente (tolerância ±5px)
+            if abs(ty - y_recente) > 5:
+                continue
+            # X deve bater com a coluna do estado (tolerância ±30px)
+            if abs(tx - x_alvo) > COL_TOL:
+                continue
+            val_txt = tag.get_text(strip=True).replace(",", ".")
+            try:
+                val = float(val_txt)
+                if 200 < val < 600:
+                    preco_encontrado = round(val, 2)
+                    break
+            except Exception:
+                continue
+
+        if preco_encontrado:
+            resultado = {
+                "preco":        preco_encontrado,
+                "fonte":        "Indicador do Boi DATAGRO",
+                "estado":       estado,
+                "atualizado":   datetime.now(TZ_BR).isoformat(),
+                "data_cotacao": data_recente,
+                "automatico":   True,
+            }
+            cache_preco[cache_key] = resultado
+            logger.info(f"DATAGRO SVG: {estado} = R${preco_encontrado} ({data_recente})")
+            return resultado
+
+        logger.warning(f"DATAGRO SVG: preço não encontrado para {estado} (y={y_recente}, x≈{x_alvo})")
 
     except Exception as e:
-        logger.warning(f"DATAGRO falhou para {estado}: {e}")
+        logger.warning(f"DATAGRO SVG falhou para {estado}: {e}")
 
     # Fallback: média histórica do mês
     return _fallback_media_historica(estado)
