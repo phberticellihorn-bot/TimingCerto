@@ -54,12 +54,32 @@ cache_normais = TTLCache(maxsize=10, ttl=2592000)
 # Limiar para classificar mês como "chuva": precipitação média >= LIMIAR_CHUVA_MM
 LIMIAR_CHUVA_MM = 80.0
 
+# ---------------------------------------------------------------------------
+# FIX: Pré-popula cache_normais com fallback INMET no startup.
+# Isso evita que _buscar_normais_precipitacao() tente conectar ao
+# archive-api.open-meteo.com (bloqueado no Render), eliminando o travamento
+# de ~30s por requisição causado pelo timeout da conexão recusada.
+# O cache tem TTL de 30 dias — permanece válido durante toda a vida do worker.
+# ---------------------------------------------------------------------------
+_FALLBACK_NORMAIS_INMET = {
+    "MT": [True, True, True, False, False, False, False, False, True, True, True, True],
+    "SP": [True, True, True, True,  False, False, False, False, True, True, True, True],
+    "GO": [True, True, True, False, False, False, False, False, True, True, True, True],
+}
+for _est in ESTADOS_VALIDOS:
+    cache_normais[f"normais_{_est}"] = _FALLBACK_NORMAIS_INMET[_est]
+logger.info("cache_normais pré-populado com fallback INMET (evita timeout Open-Meteo Archive no Render)")
+
 
 def _buscar_normais_precipitacao(estado: str) -> list:
     """
     Busca precipitação mensal média (mm) dos últimos 20 anos via Open-Meteo ERA5.
     Retorna lista de 12 floats [jan, fev, ..., dez].
     Fonte: archive-api.open-meteo.com · ERA5-Land · gratuita · sem autenticação.
+
+    NOTA: No Render esta API é inacessível (Errno 101 — Network is unreachable).
+    O cache_normais é pré-populado no startup com o fallback INMET, portanto
+    esta função raramente será chamada em produção.
     """
     estado = estado.upper()
     cache_key = f"normais_{estado}"
@@ -78,7 +98,9 @@ def _buscar_normais_precipitacao(estado: str) -> list:
     )
 
     try:
-        resp = requests.get(url, timeout=30)
+        # FIX: timeout reduzido de 30s para 5s — falha rápido e cai no fallback INMET,
+        # evitando travar a requisição do usuário por meio minuto.
+        resp = requests.get(url, timeout=5)
         resp.raise_for_status()
         dados  = resp.json()
         datas  = dados["daily"]["time"]                  # ["2005-01-01", ...]
@@ -237,7 +259,6 @@ def _fallback_media_historica(estado: str) -> dict:
         "automatico": False,
         "erro":       "Todas as fontes indisponíveis e historico.json ausente.",
     }
-
 
 
 def atualizar_preco_atual(estado: str = "SP") -> dict:
