@@ -1251,6 +1251,7 @@ function formatarDataHora(iso) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
+  await carregarHistoricoJSON();
   await carregarFuturosB3();
   await carregarPrecoAtual();
   calcular();
@@ -1339,35 +1340,33 @@ function renderB3Strip() {
   strip.insertBefore(item, fonte);
 }
 
-const HIST = {
-  SP: {
-    2020:[171,175,168,162,170,183,198,210,205,208,215,220],
-    2021:[228,235,242,248,255,258,262,268,258,250,245,248],
-    2022:[298,305,312,308,295,285,278,272,265,260,255,262],
-    2023:[248,242,238,235,230,228,232,238,242,248,252,258],
-    2024:[225,228,243,258,268,278,288,300,292,302,335,352],
-    2025:[310,318,320,315,308,312,316,318,312,318,322,325],
-    2026:[330,340,348,355,350,0,0,0,0,0,0,0],
-  },
-  MT: {
-    2020:[168,172,165,158,166,180,195,207,202,205,212,218],
-    2021:[225,232,238,245,252,255,258,265,255,247,242,245],
-    2022:[294,301,308,304,291,281,274,268,261,256,251,258],
-    2023:[244,238,234,231,226,224,228,234,238,244,248,254],
-    2024:[221,224,239,254,264,274,284,296,288,298,331,348],
-    2025:[306,314,316,311,304,308,312,314,308,314,318,321],
-    2026:[326,336,344,351,346,0,0,0,0,0,0,0],
-  },
-  GO: {
-    2020:[169,173,166,160,168,181,196,208,203,206,213,219],
-    2021:[226,233,240,246,253,256,260,266,256,248,243,246],
-    2022:[296,303,310,306,293,283,276,270,263,258,253,260],
-    2023:[246,240,236,233,228,226,230,236,240,246,250,256],
-    2024:[223,226,241,256,266,276,286,298,290,300,333,350],
-    2025:[308,316,318,313,306,310,314,316,310,316,320,323],
-    2026:[328,338,346,353,348,0,0,0,0,0,0,0],
-  },
+// HIST e MEDIAS carregados de app/historico.json; valores abaixo são fallback
+let HIST = {
+  SP: { 2020:[193,196,197,194,192,201,216,224,241,257,278,258], 2021:[278,296,301,310,302,310,310,310,301,272,283,312], 2022:[326,331,333,314,305,297,308,294,283,276,270,277], 2023:[272,275,273,272,255,240,241,217,201,229,233,239], 2024:[239,234,227,226,226,217,221,229,245,287,325,317], 2025:[313,316,309,317,309,308,300,301,305,304,313,316], 2026:[314,330,344,357,351,0,0,0,0,0,0,0] },
+  MT: { 2020:[171,176,178,171,169,175,187,200,221,240,261,242], 2021:[256,280,289,298,294,297,297,295,284,259,264,291], 2022:[304,300,297,288,278,270,286,275,260,253,239,246], 2023:[244,243,239,244,230,204,211,190,174,202,203,206], 2024:[207,208,207,206,208,203,205,208,218,265,312,299], 2025:[307,310,295,317,304,307,297,297,297,290,298,296], 2026:[294,311,332,351,346,0,0,0,0,0,0,0] },
+  GO: { 2020:[179,184,184,177,177,191,204,216,232,244,267,251], 2021:[270,285,287,293,286,297,299,298,288,256,269,302], 2022:[312,309,305,292,277,270,289,280,265,262,256,270], 2023:[261,247,244,246,225,204,214,203,186,217,221,230], 2024:[226,215,208,208,205,199,208,219,236,274,318,304], 2025:[302,294,285,303,288,287,278,283,286,287,305,309], 2026:[305,311,323,339,328,0,0,0,0,0,0,0] },
 };
+let MEDIAS = { MT:{mensais:[]}, SP:{mensais:[]}, GO:{mensais:[]} };
+
+async function carregarHistoricoJSON() {
+  try {
+    const r = await fetch('app/historico.json?v=' + Date.now());
+    if (!r.ok) return;
+    const j = await r.json();
+    if (j.historico) {
+      ['MT','SP','GO'].forEach(est => {
+        if (!j.historico[est]) return;
+        HIST[est] = {};
+        Object.entries(j.historico[est]).forEach(([ano, vals]) => {
+          HIST[est][parseInt(ano)] = vals;
+        });
+      });
+    }
+    if (j.medias_mensais) MEDIAS = j.medias_mensais;
+  } catch(e) {
+    console.warn('historico.json nao carregado, usando fallback:', e);
+  }
+}
 
 const COORDS_FRONT = {
   MT:{lat:-15.601,lon:-56.097,nome:'Mato Grosso',cidade:'Cuiabá, MT'},
@@ -1376,11 +1375,14 @@ const COORDS_FRONT = {
 };
 
 function precoHistMes(estado, mes) {
-  const anos = Object.keys(HIST[estado]).map(Number).sort((a,b)=>b-a);
-  for (const ano of anos) {
-    const v = HIST[estado][ano][mes-1];
-    if (v > 0) return v;
+  // Usa média histórica real do JSON (2020-2025), exclui 2026
+  if (MEDIAS[estado] && MEDIAS[estado].mensais && MEDIAS[estado].mensais[mes-1]) {
+    return Math.round(MEDIAS[estado].mensais[mes-1] * 100) / 100;
   }
+  // Fallback: média dos anos disponíveis excluindo 2026
+  const anos = Object.keys(HIST[estado]).map(Number).filter(a => a < 2026).sort();
+  const vals = anos.map(a => HIST[estado][a][mes-1]).filter(v => v > 0);
+  if (vals.length) return Math.round(vals.reduce((s,v) => s+v, 0) / vals.length);
   return 350;
 }
 
@@ -1389,7 +1391,7 @@ function atualizarHistStrip() {
   const mes = new Date().getMonth() + 1;
   const mesNome = MESES[mes-1];
   const val = precoHistMes(estado, mes);
-  document.getElementById('ps-hist').textContent = 'R$ ' + val;
+  document.getElementById('ps-hist').textContent = 'R$ ' + Math.round(val);
   document.getElementById('ps-hist-label').textContent = `Média histórica ${mesNome} (${estado})`;
 }
 
