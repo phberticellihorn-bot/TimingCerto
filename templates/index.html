@@ -918,8 +918,8 @@ nav {
 ════════════════════════════════════════════ */
 .hist-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 24px;
   margin-bottom: 20px;
 }
 .chart-wrap {
@@ -927,6 +927,7 @@ nav {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 22px;
+  height: clamp(320px, 45vh, 560px);
 }
 .chart-controls {
   display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
@@ -1186,11 +1187,11 @@ nav {
 
   <div class="hist-grid">
     <div class="chart-wrap">
-      <canvas id="chart-historico" height="120"></canvas>
+      <canvas id="chart-historico"></canvas>
     </div>
     <div class="chart-wrap">
       <div style="font-size:11px;font-weight:600;color:var(--t4);margin-bottom:16px;letter-spacing:.02em">Chuva vs. Seca — impacto no preço</div>
-      <canvas id="chart-chuva-seca" height="120"></canvas>
+      <canvas id="chart-chuva-seca"></canvas>
     </div>
   </div>
 
@@ -2031,6 +2032,7 @@ function renderGraficoHistorico(dados, estado) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { labels: { color: '#576070', font: { family: 'Manrope', size: 11 }, boxWidth: 10 } },
         tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr`, afterLabel: ctx => dados[ctx.dataIndex].chuva ? 'Período de chuvas' : 'Período seco' } }
@@ -2059,6 +2061,7 @@ function renderGraficoTodos(mt, sp, go) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { labels: { color: '#6B7280', font: { family: 'JetBrains Mono', size: 11 } } } },
       scales: {
         x: { ticks: { color: '#9CA3AF', font: { size: 9, family: 'JetBrains Mono' }, maxRotation: 90 }, grid: { color: 'rgba(0,0,0,.05)' } },
@@ -2083,6 +2086,7 @@ function renderChuvaSeca(dados, estado) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { labels: { color: '#6B7280', font: { family: 'JetBrains Mono', size: 11 } } },
         tooltip: { callbacks: { label: ctx => `R$ ${ctx.raw}/arr` } }
