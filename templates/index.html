@@ -110,7 +110,7 @@
 /* ════════════════════════════════════════════
    BASE
 ════════════════════════════════════════════ */
-html { font-size: 17px; scroll-behavior: smooth; }
+html { font-size: 17px; scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: 'Manrope', sans-serif;
   background: var(--surface2);
@@ -119,6 +119,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Mono utility — only for numbers/financial data */
@@ -210,8 +212,8 @@ nav {
    PAGES & WRAPPER
 ════════════════════════════════════════════ */
 .page { display: none; }
-.page.active { display: block; }
-.page-inner { width: 100%; margin: 0 auto; padding: 28px 32px; }
+.page.active { display: block; width: 100%; }
+.page-inner { width: 100%; margin: 0 auto; padding: 28px 32px; box-sizing: border-box; }
 
 /* ════════════════════════════════════════════
    KPI RIBBON — institutional ticker bar
@@ -276,8 +278,8 @@ nav {
   gap: 20px;
   align-items: start;
 }
-.calc-left  { display: flex; flex-direction: column; gap: 16px; }
-.calc-right { display: flex; flex-direction: column; gap: 22px; }
+.calc-left  { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.calc-right { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
 
 /* ════════════════════════════════════════════
    PANEL — base surface card
@@ -864,6 +866,7 @@ nav {
   gap: 22px;
   align-items: start;
 }
+.bottom-grid > * { min-width: 0; }
 
 /* ════════════════════════════════════════════
    STRATEGIC COMPARISON — light card
