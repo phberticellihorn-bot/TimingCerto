@@ -2,7 +2,7 @@
 scraper.py — Coleta automática de dados para o Timing Certo
 
 Fontes de dados (todas automáticas):
-  1. Preço atual:   AgroDoc AI API (CEPEA/Scot · gratuita · diária)
+  1. Preço atual:   Indicador do Boi DATAGRO (indicadordoboi.com.br) → fallback histórico CEPEA
   2. Histórico:     historico.json gerado pelo atualizar_historico.py (Selenium/Agrolink)
   3. Clima:         Open-Meteo API (gratuita · sem autenticação · atualizada a cada 3h)
 
@@ -54,32 +54,12 @@ cache_normais = TTLCache(maxsize=10, ttl=2592000)
 # Limiar para classificar mês como "chuva": precipitação média >= LIMIAR_CHUVA_MM
 LIMIAR_CHUVA_MM = 80.0
 
-# ---------------------------------------------------------------------------
-# FIX: Pré-popula cache_normais com fallback INMET no startup.
-# Isso evita que _buscar_normais_precipitacao() tente conectar ao
-# archive-api.open-meteo.com (bloqueado no Render), eliminando o travamento
-# de ~30s por requisição causado pelo timeout da conexão recusada.
-# O cache tem TTL de 30 dias — permanece válido durante toda a vida do worker.
-# ---------------------------------------------------------------------------
-_FALLBACK_NORMAIS_INMET = {
-    "MT": [True, True, True, False, False, False, False, False, True, True, True, True],
-    "SP": [True, True, True, True,  False, False, False, False, True, True, True, True],
-    "GO": [True, True, True, False, False, False, False, False, True, True, True, True],
-}
-for _est in ESTADOS_VALIDOS:
-    cache_normais[f"normais_{_est}"] = _FALLBACK_NORMAIS_INMET[_est]
-logger.info("cache_normais pré-populado com fallback INMET (evita timeout Open-Meteo Archive no Render)")
-
 
 def _buscar_normais_precipitacao(estado: str) -> list:
     """
     Busca precipitação mensal média (mm) dos últimos 20 anos via Open-Meteo ERA5.
     Retorna lista de 12 floats [jan, fev, ..., dez].
     Fonte: archive-api.open-meteo.com · ERA5-Land · gratuita · sem autenticação.
-
-    NOTA: No Render esta API é inacessível (Errno 101 — Network is unreachable).
-    O cache_normais é pré-populado no startup com o fallback INMET, portanto
-    esta função raramente será chamada em produção.
     """
     estado = estado.upper()
     cache_key = f"normais_{estado}"
@@ -98,9 +78,7 @@ def _buscar_normais_precipitacao(estado: str) -> list:
     )
 
     try:
-        # FIX: timeout reduzido de 30s para 5s — falha rápido e cai no fallback INMET,
-        # evitando travar a requisição do usuário por meio minuto.
-        resp = requests.get(url, timeout=5)
+        resp = requests.get(url, timeout=30)
         resp.raise_for_status()
         dados  = resp.json()
         datas  = dados["daily"]["time"]                  # ["2005-01-01", ...]
@@ -231,7 +209,7 @@ def status_historico() -> dict:
 
 
 # ---------------------------------------------------------------------------
-# PREÇO ATUAL — AgroDoc AI API
+# PREÇO ATUAL — Indicador do Boi DATAGRO
 # ---------------------------------------------------------------------------
 
 def _fallback_media_historica(estado: str) -> dict:
@@ -261,6 +239,7 @@ def _fallback_media_historica(estado: str) -> dict:
     }
 
 
+
 def atualizar_preco_atual(estado: str = "SP") -> dict:
     """
     Força scraping do preço atual ignorando o cache TTL.
@@ -273,114 +252,72 @@ def atualizar_preco_atual(estado: str = "SP") -> dict:
 
 
 def scrape_cepea_atual(estado: str = "SP") -> dict:
+    """
+    Busca o preço diário do boi gordo via Indicador do Boi DATAGRO.
+    Fonte: https://www.indicadordoboi.com.br/pt-br
+    Pega a data mais recente disponível para SP, GO e MT.
+    Fallback: média histórica do mês caso o site esteja indisponível.
+    """
     estado    = estado.upper()
     cache_key = f"agrodoc_{estado}"
     if cache_key in cache_preco:
         return cache_preco[cache_key]
 
-    # --- Fonte 0: Scot Consultoria (preço real por estado, atualizado diariamente) ---
-    try:
-        cotacoes_scot = carregar_cotacoes_scot()
-        preco_scot = cotacoes_scot.get(estado)
-        if preco_scot and 200 < preco_scot < 600:
-            # Verifica se o JSON não está desatualizado (mais de 2 dias)
-            caminho = os.path.join(os.path.dirname(__file__), "cotacoes_scot.json")
-            with open(caminho, "r", encoding="utf-8") as f:
-                meta = json.load(f)
-            atualizado = meta.get("atualizado", "")
-            data_arquivo = datetime.fromisoformat(atualizado[:19]) if atualizado else None
-            dias_defasagem = (datetime.now(TZ_BR) - data_arquivo).days if data_arquivo else 99
-            if dias_defasagem <= 2:
-                resultado = {
-                    "preco":        preco_scot,
-                    "fonte":        "Scot Consultoria · Boi China a Prazo",
-                    "estado":       estado,
-                    "atualizado":   atualizado,
-                    "data_cotacao": atualizado[:10],
-                    "automatico":   True,
-                }
-                cache_preco[cache_key] = resultado
-                logger.info(f"Scot Consultoria: {estado} = R${preco_scot}")
-                return resultado
-            else:
-                logger.warning(f"cotacoes_scot.json desatualizado ({dias_defasagem} dias) — usando fallback")
-    except Exception as e:
-        logger.warning(f"Scot Consultoria falhou para {estado}: {e}")
+    # Mapeamento estado → índice de coluna (SP, BA, GO, MG, MS, MT, PA, RO, TO)
+    DATAGRO_COLS = {"SP": 0, "BA": 1, "GO": 2, "MG": 3, "MS": 4, "MT": 5, "PA": 6, "RO": 7, "TO": 8}
 
-    # --- Fonte 1: AgroDoc AI API (fallback — SP base + diferencial fixo) ---
     try:
         resp = requests.get(
-            "https://agrodocai.com.br/api/v1/cotacao",
-            params={"uf": estado},   # params= em vez de f-string, mais robusto
+            "https://www.indicadordoboi.com.br/pt-br",
             headers=HEADERS,
-            timeout=10,
+            timeout=15,
         )
         resp.raise_for_status()
-        dados    = resp.json()
-        logger.info(f"AgroDoc response para {estado}: {dados}")
-        # API sempre retorna referência SP em "boi_gordo_cepea_sp" (ignora param uf)
-        DIFERENCIAL_AGRODOC = {"SP": 0.0, "MT": -3.0, "GO": -14.0}
-        preco_sp = float(dados.get("boi_gordo_cepea_sp") or dados.get("valor") or 0)
-        preco    = round(preco_sp + DIFERENCIAL_AGRODOC.get(estado, 0), 2) if preco_sp else 0
-        data_cot = (dados.get("atualizado") or datetime.now(TZ_BR).isoformat())[:10]
+        soup   = BeautifulSoup(resp.text, "html.parser")
+        tabela = soup.find("table")
 
-        if 200 < preco < 600:
-            resultado = {
-                "preco":        preco,
-                "fonte":        "AgroDoc AI · CEPEA/Scot",
-                "estado":       estado,
-                "atualizado":   datetime.now(TZ_BR).isoformat(),
-                "data_cotacao": data_cot,
-                "automatico":   True,
-            }
-            cache_preco[cache_key] = resultado
-            return resultado
+        if not tabela:
+            logger.warning("DATAGRO: tabela não encontrada na página")
+            return _fallback_media_historica(estado)
 
-        logger.warning(f"AgroDoc retornou valor fora da faixa para {estado}: {preco}")
+        col_idx = DATAGRO_COLS.get(estado)
+        if col_idx is None:
+            logger.warning(f"DATAGRO: estado {estado} não mapeado")
+            return _fallback_media_historica(estado)
 
-    except Exception as e:
-        logger.warning(f"AgroDoc API falhou para {estado}: {e}")
+        # Percorre as linhas de baixo para cima para pegar a data mais recente
+        for tr in reversed(tabela.find_all("tr")):
+            cols = tr.find_all("td")
+            if len(cols) < col_idx + 2:
+                continue
+            data_txt = cols[0].get_text(strip=True)
+            # Ignora linha de média e linhas sem data válida
+            if not data_txt or "dia" in data_txt.lower() or "méd" in data_txt.lower():
+                continue
+            val_txt = cols[col_idx + 1].get_text(strip=True).replace(",", ".")
+            try:
+                val = float(val_txt)
+                if 200 < val < 600:
+                    resultado = {
+                        "preco":        round(val, 2),
+                        "fonte":        "Indicador do Boi DATAGRO",
+                        "estado":       estado,
+                        "atualizado":   datetime.now(TZ_BR).isoformat(),
+                        "data_cotacao": data_txt,
+                        "automatico":   True,
+                    }
+                    cache_preco[cache_key] = resultado
+                    logger.info(f"DATAGRO: {estado} = R${val} ({data_txt})")
+                    return resultado
+            except Exception:
+                continue
 
-    # --- Fonte 2: Redação Agro API (CEPEA/Esalq · gratuita · sem auth) ---
-    # Retorna referência SP; aplica diferencial para MT/GO
-    DIFERENCIAL = {"SP": 0.0, "MT": -3.0, "GO": -14.0}
-    try:
-        resp = requests.get(
-            "https://www.redacaoagro.com.br/api/cotacoes.php",
-            params={"item": "boi_gordo"},
-            headers=HEADERS,
-            timeout=10,
-        )
-        resp.raise_for_status()
-        dados    = resp.json()
-        preco_sp = None
-        if isinstance(dados, dict):
-            item = dados.get("boi_gordo") or dados.get("boi gordo") or {}
-            preco_sp = float(item.get("valor") or item.get("preco") or 0) or None
-        elif isinstance(dados, list):
-            for item in dados:
-                if "boi" in str(item.get("item", "")).lower():
-                    preco_sp = float(item.get("valor") or item.get("preco") or 0) or None
-                    break
-
-        if preco_sp and 200 < preco_sp < 600:
-            preco_estado = round(preco_sp + DIFERENCIAL.get(estado, 0), 2)
-            resultado = {
-                "preco":        preco_estado,
-                "preco_sp":     preco_sp,
-                "fonte":        "Redação Agro · CEPEA/Esalq",
-                "estado":       estado,
-                "atualizado":   datetime.now(TZ_BR).isoformat(),
-                "data_cotacao": datetime.now(TZ_BR).strftime("%Y-%m-%d"),
-                "automatico":   True,
-            }
-            cache_preco[cache_key] = resultado
-            return resultado
+        logger.warning(f"DATAGRO: preço válido não encontrado para {estado}")
 
     except Exception as e:
-        logger.warning(f"Redação Agro API falhou: {e}")
+        logger.warning(f"DATAGRO falhou para {estado}: {e}")
 
-    # --- Fonte 3: Fallback média histórica do mês ---
+    # Fallback: média histórica do mês
     return _fallback_media_historica(estado)
 
 
