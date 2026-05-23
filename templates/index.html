@@ -736,6 +736,62 @@ nav {
 }
 .sb-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(.22,1,.36,1); }
 
+
+/* ── Tooltips de ajuda ── */
+.tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--border2);
+  color: var(--t3);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: help;
+  margin-left: 5px;
+  flex-shrink: 0;
+  position: relative;
+  vertical-align: middle;
+}
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: pre-line;
+  width: 220px;
+  text-align: left;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s ease;
+  z-index: 999;
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
+}
+.tip::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s ease;
+  z-index: 999;
+}
+.tip:hover::after,
+.tip:hover::before { opacity: 1; }
+
 /* Semáforo / traffic light */
 .sem-rows { display: flex; flex-direction: column; }
 .sem-r {
@@ -1761,10 +1817,17 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
   const scoreNum = (scorePotencial * 0.5 + (10 - scoreRisco) * 0.3 + (isSeco ? 1 : 0) + (spreadPositivo ? 0.5 : 0)).toFixed(1);
   const scoreColor = parseFloat(scoreNum) >= 7 ? '#10B981' : parseFloat(scoreNum) >= 5 ? '#F59E0B' : '#EF4444';
 
+  const TIPS_SCORE = {
+    'Potencial de lucro':  'Relação entre lucro esperado e custo total do lote. Quanto maior a margem sobre o custo, maior a pontuação.',
+    'Exposição ao risco':  'Mede o risco financeiro: dias em confinamento, custo diário e volatilidade. Menor é melhor.',
+    'Spread futuro B3':    'Diferença entre o preço futuro B3 no mês de abate e o preço atual. Positivo = mercado espera valorização.',
+    'Margem operacional':  'Percentual de lucro sobre a receita total do lote. Acima de 20% = saudável. Abaixo de 8% = atenção.',
+    'Janela sazonal':      'Se o mês de abate é historicamente de seca (preços altos) ou chuva (maior oferta, preços pressionados).',
+  };
   const scoreBarsHtml = scBars.map(b => `
     <div class="sb-row">
       <div class="sb-head">
-        <span class="sb-name">${b.nome}</span>
+        <span class="sb-name">${b.nome}<span class="tip" data-tip="${TIPS_SCORE[b.nome]||''}">?</span></span>
         <span class="sb-val" style="color:${b.cor}">${b.label}</span>
       </div>
       <div class="sb-track">
@@ -1787,9 +1850,16 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
     { icon:'&#9728;',   label:'Janela climática', dot:isSeco?'sd-g':'sd-y',                          txt:isSeco?'Seca favorável':'Período úmido',                     col:isSeco?'st-g':'st-y' },
     { icon:'&#128004;', label:'Pressão de oferta',dot:temChuva?'sd-r':(mesAbateNum>=10?'sd-y':'sd-g'),txt:temChuva?'Possível pressão':(mesAbateNum>=10?'Monitorar':'Controlada'), col:temChuva?'st-r':(mesAbateNum>=10?'st-y':'st-g') },
   ];
+  const TIPS_SEM = {
+    'Mercado atual':     'Compara o preço futuro B3 do mês de abate com o preço spot atual. Favorável = futuro acima do spot.',
+    'Custo × arroba':    'Relação entre o custo total do lote por arroba e o preço de venda esperado. Saudável > 20% de margem.',
+    'Spread histórico':  'Diferença entre o preço esperado de abate e a média histórica do mesmo mês nos últimos 5 anos para o seu estado.',
+    'Janela climática':  'Período seco favorece preços maiores pela menor oferta de boi no mercado. Período úmido tende a pressionar preços.',
+    'Pressão de oferta': 'Avalia se haverá excesso de oferta no período de abate, com base na previsão de chuvas e no mês do ano.',
+  };
   const semHtml = semRows.map(s => `
     <div class="sem-r">
-      <span class="sem-r-label"><span class="sem-r-icon">${s.icon}</span>${s.label}</span>
+      <span class="sem-r-label"><span class="sem-r-icon">${s.icon}</span>${s.label}<span class="tip" data-tip="${TIPS_SEM[s.label]||''}">?</span></span>
       <span class="sem-r-status ${s.col}"><span class="sd ${s.dot}"></span>${s.txt}</span>
     </div>`).join('');
 
@@ -1892,7 +1962,7 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
     <div class="hero-card">
       <div class="hero-card-title">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Score Estratégico
+        Score Estratégico<span class="tip" data-tip="Pontuação de 0 a 10 calculada com base em lucro potencial (50%), risco (30%), sazonalidade (10%) e spread B3 (10%).">?</span>
       </div>
       <div class="score-big" style="color:${scoreColor}">${scoreNum}</div>
       <div class="score-big-sub">de 10,0 pontos possíveis</div>
@@ -1903,7 +1973,7 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
     <div class="hero-card">
       <div class="hero-card-title">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
-        Semáforo de Indicadores
+        Semáforo de Indicadores<span class="tip" data-tip="Painel com 5 indicadores-chave. Verde = favorável, Amarelo = atenção, Vermelho = crítico.">?</span>
       </div>
       <div class="sem-rows">${semHtml}</div>
 
