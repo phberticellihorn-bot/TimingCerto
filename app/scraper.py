@@ -57,64 +57,17 @@ LIMIAR_CHUVA_MM = 80.0
 
 def _buscar_normais_precipitacao(estado: str) -> list:
     """
-    Busca precipitação mensal média (mm) dos últimos 20 anos via Open-Meteo ERA5.
-    Retorna lista de 12 floats [jan, fev, ..., dez].
-    Fonte: archive-api.open-meteo.com · ERA5-Land · gratuita · sem autenticação.
+    Normais de precipitação mensal (mm) — INMET 1991-2020.
+    Open-Meteo ERA5 Archive removido: inacessível no ambiente de produção (Render).
+    Retorna None para acionar o fallback INMET em _meses_chuva_estado.
     """
-    estado = estado.upper()
-    cache_key = f"normais_{estado}"
-    if cache_key in cache_normais:
-        return cache_normais[cache_key]
-
-    coords = COORDS.get(estado, COORDS["MT"])
-    ano_fim   = datetime.now(TZ_BR).year - 1          # ano completo mais recente
-    ano_ini   = ano_fim - 19                     # 20 anos de dados
-    url = (
-        f"https://archive-api.open-meteo.com/v1/archive"
-        f"?latitude={coords['lat']}&longitude={coords['lon']}"
-        f"&start_date={ano_ini}-01-01&end_date={ano_fim}-12-31"
-        f"&daily=precipitation_sum"
-        f"&timezone=America/Sao_Paulo"
-    )
-
-    try:
-        resp = requests.get(url, timeout=30)
-        resp.raise_for_status()
-        dados  = resp.json()
-        datas  = dados["daily"]["time"]                  # ["2005-01-01", ...]
-        chuvas = dados["daily"]["precipitation_sum"]     # [mm, mm, ...]
-
-        # Agrupa por mês e calcula média mensal entre todos os anos
-        soma_mes   = [0.0] * 12
-        count_mes  = [0]   * 12
-        for data_str, prec in zip(datas, chuvas):
-            if prec is None:
-                continue
-            mes = int(data_str[5:7]) - 1   # 0-indexed
-            soma_mes[mes]  += prec
-            count_mes[mes] += 1
-
-        # Transforma soma diária acumulada em média mensal (mm/mês)
-        # count_mes conta dias, não meses — dividimos pelo nº de anos para ter mm/mês médio
-        n_anos = ano_fim - ano_ini + 1
-        medias = [
-            round(soma_mes[m] / n_anos, 1) if count_mes[m] > 0 else 0.0
-            for m in range(12)
-        ]
-
-        logger.info(f"Normais precipitação {estado} ({ano_ini}-{ano_fim}): {medias}")
-        cache_normais[cache_key] = medias
-        return medias
-
-    except Exception as e:
-        logger.warning(f"Open-Meteo Archive falhou para normais {estado}: {e}")
-        return None
+    return None
 
 
 def _meses_chuva_estado(estado: str) -> list:
     """
     Retorna lista de 12 booleans indicando se cada mês é chuvoso,
-    baseado nas normais ERA5 dos últimos 20 anos.
+    baseado nas normais INMET 1991-2020 (fallback fixo).
     Fallback para valores fixos consolidados caso a API falhe.
     """
     # Fallback consolidado por estado (INMET normais 1991-2020)
@@ -134,7 +87,7 @@ def _meses_chuva_estado(estado: str) -> list:
     return mask
 
 
-# MESES_CHUVA: gerado dinamicamente via ERA5; função abaixo substitui o dict fixo
+# MESES_CHUVA: baseado nas normais INMET 1991-2020 — fallback fixo por estado
 # Chamado sob demanda com cache de 30 dias — não há custo em tempo de startup
 def _get_meses_chuva(estado: str = None) -> dict | list:
     """
