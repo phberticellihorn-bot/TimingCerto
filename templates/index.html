@@ -1265,10 +1265,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Cálculo principal logo após dados críticos carregarem
   calcular();
-
-  // Abas secundárias em paralelo, sem bloquear a calculadora
-  carregarHistorico('MT');
-  carregarClima('MT');
+  // Histórico e Clima: lazy — só carregam quando a aba for clicada (ver showPage)
 });
 
 let labelAtualizadoB3 = '';
@@ -1978,13 +1975,22 @@ function selecionarClima(estado, el) {
   carregarClima(estado);
 }
 
+const _abaCarregada = { historico: null, clima: null };
+
 function showPage(id, event) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   event.target.classList.add('active');
-  if (id === 'historico') carregarHistorico(estadoAtual);
-  if (id === 'clima') carregarClima(estadoClima);
+  // Lazy load: só busca se ainda não carregou para este estado
+  if (id === 'historico' && _abaCarregada.historico !== estadoAtual) {
+    _abaCarregada.historico = estadoAtual;
+    carregarHistorico(estadoAtual);
+  }
+  if (id === 'clima' && _abaCarregada.clima !== estadoClima) {
+    _abaCarregada.clima = estadoClima;
+    carregarClima(estadoClima);
+  }
 }
 
 // ── Histórico ─────────────────────────────────────────────────────────────
@@ -2117,6 +2123,7 @@ function selecionarEstado(estado, el) {
   document.querySelectorAll('#page-historico .estado-badge').forEach(e => e.classList.remove('active'));
   el.classList.add('active');
   estadoAtual = estado;
+  _abaCarregada.historico = estado; // marca como carregando este estado
   carregarHistorico(estado);
 }
 
