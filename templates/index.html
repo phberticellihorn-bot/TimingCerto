@@ -742,7 +742,7 @@ nav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 14px; height: 14px;
+  width: 15px; height: 15px;
   border-radius: 50%;
   background: var(--border2);
   color: var(--t3);
@@ -751,46 +751,26 @@ nav {
   cursor: help;
   margin-left: 5px;
   flex-shrink: 0;
-  position: relative;
   vertical-align: middle;
+  user-select: none;
 }
-.tip::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: calc(100% + 7px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--ink);
+.tip:hover { background: var(--emerald); color: #fff; }
+#tooltip-box {
+  position: fixed;
+  z-index: 9999;
+  background: #0A0F1E;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 1.5;
-  padding: 8px 12px;
-  border-radius: 8px;
-  white-space: pre-line;
-  width: 220px;
-  text-align: left;
+  line-height: 1.6;
+  padding: 10px 14px;
+  border-radius: 9px;
+  max-width: 240px;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity .15s ease;
-  z-index: 999;
-  box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  display: none;
+  font-family: 'Manrope', sans-serif;
 }
-.tip::before {
-  content: '';
-  position: absolute;
-  bottom: calc(100% + 2px);
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--ink);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .15s ease;
-  z-index: 999;
-}
-.tip:hover::after,
-.tip:hover::before { opacity: 1; }
 
 /* Semáforo / traffic light */
 .sem-rows { display: flex; flex-direction: column; }
@@ -2276,5 +2256,33 @@ function renderClima(dados) {
     `Fonte: ${dados.fonte} · Referência: ${dados.coords?.cidade || dados.estado} · Atualizado: ${formatarDataHora(dados.atualizado)}`;
 }
 </script>
+
+  <!-- Tooltip global -->
+  <div id="tooltip-box"></div>
+  <script>
+    (function() {
+      const box = document.getElementById('tooltip-box');
+      document.addEventListener('mouseover', function(e) {
+        const el = e.target.closest('.tip');
+        if (!el) { box.style.display = 'none'; return; }
+        const txt = el.getAttribute('data-tip');
+        if (!txt) return;
+        box.textContent = txt;
+        box.style.display = 'block';
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (box.style.display === 'none') return;
+        let x = e.clientX + 14;
+        let y = e.clientY - 10;
+        if (x + 250 > window.innerWidth) x = e.clientX - 254;
+        if (y + box.offsetHeight > window.innerHeight) y = e.clientY - box.offsetHeight - 10;
+        box.style.left = x + 'px';
+        box.style.top  = y + 'px';
+      });
+      document.addEventListener('mouseout', function(e) {
+        if (!e.target.closest('.tip')) box.style.display = 'none';
+      });
+    })();
+  </script>
 </body>
 </html>
