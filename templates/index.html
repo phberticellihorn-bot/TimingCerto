@@ -1251,16 +1251,24 @@ function formatarDataHora(iso) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  await carregarHistoricoJSON();
-  await carregarFuturosB3();
-  await carregarPrecoAtual();
-  calcular();
-  carregarHistorico('MT');
-  carregarClima('MT');
-
+  // UI imediata — não depende de API
   const mes = new Date().getMonth();
   document.getElementById('ps-periodo').textContent = MESES[mes] + '/' + new Date().getFullYear();
   document.getElementById('ps-chuva-label').textContent = CHUVA_MASK[mes] ? 'Período de chuvas' : 'Período seco';
+
+  // Histórico local (JSON estático) + B3 + preço atual em paralelo
+  await Promise.all([
+    carregarHistoricoJSON(),
+    carregarFuturosB3(),
+    carregarPrecoAtual(),
+  ]);
+
+  // Cálculo principal logo após dados críticos carregarem
+  calcular();
+
+  // Abas secundárias em paralelo, sem bloquear a calculadora
+  carregarHistorico('MT');
+  carregarClima('MT');
 });
 
 let labelAtualizadoB3 = '';
@@ -1275,24 +1283,19 @@ async function carregarFuturosB3() {
     const atualizadoB3 = (j.data && j.data.atualizado) || j.atualizado || j.atualizado_em || j.timestamp || null;
     labelAtualizadoB3 = atualizadoB3 ? formatarDataHora(atualizadoB3) : '';
 
-    try {
-      const rH = await fetch('/api/historico/status?v=' + Date.now());
-      const jH = await rH.json();
-      const atualizadoHist = jH.ok ? (jH.data.atualizado || null) : null;
-      labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
-
-      const elHistUpdate = document.getElementById('ps-hist-update');
-      if (elHistUpdate) elHistUpdate.textContent = labelAtualizadoHist ? `CEPEA · ${labelAtualizadoHist}` : '';
-
-      const labelHist = atualizadoHist ? `CEPEA/Esalq · atualizado em ${labelAtualizadoHist}` : 'CEPEA/Esalq';
-      const labelB3 = atualizadoB3 ? `Futuro B3 · atualizado em ${labelAtualizadoB3}` : 'Futuro B3';
-      document.getElementById('fonte-note-historico').innerHTML =
-        `Fonte: ${labelHist}<br>${labelB3} · Médias mensais boi gordo @15kg · R$/arroba`;
-    } catch(_) {
-      const labelB3 = atualizadoB3 ? `Futuro B3 · atualizado em ${labelAtualizadoB3}` : 'Futuro B3';
-      document.getElementById('fonte-note-historico').innerHTML =
-        `Fonte: CEPEA/Esalq · Médias mensais boi gordo @15kg · R$/arroba<br>${labelB3}`;
-    }
+    // Status do histórico é não-crítico — não bloqueia o carregamento principal
+    fetch('/api/historico/status?v=' + Date.now())
+      .then(rH => rH.json())
+      .then(jH => {
+        const atualizadoHist = jH.ok ? (jH.data.atualizado || null) : null;
+        labelAtualizadoHist = atualizadoHist ? formatarDataHora(atualizadoHist) : '';
+        const elHistUpdate = document.getElementById('ps-hist-update');
+        if (elHistUpdate) elHistUpdate.textContent = labelAtualizadoHist ? `CEPEA · ${labelAtualizadoHist}` : '';
+        const labelHist = atualizadoHist ? `CEPEA/Esalq · atualizado em ${labelAtualizadoHist}` : 'CEPEA/Esalq';
+        const labelB3 = atualizadoB3 ? `Futuro B3 · atualizado em ${labelAtualizadoB3}` : 'Futuro B3';
+        document.getElementById('fonte-note-historico').innerHTML =
+          `Fonte: ${labelHist}<br>${labelB3} · Médias mensais boi gordo @15kg · R$/arroba`;
+      }).catch(() => {});
   } catch(e) {
     futurosB3 = [
       {mes:5,ano:2026,periodo:'Maio/2026',preco_arroba:336.55,variacao_pct:-0.72},
