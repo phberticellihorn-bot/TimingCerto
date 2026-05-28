@@ -566,6 +566,7 @@ nav {
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 4px;
+  max-width: 100%;
 }
 .timeline-grid::-webkit-scrollbar { height: 4px; }
 .timeline-grid::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
@@ -902,7 +903,8 @@ nav {
   gap: 32px;
   align-items: start;
 }
-.bottom-grid > * { min-width: 0; overflow: hidden; }
+.bottom-grid > * { min-width: 0; }
+.bottom-grid > *:last-child { overflow: hidden; }
 
 /* ════════════════════════════════════════════
    STRATEGIC COMPARISON — light card
