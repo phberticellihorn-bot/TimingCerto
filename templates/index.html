@@ -142,7 +142,7 @@ nav {
   display: flex;
   align-items: center;
   padding: 0 40px;
-  gap: 32px;
+  gap: 20px;
   position: sticky;
   top: 0;
   z-index: 200;
@@ -900,8 +900,8 @@ nav {
 ════════════════════════════════════════════ */
 .bottom-grid {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 32px;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 20px;
   align-items: start;
 }
 .bottom-grid > * { min-width: 0; }
@@ -913,7 +913,7 @@ nav {
 .strat-comp-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 8px;
 }
 .sc-card {
   background: var(--surface);
@@ -1705,10 +1705,8 @@ function renderResultado(d) {
       <!-- EVOLUÇÃO DE PREÇOS TIMELINE -->
       <div style="min-width:0;overflow:hidden">
         <div class="sec-label">Evolução de preços — próximos meses</div>
-        <div style="overflow:hidden;width:100%">
-          <div class="timeline-grid">
-            ${tlCardsHtml}
-          </div>
+        <div class="timeline-grid">
+          ${tlCardsHtml}
         </div>
       </div>
 
