@@ -899,10 +899,10 @@ nav {
 .bottom-grid {
   display: grid;
   grid-template-columns: 1fr 1.4fr;
-  gap: 22px;
+  gap: 32px;
   align-items: start;
 }
-.bottom-grid > * { min-width: 0; }
+.bottom-grid > * { min-width: 0; overflow: hidden; }
 
 /* ════════════════════════════════════════════
    STRATEGIC COMPARISON — light card
@@ -1542,9 +1542,24 @@ function renderResultado(d) {
   const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
   const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
 
-  // Build timeline cards
+  // Build timeline cards — apenas meses atuais e futuros
   let tlCardsHtml = '';
-  d.timeline.forEach(t => {
+  const agoraTimeline = new Date();
+  const mesAtualNum = agoraTimeline.getMonth() + 1; // 1-12
+  const anoAtualNum = agoraTimeline.getFullYear();
+
+  // Filtrar apenas meses >= mês atual do ano corrente
+  const timelineFiltrada = d.timeline.filter(t => {
+    const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
+    if (!mesNum) return false;
+    // Assumindo que todos os cards são de 2026 (ano exibido nos cards)
+    const anoCard = 2026;
+    if (anoCard > anoAtualNum) return true;
+    if (anoCard === anoAtualNum) return mesNum >= mesAtualNum;
+    return false; // anos passados: esconder
+  });
+
+  timelineFiltrada.forEach(t => {
     const mesNum = MESES_NUM[t.mes.toLowerCase().slice(0,3)] || 0;
     const b3 = mesNum ? futuroParaMes(mesNum, 2026) : null;
     const diffVsHist = b3 ? (b3.preco_arroba - t.preco) : 0;
