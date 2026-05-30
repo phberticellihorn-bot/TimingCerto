@@ -1201,6 +1201,56 @@ nav {
 
     <!-- RIGHT: ANALYSIS -->
     <div class="calc-right">
+
+      <!-- ESTIMATIVAS DE PERDAS -->
+      <div class="panel anim">
+        <div class="panel-head">
+          <div class="panel-title">
+            <div class="panel-title-icon pti-amber">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            Estimativas de Perdas
+            <span class="tip" data-tip="Informe o número de cabeças que você estima perder no ciclo. O custo será calculado como: cabeças perdidas × custo fixo por cabeça (campo ao lado esquerdo) e deduzido do lucro final.">?</span>
+          </div>
+        </div>
+        <div class="panel-body" style="padding-top:14px">
+          <div class="form-row" style="align-items:end">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Cabeças perdidas estimadas</label>
+              <input type="number" id="cabecas_perdidas" value="0" min="0" placeholder="Ex: 3" oninput="calcular()">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label style="color:var(--t4)">Custo de perda (automático)</label>
+              <div id="custo_perda_display" style="
+                background: var(--surface2);
+                border: 1.5px solid var(--border);
+                border-radius: 9px;
+                padding: 9px 13px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 15.5px;
+                font-weight: 600;
+                color: var(--red2);
+                min-height: 42px;
+                display: flex;
+                align-items: center;
+              ">R$ 0</div>
+            </div>
+          </div>
+          <div id="perda-info" style="
+            display:none;
+            margin-top:12px;
+            background: var(--red-bg);
+            border: 1px solid var(--red-bd);
+            border-left: 3px solid var(--red2);
+            border-radius: 9px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--red2);
+            line-height: 1.6;
+          "></div>
+        </div>
+      </div>
+
       <div id="resultado">
         <div class="loading">Calculando análise estratégica...</div>
       </div>
@@ -1484,6 +1534,33 @@ function aplicarModalidade() {
 
 async function calcular() {
   atualizarHistStrip();
+  const custoFixoCab = parseFloat(document.getElementById('custo_fixo_cab').value) || 0;
+  const cabecasPerdidas = parseInt(document.getElementById('cabecas_perdidas').value) || 0;
+  const custoPerdaTotal = cabecasPerdidas * custoFixoCab;
+
+  // Atualizar display do custo de perda
+  const displayPerda = document.getElementById('custo_perda_display');
+  if (displayPerda) {
+    displayPerda.textContent = custoPerdaTotal > 0
+      ? '− R$ ' + Math.round(custoPerdaTotal).toLocaleString('pt-BR')
+      : 'R$ 0';
+    displayPerda.style.color = custoPerdaTotal > 0 ? 'var(--red2)' : 'var(--t4)';
+  }
+
+  // Atualizar info de perda
+  const perdaInfo = document.getElementById('perda-info');
+  if (perdaInfo) {
+    if (cabecasPerdidas > 0 && custoFixoCab > 0) {
+      perdaInfo.style.display = 'block';
+      perdaInfo.innerHTML = `<strong>${cabecasPerdidas} cabeça${cabecasPerdidas>1?'s':''} × R$ ${Math.round(custoFixoCab).toLocaleString('pt-BR')} (custo fixo)</strong> = perda de <strong>R$ ${Math.round(custoPerdaTotal).toLocaleString('pt-BR')}</strong> deduzida do lucro final.`;
+    } else if (cabecasPerdidas > 0 && custoFixoCab === 0) {
+      perdaInfo.style.display = 'block';
+      perdaInfo.innerHTML = `Informe o <strong>Custo fixo por cabeça</strong> (campo à esquerda) para calcular o impacto financeiro das perdas.`;
+    } else {
+      perdaInfo.style.display = 'none';
+    }
+  }
+
   const payload = {
     modalidade: document.getElementById('modalidade').value,
     animais: parseInt(document.getElementById('animais').value) || 100,
@@ -1491,7 +1568,9 @@ async function calcular() {
     peso_abate: parseFloat(document.getElementById('peso_abate').value) || 520,
     gpd: parseFloat(document.getElementById('gpd').value) || 1.4,
     custo_dia: parseFloat(document.getElementById('custo_dia').value) || 28,
-    custo_fixo_cab: parseFloat(document.getElementById('custo_fixo_cab').value) || 0,
+    custo_fixo_cab: custoFixoCab,
+    cabecas_perdidas: cabecasPerdidas,
+    custo_perda_total: custoPerdaTotal,
     mes_entrada: parseInt(document.getElementById('mes_entrada').value) || 5,
     estado: document.getElementById('estado').value,
   };
@@ -1508,6 +1587,12 @@ function fmt(n) { return 'R$ ' + Math.round(n).toLocaleString('pt-BR'); }
 
 function renderResultado(d) {
   const c = d.ciclo, f = d.financeiro, cp = d.comparativo;
+
+  // Custo de perda calculado localmente
+  const custoFixoCab = parseFloat(document.getElementById('custo_fixo_cab').value) || 0;
+  const cabecasPerdidas = parseInt(document.getElementById('cabecas_perdidas').value) || 0;
+  const custoPerdaTotal = cabecasPerdidas * custoFixoCab;
+
   const lucroClass = f.lucro_lote >= 0 ? 'success' : 'danger';
   const diffClass = f.diff_total > 5000 ? 'danger' : f.diff_total < -5000 ? 'success' : 'warn';
   const confWin = cp.confinamento.lucro_lote >= cp.semiconfinamento.lucro_lote;
@@ -1523,7 +1608,8 @@ function renderResultado(d) {
   const arrobasCab = f.arrobas_cab;
   const animais = d.animais;
   const receitaEfetiva = precoEfetivo * arrobasCab * animais;
-  const lucroEfetivo = receitaEfetiva - f.custo_lote;
+  const custoLoteComPerda = f.custo_lote + custoPerdaTotal;
+  const lucroEfetivo = receitaEfetiva - custoLoteComPerda;
   const diffEfetivo = precoAtual - precoEfetivo;
   const diffTotalEfetivo = diffEfetivo * arrobasCab * animais;
 
@@ -1541,8 +1627,8 @@ function renderResultado(d) {
   const precoSemiInt = Math.round(precoSemi);
   const lblConf = b3Conf ? `<span style="font-size:9px;color:var(--gold2)">B3</span>` : `<span style="font-size:9px;color:var(--t4)">hist</span>`;
   const lblSemi = b3Semi ? `<span style="font-size:9px;color:var(--gold2)">B3</span>` : `<span style="font-size:9px;color:var(--t4)">hist</span>`;
-  const lucroConfEfetivo = (precoConf * arrobasCab * animais) - cp.confinamento.custo_lote;
-  const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote;
+  const lucroConfEfetivo = (precoConf * arrobasCab * animais) - cp.confinamento.custo_lote - custoPerdaTotal;
+  const lucroSemiEfetivo = (precoSemi * arrobasCab * animais) - cp.semiconfinamento.custo_lote - custoPerdaTotal;
   const confWinEfetivo = lucroConfEfetivo >= lucroSemiEfetivo;
 
   // Build timeline cards — apenas meses atuais e futuros
@@ -1614,7 +1700,7 @@ function renderResultado(d) {
       <div class="r-card ${lucroClassEfetivo}">
         <div class="r-card-label">Lucro líquido estimado</div>
         <div class="r-card-value">${fmt(lucroEfetivo)}</div>
-        <div class="r-card-sub">Receita: ${fmt(receitaEfetiva)}<br>Custo: ${fmt(f.custo_lote)}</div>
+        <div class="r-card-sub">Receita: ${fmt(receitaEfetiva)}<br>Custo: ${fmt(custoLoteComPerda)}${custoPerdaTotal > 0 ? `<br><span style="color:var(--red2);font-size:11px">Incl. R$ ${Math.round(custoPerdaTotal).toLocaleString('pt-BR')} em perdas (${cabecasPerdidas} cab.)</span>` : ''}</div>
       </div>
     </div>
 
