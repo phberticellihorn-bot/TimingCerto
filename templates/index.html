@@ -1862,7 +1862,7 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
   } else if (confWin && isSeco && spreadPositivo) {
     veredIcon = '&#128293;';
     veredTexto = 'JANELA FORTE IDENTIFICADA — ' + modalidade.toUpperCase();
-    veredSubtitulo = `Período seco + spread B3 positivo de R$ ${spreadB3.toFixed(0)}/arr + lucro projetado de ${fmt(lucroEfetivo)}. Condições favoráveis alinhadas.`;
+    veredSubtitulo = `Período seco + mercado futuro (B3) R$ ${spreadB3.toFixed(0)}/arr acima do preço atual + lucro projetado de ${fmt(lucroEfetivo)}. Condições favoráveis alinhadas.`;
   } else if (confWin && isSeco) {
     veredIcon = '&#9989;';
     veredTexto = 'MELHOR ESTRATÉGIA: CONFINAMENTO';
@@ -1894,7 +1894,7 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
   const scBars = [
     { nome: 'Potencial de lucro',  val: scorePotencial, max: 10, cor: scorePotencial >= 7 ? '#10B981' : scorePotencial >= 5 ? '#F59E0B' : '#EF4444', label: scorePotencial.toFixed(1) + '/10' },
     { nome: 'Exposição ao risco',  val: scoreRisco,     max: 10, cor: scoreRisco >= 7 ? '#EF4444' : scoreRisco >= 5 ? '#F59E0B' : '#10B981',  label: scoreRisco >= 7 ? 'Alto' : scoreRisco >= 5 ? 'Médio' : 'Baixo' },
-    { nome: 'Spread futuro B3',    val: Math.min(10, Math.max(0, 5 + spreadPct * 2)), max: 10, cor: spreadPositivo ? '#10B981' : '#EF4444',  label: spreadPositivo ? `+R$${spreadB3.toFixed(0)}` : `R$${spreadB3.toFixed(0)}` },
+    { nome: 'Variação B3',         val: Math.min(10, Math.max(0, 5 + spreadPct * 2)), max: 10, cor: spreadPositivo ? '#10B981' : '#EF4444',  label: spreadPositivo ? `+R$${spreadB3.toFixed(0)}` : `R$${spreadB3.toFixed(0)}` },
     { nome: 'Margem operacional',  val: Math.min(10, Math.max(0, margemPct / 4)), max: 10, cor: margemPct > 20 ? '#10B981' : margemPct > 8 ? '#F59E0B' : '#EF4444', label: `${margemPct.toFixed(1)}%` },
     { nome: 'Janela sazonal',      val: isSeco ? 8.5 : 3.5, max: 10, cor: isSeco ? '#10B981' : '#F59E0B', label: isSeco ? 'Favorável' : 'Desfavorável' },
   ];
@@ -1904,7 +1904,7 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
   const TIPS_SCORE = {
     'Potencial de lucro':  'Relação entre lucro esperado e custo total do lote. Quanto maior a margem sobre o custo, maior a pontuação.',
     'Exposição ao risco':  'Mede o risco financeiro: dias em confinamento, custo diário e volatilidade. Menor é melhor.',
-    'Spread futuro B3':    'Diferença entre o preço futuro B3 no mês de abate e o preço atual. Positivo = mercado espera valorização.',
+    'Variação B3':         'Diferença entre o preço futuro B3 no mês do abate e o preço de hoje. Positivo = mercado espera que o boi valha mais na época do abate.',
     'Margem operacional':  'Percentual de lucro sobre a receita total do lote. Acima de 20% = saudável. Abaixo de 8% = atenção.',
     'Janela sazonal':      'Se o mês de abate é historicamente de seca (preços altos) ou chuva (maior oferta, preços pressionados).',
   };
@@ -1929,17 +1929,17 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
 
   const semRows = [
     { icon:'&#128200;', label:'Mercado atual',    dot:spreadPositivo?'sd-g':'sd-y',                  txt:spreadPositivo?'Favorável':'Atenção',                        col:spreadPositivo?'st-g':'st-y' },
-    { icon:'&#128176;', label:'Custo × arroba',   dot:margemPct>20?'sd-g':margemPct>8?'sd-y':'sd-r', txt:margemPct>20?'Saudável':margemPct>8?'Atenção':'Crítico',     col:margemPct>20?'st-g':margemPct>8?'st-y':'st-r' },
-    { icon:'&#128336;', label:'Spread histórico', dot:spreadVsHist>0?'sd-g':'sd-y',                  txt:spreadVsHist>0?`+R$${spreadVsHist.toFixed(0)}/arr`:`R$${spreadVsHist.toFixed(0)}/arr`, col:spreadVsHist>0?'st-g':'st-y' },
+    { icon:'&#128176;', label:'Custo por arroba',   dot:margemPct>20?'sd-g':margemPct>8?'sd-y':'sd-r', txt:margemPct>20?'Saudável':margemPct>8?'Atenção':'Crítico',     col:margemPct>20?'st-g':margemPct>8?'st-y':'st-r' },
+    { icon:'&#128336;', label:'Ganho sazonal',      dot:spreadVsHist>0?'sd-g':'sd-y',                  txt:spreadVsHist>0?`+R$${spreadVsHist.toFixed(0)}/arr`:`R$${spreadVsHist.toFixed(0)}/arr`, col:spreadVsHist>0?'st-g':'st-y' },
     { icon:'&#9728;',   label:'Janela climática', dot:isSeco?'sd-g':'sd-y',                          txt:isSeco?'Seca favorável':'Período úmido',                     col:isSeco?'st-g':'st-y' },
     { icon:'&#128004;', label:'Pressão de oferta',dot:temChuva?'sd-r':(mesAbateNum>=10?'sd-y':'sd-g'),txt:temChuva?'Possível pressão':(mesAbateNum>=10?'Monitorar':'Controlada'), col:temChuva?'st-r':(mesAbateNum>=10?'st-y':'st-g') },
   ];
   const TIPS_SEM = {
-    'Mercado atual':     'Compara o preço futuro B3 do mês de abate com o preço spot atual. Favorável = futuro acima do spot.',
-    'Custo × arroba':    'Relação entre o custo total do lote por arroba e o preço de venda esperado. Saudável > 20% de margem.',
-    'Spread histórico':  'Diferença entre o preço esperado de abate e a média histórica do mesmo mês nos últimos 5 anos para o seu estado.',
+    'Mercado atual':     'Compara o preço futuro B3 do mês de abate com o preço de hoje. Favorável = o mercado espera que o boi valha mais na época do abate.',
+    'Custo por arroba':  'Relação entre o custo total do lote por arroba e o preço de venda esperado. Saudável = margem acima de 20%.',
+    'Ganho sazonal':     'Diferença entre o preço esperado no seu mês de abate e a média histórica desse mesmo mês nos últimos 5 anos. Positivo = época boa para vender.',
     'Janela climática':  'Período seco favorece preços maiores pela menor oferta de boi no mercado. Período úmido tende a pressionar preços.',
-    'Pressão de oferta': 'Avalia se haverá excesso de oferta no período de abate, com base na previsão de chuvas e no mês do ano.',
+    'Pressão de oferta': 'Avalia se haverá excesso de animais no mercado na época do abate, com base na previsão de chuvas e no mês do ano.',
   };
   const semHtml = semRows.map(s => `
     <div class="sem-r">
@@ -1969,13 +1969,13 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
   // ALERTAS
   const alertas = [];
   if (temChuva) alertas.push({ cls:'ai-y', icon:'&#9888;&#65039;', txt:`Abate em <strong>${mesAbate}</strong> — período de chuvas. Preços historicamente mais baixos em ${estado}.` });
-  if (spreadPositivo && b3Abate) alertas.push({ cls:'ai-g', icon:'&#9989;', txt:`Spread B3 positivo de <strong>R$ ${spreadB3.toFixed(0)}/arr</strong> em relação ao preço atual — mercado futuro precificando valorização.` });
-  if (!spreadPositivo && b3Abate) alertas.push({ cls:'ai-r', icon:'&#128308;', txt:`Spread B3 negativo (<strong>-R$ ${Math.abs(spreadB3).toFixed(0)}/arr</strong>) — futuro abaixo do spot atual. Possível pressão no período do abate.` });
-  if (custoDia > 32) alertas.push({ cls:'ai-y', icon:'&#9888;&#65039;', txt:`Custo diário de <strong>R$ ${custoDia}/cab/dia</strong> acima de R$32 — alta exposição operacional. Margem sensível a atrasos.` });
-  if (dias > 130) alertas.push({ cls:'ai-y', icon:'&#9201;', txt:`Ciclo longo de <strong>${dias} dias</strong> — capital imobilizado por mais tempo. Avaliar adiantamento de lote se mercado deteriorar.` });
+  if (spreadPositivo && b3Abate) alertas.push({ cls:'ai-g', icon:'&#9989;', txt:`Mercado futuro favorável: B3 de <strong>+R$ ${spreadB3.toFixed(0)}/arr</strong> acima do preço atual — boa época para abate.` });
+  if (!spreadPositivo && b3Abate) alertas.push({ cls:'ai-r', icon:'&#128308;', txt:`Mercado futuro desfavorável: B3 <strong>-R$ ${Math.abs(spreadB3).toFixed(0)}/arr</strong> abaixo do preço atual — possível queda de preço na época do abate.` });
+  if (custoDia > 32) alertas.push({ cls:'ai-y', icon:'&#9888;&#65039;', txt:`Custo de <strong>R$ ${custoDia}/cab/dia</strong> está alto — qualquer atraso no ciclo pesa bastante no resultado final.` });
+  if (dias > 130) alertas.push({ cls:'ai-y', icon:'&#9201;', txt:`Ciclo longo de <strong>${dias} dias</strong> — o dinheiro fica investido por bastante tempo. Se o mercado piorar, vale antecipar o abate.` });
   if (margemPct < 10 && margemPct >= 0) alertas.push({ cls:'ai-y', icon:'&#128176;', txt:`Margem estreita de <strong>${margemPct.toFixed(1)}%</strong>. Monitorar custo alimentar semanalmente.` });
   if (margemPct < 0) alertas.push({ cls:'ai-r', icon:'&#128680;', txt:`Projeção de <strong>resultado negativo</strong>. Revisar parâmetros: GPD atual (${gpd} kg/dia) e custo diário (R$ ${custoDia}).` });
-  if (isSeco && spreadPositivo && margemPct > 20) alertas.push({ cls:'ai-g', icon:'&#127775;', txt:`Três indicadores positivos alinhados: <strong>seca + B3 favorável + margem saudável</strong>. Janela estratégica de qualidade.` });
+  if (isSeco && spreadPositivo && margemPct > 20) alertas.push({ cls:'ai-g', icon:'&#127775;', txt:`Três fatores positivos ao mesmo tempo: <strong>época seca + mercado futuro favorável + margem saudável</strong>. Ótima janela para abate.` });
   if (!alertas.length) alertas.push({ cls:'ai-b', icon:'&#8505;&#65039;', txt:'Cenário dentro dos parâmetros normais. Sem alertas críticos no momento.' });
 
   const alertasHtml = alertas.map(a => `
