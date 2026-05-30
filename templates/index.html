@@ -1644,7 +1644,7 @@ function renderResultado(d) {
     // Assumindo que todos os cards são de 2026 (ano exibido nos cards)
     const anoCard = 2026;
     if (anoCard > anoAtualNum) return true;
-    if (anoCard === anoAtualNum) return mesNum >= mesAtualNum;
+    if (anoCard === anoAtualNum) return mesNum > mesAtualNum;
     return false; // anos passados: esconder
   });
 
