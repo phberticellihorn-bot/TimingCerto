@@ -1987,17 +1987,17 @@ function renderDecisaoEstrategica(d, c, f, cp, precoEfetivo, lucroEfetivo, lucro
   // AÇÕES
   const acoes = [];
   if (b3Disponivel && spreadPositivo)
-    acoes.push({ txt:'Travar parcialmente preço futuro via B3 para o mês de abate projetado', priority:'ap-hi', label:'PRIORITÁRIO' });
+    acoes.push({ txt:'Fixar parte do preço no mercado futuro (B3) para o mês do abate — oportunidade favorável no momento', priority:'ap-hi', label:'PRIORITÁRIO' });
   if (isSeco)
-    acoes.push({ txt:`Priorizar abate antes do início das chuvas (outubro). Janela ideal: ${mesAbate}/2026`, priority:'ap-hi', label:'PRIORITÁRIO' });
+    acoes.push({ txt:`Abater antes das chuvas de outubro enquanto o preço está alto. Melhor janela: ${mesAbate}/2026`, priority:'ap-hi', label:'PRIORITÁRIO' });
   if (custoDia > 28)
-    acoes.push({ txt:'Monitorar custo alimentar semanalmente — alta exposição operacional detectada', priority:'ap-md', label:'ATENÇÃO' });
+    acoes.push({ txt:'Acompanhar o custo da ração toda semana — os gastos com alimentação estão pesando no resultado', priority:'ap-md', label:'ATENÇÃO' });
   if (dias > 100)
-    acoes.push({ txt:'Avaliar lote gradualmente: entrar com parte dos animais para diluir risco de timing', priority:'ap-md', label:'ATENÇÃO' });
-  acoes.push({ txt:`Acompanhar contratos futuros B3 para ${mesAbate} — variações acima de R$ 8/arr exigem revisão`, priority:'ap-lo', label:'ROTINA' });
+    acoes.push({ txt:'Considere escalonar a entrada dos animais para não depender de um único momento de preço', priority:'ap-md', label:'ATENÇÃO' });
+  acoes.push({ txt:`Acompanhar o contrato B3 de ${mesAbate} — se o preço cair mais de R$ 8/arr, vale revisar o plano`, priority:'ap-lo', label:'ROTINA' });
   if (!confWin)
-    acoes.push({ txt:'Semiconfinamento apresenta melhor retorno no cenário atual — considerar reavaliação de modalidade', priority:'ap-md', label:'ATENÇÃO' });
-  acoes.push({ txt:'Comparar custo de capital imobilizado vs. lucro adicional de ciclos mais longos', priority:'ap-lo', label:'ROTINA' });
+    acoes.push({ txt:'O semiconfinamento está dando mais retorno nesse cenário — vale reconsiderar a modalidade', priority:'ap-md', label:'ATENÇÃO' });
+  acoes.push({ txt:'Verificar se o tempo extra no pasto ou no cocho compensa o dinheiro investido por mais tempo', priority:'ap-lo', label:'ROTINA' });
 
   const acoesHtml = acoes.slice(0,5).map((a, i) => `
     <div class="acao-i">
@@ -2344,7 +2344,7 @@ function renderClima(dados) {
     <div class="result-kpis" style="margin-bottom:20px">
       <div class="r-card ${diasChuva > 8 ? 'danger' : diasChuva > 4 ? 'warn' : 'success'}">
         <div class="r-card-label">Dias com chuva (16 dias)</div>
-        <div class="r-card-value">${diasChuva} dias</div>
+        <div class="r-card-value">${diasChuva} ${diasChuva === 1 ? 'dia' : 'dias'}</div>
         <div class="r-card-sub">${diasChuva > 8 ? 'Alta umidade — risco operacional elevado' : diasChuva > 4 ? 'Período úmido — atenção' : 'Condições favoráveis ao confinamento'}</div>
       </div>
       <div class="r-card">
